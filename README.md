@@ -33,6 +33,7 @@ npm run dev
 | `BETTER_AUTH_SECRET` | Secret for better-auth               |
 | `DATABASE_URL`       | PostgreSQL connection string (pooled)|
 | `DIRECT_URL`         | PostgreSQL direct connection string  |
+| `ADMIN_EMAIL`        | Email for the first admin user       |
 
 ## Database
 
@@ -43,6 +44,20 @@ npx prisma migrate deploy
 # Or direct sync (dev — drops and recreates tables)
 npx prisma db push --force-reset
 ```
+
+### Seeding the First Admin
+
+The seed script creates an admin user with a random temporary password.
+
+1. Set `ADMIN_EMAIL` in your `.env`:
+   ```
+   ADMIN_EMAIL=you@example.com
+   ```
+2. Run the seed:
+   ```bash
+   npx prisma db seed
+   ```
+3. Open the login page and use **Reset password** to set your password.
 
 ## Scripts
 
