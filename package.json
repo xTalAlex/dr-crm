@@ -20,6 +20,7 @@
     "@iconify-json/material-symbols-light": "^1.2.61",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
+    "@supabase/supabase-js": "^2.99.1",
     "@tailwindcss/vite": "^4.2.1",
     "@types/alpinejs": "^3.13.11",
     "alpinejs": "^3.15.8",

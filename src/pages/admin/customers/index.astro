@@ -160,6 +160,40 @@ export const prerender = false;
                       x-text="c.fiscalCode || '-'"></td>
                     <td class="px-4 py-3 text-right" x-on:click.stop>
                       <div class="inline-flex gap-1">
+                        <a
+                          :href="'https://wa.me/' + c.phone.replace(/[^0-9+]/g, '')"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="p-1.5 text-gray-400 hover:text-green-600 transition-colors"
+                          title="WhatsApp"
+                          x-on:click.stop
+                        >
+                          <Icon
+                            name="material-symbols-light:chat-outline"
+                            class="w-4 h-4"
+                          />
+                        </a>
+                        <button
+                          x-on:click="openSms(c)"
+                          class="p-1.5 text-gray-400 hover:text-blue-500 transition-colors"
+                          title="Invia SMS"
+                        >
+                          <Icon
+                            name="material-symbols-light:sms-outline"
+                            class="w-4 h-4"
+                          />
+                        </button>
+                        <a
+                          :href="'/admin/customers/' + c.id + '/files'"
+                          class="p-1.5 text-gray-400 hover:text-petrol-700 transition-colors"
+                          title="Documenti"
+                          x-on:click.stop
+                        >
+                          <Icon
+                            name="material-symbols-light:folder-outline"
+                            class="w-4 h-4"
+                          />
+                        </a>
                         <button
                           x-on:click="openEdit(c)"
                           class="p-1.5 text-gray-400 hover:text-petrol-700 transition-colors"
@@ -430,6 +464,70 @@ export const prerender = false;
             >Elimina</button
           >
         </div>
+      </div>
+    </div>
+
+    <!-- SMS Modal -->
+    <div
+      x-show="smsModal"
+      x-cloak
+      class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
+      <div class="absolute inset-0 bg-black/40" x-on:click="smsModal = false">
+      </div>
+      <div
+        class="relative bg-white border border-gray-200 rounded-xl w-full max-w-lg p-6 shadow-lg"
+      >
+        <h2 class="text-lg font-serif text-slate-800 mb-1">Invia SMS</h2>
+        <p
+          class="text-sm text-gray-400 mb-6"
+          x-text="smsTarget ? (smsTarget.surname || '') + ' ' + (smsTarget.name || '') + ' — ' + smsTarget.phone : ''"
+        >
+        </p>
+
+        <form x-on:submit.prevent="sendSms()" class="space-y-4">
+          <div>
+            <label
+              class="block text-xs text-gray-400 uppercase tracking-wider mb-1.5"
+              >Messaggio *</label
+            >
+            <textarea
+              x-model="smsText"
+              x-ref="smsField"
+              required
+              rows="4"
+              maxlength="1600"
+              class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2.5 text-slate-800 text-sm outline-none transition-colors resize-none"
+            ></textarea>
+            <p class="text-xs text-gray-400 mt-1 text-right">
+              <span x-text="smsText.length"></span> / 1600
+            </p>
+          </div>
+
+          <template x-if="smsError">
+            <p class="text-red-500 text-sm" x-text="smsError"></p>
+          </template>
+          <template x-if="smsSuccess">
+            <p class="text-green-600 text-sm" x-text="smsSuccess"></p>
+          </template>
+
+          <div class="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              x-on:click="smsModal = false"
+              class="px-4 py-2.5 text-sm text-gray-500 hover:text-slate-800 transition-colors"
+              >Annulla</button
+            >
+            <button
+              type="submit"
+              :disabled="smsSending"
+              class="px-5 py-2.5 bg-petrol-600 hover:bg-petrol-700 text-white rounded-lg text-sm font-medium transition-all duration-300 disabled:opacity-50"
+            >
+              <span x-show="!smsSending">Invia</span>
+              <span x-show="smsSending" x-cloak>Invio...</span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

@@ -94,6 +94,47 @@ model Customer {
   notes         String?
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
+  fileGroups    FileGroup[]
 
   @@map("customer")
+}
+
+model FileGroup {
+  id          String     @id @default(cuid())
+  label       String     @default("")
+  customerId  String
+  customer    Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  files       FileEntry[]
+  magicLink   MagicLink?
+
+  @@index([customerId])
+  @@map("file_group")
+}
+
+model FileEntry {
+  id          String    @id @default(cuid())
+  fileName    String
+  storagePath String
+  mimeType    String    @default("")
+  size        Int       @default(0)
+  groupId     String
+  group       FileGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+
+  @@index([groupId])
+  @@map("file_entry")
+}
+
+model MagicLink {
+  id          String    @id @default(cuid())
+  token       String    @unique
+  pin         String
+  groupId     String    @unique
+  group       FileGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+
+  @@index([token])
+  @@map("magic_link")
 }

@@ -30,6 +30,13 @@ export default (Alpine: Alpine) => {
 
     deleteTarget: null as any,
 
+    smsModal: false,
+    smsTarget: null as any,
+    smsText: "",
+    smsError: "",
+    smsSuccess: "",
+    smsSending: false,
+
     get totalPages() {
       return Math.max(1, Math.ceil(this.total / this.limit));
     },
@@ -143,6 +150,43 @@ export default (Alpine: Alpine) => {
       this.deleteTarget = null;
       this.saving = false;
       this.fetchCustomers();
+    },
+
+    openSms(c: any) {
+      this.smsTarget = c;
+      this.smsText = "";
+      this.smsError = "";
+      this.smsSuccess = "";
+      this.smsModal = true;
+      this.$nextTick(() => this.$refs.smsField?.focus());
+    },
+
+    async sendSms() {
+      this.smsError = "";
+      this.smsSuccess = "";
+      this.smsSending = true;
+
+      const res = await fetch("/admin/api/messages/sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: this.smsTarget.phone,
+          text: this.smsText,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        this.smsError = err.error || "Errore nell'invio";
+        this.smsSending = false;
+        return;
+      }
+
+      this.smsSending = false;
+      this.smsSuccess = "SMS inviato con successo";
+      setTimeout(() => {
+        this.smsModal = false;
+      }, 1500);
     },
   }));
 };
