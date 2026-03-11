@@ -1,0 +1,40 @@
+{
+  "doctor": {
+    "firstName": "Adriano",
+    "lastName": "Talamona",
+    "title": "Dott.",
+    "roles": ["Medico Chirurgo", "Odontoiatra"]
+  },
+  "studio": {
+    "name": "Studio Dentistico",
+    "since": "Dal 1984",
+    "badge": "Prima visita gratuita",
+    "cta": "Prenota Appuntamento",
+    "note": "Ricevo su appuntamento"
+  },
+  "services": [
+    "Conservativa",
+    "Protesi",
+    "Chirurgia",
+    "Implantologia",
+    "Ortodonzia",
+    "Sbiancamento",
+    "Riparazione protesi urgenti"
+  ],
+  "contacts": {
+    "phone": {
+      "display": "329 784 8718",
+      "href": "+393297848718",
+      "note": "Appuntamenti e urgenze"
+    },
+    "email": "talamanandriano@gmail.com",
+    "address": {
+      "street": "Piazza Statuto 9",
+      "city": "Varese"
+    }
+  },
+  "seo": {
+    "title": "Dott. Adriano Talamona — Studio Dentistico",
+    "description": "Studio Dentistico Dott. Adriano Talamona — Medico Chirurgo Odontoiatra a Varese. Dal 1984. Prima visita gratuita."
+  }
+}
