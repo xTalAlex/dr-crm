@@ -95,12 +95,28 @@ const { id } = Astro.params;
           <div
             class="flex items-center justify-between px-5 py-4 border-b border-gray-100"
           >
-            <div>
-              <h3
-                class="text-sm font-medium text-slate-800"
-                x-text="g.label || 'Senza etichetta'"
-              >
-              </h3>
+            <div class="flex-1 min-w-0">
+              <!-- Inline rename -->
+              <template x-if="renameGroupId === g.id">
+                <input
+                  type="text"
+                  x-ref="renameInput"
+                  x-model="renameLabel"
+                  x-on:keydown.enter="confirmRename(g)"
+                  x-on:keydown.escape="cancelRename()"
+                  x-on:blur="confirmRename(g)"
+                  class="w-full text-sm font-medium text-slate-800 bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-2 py-1 outline-none transition-colors"
+                />
+              </template>
+              <template x-if="renameGroupId !== g.id">
+                <h3
+                  class="text-sm font-medium text-slate-800 cursor-pointer hover:text-petrol-700 transition-colors"
+                  x-text="g.label || 'Senza etichetta'"
+                  x-on:dblclick="startRename(g)"
+                  title="Doppio click per rinominare"
+                >
+                </h3>
+              </template>
               <p class="text-xs text-gray-400 mt-0.5">
                 <span x-text="g.files.length"></span> file &middot;
                 <span x-text="new Date(g.createdAt).toLocaleDateString('it-IT')"
@@ -108,6 +124,16 @@ const { id } = Astro.params;
               </p>
             </div>
             <div class="flex items-center gap-1">
+              <button
+                x-on:click="startRename(g)"
+                class="p-1.5 text-gray-400 hover:text-petrol-700 transition-colors"
+                title="Rinomina"
+              >
+                <Icon
+                  name="material-symbols-light:edit-outline"
+                  class="w-4 h-4"
+                />
+              </button>
               <button
                 x-on:click="openAddFiles(g)"
                 class="p-1.5 text-gray-400 hover:text-petrol-700 transition-colors"

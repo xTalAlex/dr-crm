@@ -19,6 +19,10 @@ export default (Alpine: Alpine) => {
     uploading: false,
     uploadError: "",
 
+    // Rename group
+    renameGroupId: null as string | null,
+    renameLabel: "",
+
     // Add files to group
     addFilesGroupId: null as string | null,
     addFilesUploading: false,
@@ -88,6 +92,36 @@ export default (Alpine: Alpine) => {
       this.uploadLabel = "";
       fileInput.value = "";
       await this.fetchData();
+    },
+
+    startRename(g: any) {
+      this.renameGroupId = g.id;
+      this.renameLabel = g.label || "";
+      this.$nextTick(() => {
+        const input = (this.$refs as any).renameInput as HTMLInputElement;
+        input?.focus();
+        input?.select();
+      });
+    },
+
+    async confirmRename(g: any) {
+      const newLabel = this.renameLabel.trim();
+      if (newLabel && newLabel !== g.label) {
+        await fetch(
+          `/admin/api/customers/${this.customerId}/files/groups/${g.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ label: newLabel }),
+          }
+        );
+        g.label = newLabel;
+      }
+      this.renameGroupId = null;
+    },
+
+    cancelRename() {
+      this.renameGroupId = null;
     },
 
     openAddFiles(g: any) {
