@@ -1,10 +1,20 @@
 import { auth } from "@/lib/auth";
 import { defineMiddleware } from "astro:middleware";
 
-const protectedRoutes: Record<string, (authData: Awaited<ReturnType<typeof setLocals>>) => boolean> = {
-    "/profile": (authData) => !authData,
-    "/admin": (authData) => !authData || authData.user?.role !== "admin",
-};
+type AuthData = Awaited<ReturnType<typeof setLocals>>;
+
+const protectedRoutes: { match: (path: string) => boolean; shouldRedirect: (authData: AuthData) => string | null }[] = [
+    {
+        // Only admins can access the admin panel
+        match: (path) => path.startsWith("/admin"),
+        shouldRedirect: (authData) => (!authData || authData.user?.role !== "admin") ? "/login" : null,
+    },
+    {
+        // Profile requires authentication
+        match: (path) => path === "/profile",
+        shouldRedirect: (authData) => !authData ? "/login" : null,
+    },
+];
 
 /**
  * Populates Astro.locals with auth session data.
@@ -24,10 +34,8 @@ async function setLocals(context: Parameters<Parameters<typeof defineMiddleware>
 export const onRequest = defineMiddleware(async (context, next) => {
     const authData = await setLocals(context);
 
-    const shouldRedirect = protectedRoutes[context.url.pathname];
-    if (shouldRedirect?.(authData)) {
-        return context.redirect("/");
-    }
+    const matched = protectedRoutes.find(route => route.match(context.url.pathname));
+    const redirectTo = matched?.shouldRedirect(authData);
     
-    return next();
+    return redirectTo ? context.redirect(redirectTo) : next();
 });
