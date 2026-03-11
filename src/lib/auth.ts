@@ -4,13 +4,11 @@ import { admin } from "better-auth/plugins";
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const env = typeof import.meta !== "undefined" && import.meta.env ? import.meta.env : process.env;
-
-const adapter = new PrismaPg({ connectionString: env.DATABASE_URL });
+const adapter = new PrismaPg({ connectionString: import.meta.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 export const auth = betterAuth({
-    baseURL: env.BETTER_AUTH_URL,
+    baseURL: import.meta.env.BETTER_AUTH_URL,
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
