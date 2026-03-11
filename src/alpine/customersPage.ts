@@ -166,7 +166,7 @@ export default (Alpine: Alpine) => {
       this.smsSuccess = "";
       this.smsSending = true;
 
-      const res = await fetch("/admin/api/messages/sms", {
+      const res = await fetch("/admin/api/communications/sms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

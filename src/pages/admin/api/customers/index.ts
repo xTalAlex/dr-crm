@@ -8,7 +8,7 @@ export const GET: APIRoute = async ({ url }) => {
         const prisma = getDb();
         const search = url.searchParams.get("q") ?? "";
         const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
-        const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit")) || 25));
+        const limit = Math.min(5000, Math.max(1, Number(url.searchParams.get("limit")) || 25));
         const skip = (page - 1) * limit;
         const letter = url.searchParams.get("letter") ?? "";
 

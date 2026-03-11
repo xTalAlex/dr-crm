@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 
 export const prerender = false;
 
-/** POST /admin/api/messages/sms — send an SMS via Brevo */
+/** POST /admin/api/communications/sms — send an SMS via Brevo */
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();

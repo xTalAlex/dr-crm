@@ -203,7 +203,7 @@ export default (Alpine: Alpine) => {
 
     async sendSmsForGroup(g: any) {
       const text = `Ecco i tuoi documenti: ${this.magicLinkUrl(g.magicLink.token)}\nCodice PIN: ${g.magicLink.pin}`;
-      await fetch("/admin/api/messages/sms", {
+      await fetch("/admin/api/communications/sms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: this.customerPhone, text }),
@@ -214,7 +214,7 @@ export default (Alpine: Alpine) => {
       const text = `Ecco i tuoi documenti: ${this.magicLinkUrl(this.magicLinkResult!)}\nCodice PIN: ${this.magicLinkPin}`;
       this.magicLinkModal = false;
 
-      const res = await fetch("/admin/api/messages/sms", {
+      const res = await fetch("/admin/api/communications/sms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: this.customerPhone, text }),
