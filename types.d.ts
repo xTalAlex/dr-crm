@@ -5,3 +5,7 @@ declare namespace App {
         session: import("better-auth").Session | null;
     }
 }
+
+interface Window {
+    Alpine: import("alpinejs").Alpine;
+}
