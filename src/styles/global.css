@@ -16,3 +16,5 @@
   --color-navy-900: #0f1a2e;
   --color-navy-950: #080e1a;
 }
+
+[x-cloak] { display: none !important; }
