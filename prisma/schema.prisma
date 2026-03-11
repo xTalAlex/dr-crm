@@ -80,3 +80,19 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
+
+model Customer {
+  id         String    @id @default(cuid())
+  name       String
+  phone      String
+  email      String?
+  fiscalCode String?
+  birthDate  DateTime?
+  address    String?
+  lastVisit  DateTime?
+  notes      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("customer")
+}
