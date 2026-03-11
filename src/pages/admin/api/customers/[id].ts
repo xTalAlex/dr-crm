@@ -22,7 +22,7 @@ export const PUT: APIRoute = async ({ params, request }) => {
     try {
         const prisma = getDb();
         const body = await request.json();
-        const { name, surname, phone, phone2, email, fiscalCode, birthDate, address, lastVisit, notes } = body;
+        const { name, surname, phone, phone2, email, fiscalCode, birthDate, address, notes } = body;
 
         if (!phone?.trim()) {
             return Response.json({ error: "Il telefono è obbligatorio" }, { status: 400 });
@@ -44,7 +44,6 @@ export const PUT: APIRoute = async ({ params, request }) => {
                 fiscalCode: fiscalCode?.trim() || null,
                 birthDate: birthDate ? new Date(birthDate) : null,
                 address: address?.trim() || null,
-                lastVisit: lastVisit ? new Date(lastVisit) : null,
                 notes: notes?.trim() || null,
             },
         });

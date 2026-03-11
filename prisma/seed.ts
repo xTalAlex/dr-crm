@@ -9,7 +9,7 @@ if (!ADMIN_EMAIL) {
   process.exit(1);
 }
 
-const adapter = new PrismaPg({ connectionString: process.env.DIRECT_URL, ssl: { rejectUnauthorized: false } });
+const adapter = new PrismaPg({ connectionString: process.env.DIRECT_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {

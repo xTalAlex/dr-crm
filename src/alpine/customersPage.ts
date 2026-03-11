@@ -23,7 +23,6 @@ export default (Alpine: Alpine) => {
       fiscalCode: "",
       birthDate: "",
       address: "",
-      lastVisit: "",
       notes: "",
     },
     formError: "",
@@ -63,7 +62,6 @@ export default (Alpine: Alpine) => {
         fiscalCode: "",
         birthDate: "",
         address: "",
-        lastVisit: "",
         notes: "",
       };
       this.formError = "";
@@ -82,7 +80,6 @@ export default (Alpine: Alpine) => {
         fiscalCode: c.fiscalCode ?? "",
         birthDate: c.birthDate ? c.birthDate.slice(0, 10) : "",
         address: c.address ?? "",
-        lastVisit: c.lastVisit ? c.lastVisit.slice(0, 10) : "",
         notes: c.notes ?? "",
       };
       this.formError = "";
@@ -125,7 +122,6 @@ export default (Alpine: Alpine) => {
           fiscalCode: "",
           birthDate: "",
           address: "",
-          lastVisit: "",
           notes: "",
         };
         this.formError = "";
