@@ -1,0 +1,87 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { Icon } from "astro-icon/components";
+import { getDb } from "@/lib/db";
+
+export const prerender = false;
+
+const user = Astro.locals.user;
+
+let customerCount = 0;
+try {
+  customerCount = await getDb().customer.count();
+} catch {
+  // DB not available — show 0
+}
+
+const links = [
+  {
+    label: "Gestione Clienti",
+    desc: "Aggiungi, modifica, elimina",
+    href: "/admin/customers",
+    icon: "material-symbols-light:group-outline",
+  },
+  {
+    label: "Documenti",
+    desc: "Gestisci e invia documenti ai clienti",
+    href: "/admin/documents",
+    icon: "material-symbols-light:description-outline",
+  },
+];
+---
+
+<AdminLayout title="Dashboard">
+  <div class="mb-8">
+    <h1 class="text-xl font-serif text-slate-800">
+      Ciao, {user?.name?.split(" ")[0] ?? "Admin"}
+    </h1>
+    <p class="text-sm text-gray-400 mt-1">
+      Ecco un riepilogo della tua attività
+    </p>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+    <div
+      class="bg-white border border-gray-200 rounded-xl p-5 flex items-center gap-4"
+    >
+      <div
+        class="w-10 h-10 rounded-lg bg-petrol-50 border border-petrol-200 flex items-center justify-center"
+      >
+        <Icon
+          name="material-symbols-light:group-outline"
+          class="w-5 h-5 text-petrol-700"
+        />
+      </div>
+      <div>
+        <p class="text-2xl font-semibold text-slate-800">{customerCount}</p>
+        <p class="text-xs text-gray-400">Clienti registrati</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick links -->
+  <h2 class="text-xs text-gray-400 uppercase tracking-wider mb-3">
+    Azioni rapide
+  </h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {
+      links.map(({ label, desc, href, icon }) => (
+        <a
+          href={href}
+          class="group bg-white border border-gray-200 hover:border-petrol-300 rounded-xl p-5 flex items-start gap-4 transition-colors"
+        >
+          <div class="w-10 h-10 rounded-lg bg-petrol-50 border border-petrol-200 flex items-center justify-center shrink-0">
+            <Icon name={icon} class="w-5 h-5 text-petrol-700" />
+          </div>
+          <div>
+            <p class="text-sm font-medium text-slate-800 group-hover:text-petrol-700 transition-colors">
+              {label}
+            </p>
+            <p class="text-xs text-gray-400 mt-0.5">{desc}</p>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</AdminLayout>

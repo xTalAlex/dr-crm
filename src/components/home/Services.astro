@@ -1,0 +1,55 @@
+---
+import { Image } from "astro:assets";
+import heroImg from "@/assets/images/hero.jpg";
+import content from "@/data/content.json";
+
+const { services } = content;
+---
+
+<section id="servizi" class="py-24">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+      <div>
+        <span
+          class="text-petrol-600/60 text-xs tracking-[0.3em] uppercase font-medium"
+          >Servizi</span
+        >
+        <h2 class="mt-4 font-serif text-3xl md:text-4xl text-slate-800">
+          I Nostri Servizi
+        </h2>
+        <div
+          class="mt-4 h-px w-24 bg-linear-to-r from-petrol-500/30 to-transparent"
+        >
+        </div>
+
+        <div class="relative mt-10">
+          <div class="absolute -inset-3 bg-petrol-100/30 rounded-2xl blur-2xl">
+          </div>
+          <Image
+            src={heroImg}
+            alt="Studio Dentistico"
+            class="relative rounded-2xl border border-gray-200 shadow-xl object-cover w-full aspect-[4/3]"
+            widths={[400, 800]}
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        {
+          services.map((service, i) => (
+            <div class="group flex items-center gap-5 py-4 px-5 rounded-xl hover:bg-white transition-colors cursor-default">
+              <span class="text-petrol-600/40 font-serif text-sm tabular-nums">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span class="h-px flex-1 bg-gray-200 group-hover:bg-petrol-300 transition-colors" />
+              <h3 class="font-medium text-slate-800 group-hover:text-petrol-700 transition-colors">
+                {service}
+              </h3>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,96 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import content from "@/data/content.json";
+
+export const prerender = false;
+
+const { doctor } = content;
+const user = Astro.locals.user;
+if (user?.role === "admin") return Astro.redirect("/admin");
+---
+
+<BaseLayout
+  title="Login"
+  bodyClass="bg-gray-50 text-slate-800 font-sans antialiased min-h-screen flex items-center justify-center"
+  noindex
+>
+  <div class="w-full max-w-sm px-6" x-data="loginForm">
+    <div class="text-center mb-10">
+      <a href="/" class="font-serif text-petrol-700 text-2xl tracking-wide"
+        >{doctor.title} {doctor.lastName}</a
+      >
+      <p class="text-gray-400 text-sm mt-2">Accesso riservato</p>
+    </div>
+
+    <form x-on:submit.prevent="submitLogin" class="space-y-5">
+      <div>
+        <label
+          for="email"
+          class="block text-xs text-gray-400 uppercase tracking-wider mb-2"
+          >Email</label
+        >
+        <input
+          id="email"
+          type="email"
+          x-model="email"
+          required
+          class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-4 py-3 text-slate-800 text-sm outline-none transition-colors"
+        />
+      </div>
+
+      <div>
+        <label
+          for="password"
+          class="block text-xs text-gray-400 uppercase tracking-wider mb-2"
+          >Password</label
+        >
+        <input
+          id="password"
+          type="password"
+          x-model="password"
+          required
+          class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-4 py-3 text-slate-800 text-sm outline-none transition-colors"
+        />
+      </div>
+
+      <template x-if="error">
+        <p class="text-red-500 text-sm" x-text="error"></p>
+      </template>
+
+      <button
+        type="submit"
+        :disabled="loading"
+        class="w-full bg-petrol-600 hover:bg-petrol-700 text-white py-3 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 disabled:opacity-50"
+      >
+        <span x-show="!loading">Accedi</span>
+        <span x-show="loading" x-cloak>Accesso in corso...</span>
+      </button>
+
+      <div class="text-center">
+        <a
+          href="/auth/reset-password"
+          class="text-gray-400 text-xs hover:text-petrol-700 transition-colors"
+        >
+          Password dimenticata?
+        </a>
+      </div>
+    </form>
+
+    <div class="mt-8 text-center">
+      <a
+        href="/"
+        class="text-gray-400 text-xs hover:text-petrol-700 transition-colors"
+        >&larr; Torna al sito</a
+      >
+    </div>
+  </div>
+
+  <script>
+    import Alpine from "alpinejs";
+    import loginForm from "@/alpine/loginForm";
+
+    document.addEventListener("alpine:init", () => {
+      loginForm(Alpine);
+    });
+  </script>
+</BaseLayout>

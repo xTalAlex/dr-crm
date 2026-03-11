@@ -1,0 +1,21 @@
+---
+import content from "@/data/content.json";
+
+const { doctor, contacts } = content;
+---
+
+<footer class="border-t border-gray-200 py-10">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <p class="font-serif text-petrol-700 text-sm">
+      {doctor.title}
+      {doctor.firstName}
+      {doctor.lastName}
+    </p>
+    <p class="text-gray-400 text-xs mt-2">
+      {doctor.roles.join(" — ")} — {contacts.address.city}
+    </p>
+    <p class="text-gray-300 text-xs mt-4">
+      &copy; {new Date().getFullYear()}
+    </p>
+  </div>
+</footer>

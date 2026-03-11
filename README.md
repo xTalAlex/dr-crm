@@ -27,13 +27,13 @@ npm run dev
 
 ### Environment Variables
 
-| Variable             | Description                          |
-| -------------------- | ------------------------------------ |
-| `BETTER_AUTH_URL`    | Site base URL                        |
-| `BETTER_AUTH_SECRET` | Secret for better-auth               |
-| `DATABASE_URL`       | PostgreSQL connection string (pooled)|
-| `DIRECT_URL`         | PostgreSQL direct connection string  |
-| `ADMIN_EMAIL`        | Email for the first admin user       |
+| Variable             | Description                           |
+| -------------------- | ------------------------------------- |
+| `BETTER_AUTH_URL`    | Site base URL                         |
+| `BETTER_AUTH_SECRET` | Secret for better-auth                |
+| `DATABASE_URL`       | PostgreSQL connection string (pooled) |
+| `DIRECT_URL`         | PostgreSQL direct connection string   |
+| `ADMIN_EMAIL`        | Email for the first admin user        |
 
 ## Database
 

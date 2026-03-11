@@ -1,7 +1,8 @@
 -- CreateTable
 CREATE TABLE "customer" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" TEXT NOT NULL DEFAULT '',
+    "surname" TEXT NOT NULL DEFAULT '',
     "phone" TEXT NOT NULL,
     "email" TEXT,
     "fiscalCode" TEXT,

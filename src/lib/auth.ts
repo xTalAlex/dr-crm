@@ -15,8 +15,7 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
         sendResetPassword: async ({ user, url }) => {
-            // TODO: send real email when Nodemailer is configured (Phase 6)
-            console.log(`[auth] Password reset for ${user.email}: ${url}`);
+            // console.log("Invio email reset password a", user.email);
         },
     },
     plugins: [

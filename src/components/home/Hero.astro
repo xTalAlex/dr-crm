@@ -1,0 +1,88 @@
+---
+import { Icon } from "astro-icon/components";
+import content from "@/data/content.json";
+
+const { doctor, studio, contacts } = content;
+---
+
+<header
+  class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+>
+  <!-- Decorative background -->
+  <div class="absolute inset-0">
+    <div
+      class="absolute top-1/4 left-1/4 w-96 h-96 bg-petrol-100/30 rounded-full blur-3xl"
+    >
+    </div>
+    <div
+      class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-50/40 rounded-full blur-3xl"
+    >
+    </div>
+    <div
+      class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(13,148,136,0.04),transparent_60%)]"
+    >
+    </div>
+  </div>
+
+  <div class="relative text-center px-6 max-w-3xl">
+    <div class="inline-block mb-8">
+      <span
+        class="text-petrol-600/60 text-xs tracking-[0.3em] uppercase font-medium"
+        >{studio.name} · {studio.since}</span
+      >
+      <div
+        class="mt-1 h-px w-16 mx-auto bg-linear-to-r from-transparent via-petrol-500/40 to-transparent"
+      >
+      </div>
+    </div>
+
+    <h1
+      class="font-serif text-5xl md:text-7xl font-medium text-slate-800 leading-tight tracking-tight"
+    >
+      {doctor.title}
+      {doctor.firstName}<br />
+      <span class="text-petrol-700">{doctor.lastName}</span>
+    </h1>
+
+    <div
+      class="mt-6 flex items-center justify-center gap-3 text-gray-500 text-sm tracking-wide"
+    >
+      {
+        doctor.roles.map((role: string, i: number) => (
+          <>
+            {i > 0 && <span class="w-1 h-1 rounded-full bg-petrol-500/40" />}
+            <span>{role}</span>
+          </>
+        ))
+      }
+    </div>
+
+    <div class="mt-8">
+      <span
+        class="inline-block bg-petrol-100 text-petrol-800 font-medium text-sm px-4 py-1.5 rounded-full"
+      >
+        ✦ {studio.badge} ✦
+      </span>
+    </div>
+
+    <div class="mt-10 mb-20">
+      <a
+        href={`tel:${contacts.phone.href}`}
+        class="group inline-flex items-center gap-3 bg-petrol-600 hover:bg-petrol-700 text-white px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+      >
+        <span class="text-sm font-medium tracking-wide">{studio.cta}</span>
+        <Icon
+          name="material-symbols-light:arrow-right-alt"
+          class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"
+        />
+      </a>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <Icon
+      name="material-symbols-light:keyboard-arrow-down"
+      class="w-5 h-5 mx-auto text-petrol-500/30"
+    />
+  </div>
+</header>

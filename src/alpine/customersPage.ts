@@ -1,0 +1,152 @@
+import type Alpine from "alpinejs";
+
+export default (Alpine: Alpine) => {
+  Alpine.data("customersPage", () => ({
+    customers: [] as any[],
+    total: 0,
+    page: 1,
+    limit: 25,
+    search: "",
+    activeLetter: "",
+    letterCounts: {} as Record<string, number>,
+    showMobileLetters: false,
+    loading: false,
+
+    modal: false,
+    editing: null as any,
+    form: {
+      name: "",
+      surname: "",
+      phone: "",
+      phone2: "",
+      email: "",
+      fiscalCode: "",
+      birthDate: "",
+      address: "",
+      lastVisit: "",
+      notes: "",
+    },
+    formError: "",
+    saving: false,
+
+    deleteTarget: null as any,
+
+    get totalPages() {
+      return Math.max(1, Math.ceil(this.total / this.limit));
+    },
+
+    async fetchCustomers() {
+      this.loading = true;
+      const params = new URLSearchParams({
+        page: String(this.page),
+        limit: String(this.limit),
+      });
+      if (this.search) params.set("q", this.search);
+      if (this.activeLetter) params.set("letter", this.activeLetter);
+
+      const res = await fetch(`/admin/api/customers?${params}`);
+      const data = await res.json();
+      this.customers = data.customers;
+      this.total = data.total;
+      this.letterCounts = data.letterCounts ?? {};
+      this.loading = false;
+    },
+
+    openCreate() {
+      this.editing = null;
+      this.form = {
+        name: "",
+        surname: "",
+        phone: "",
+        phone2: "",
+        email: "",
+        fiscalCode: "",
+        birthDate: "",
+        address: "",
+        lastVisit: "",
+        notes: "",
+      };
+      this.formError = "";
+      this.modal = true;
+      this.$nextTick(() => this.$refs.firstField?.focus());
+    },
+
+    openEdit(c: any) {
+      this.editing = c;
+      this.form = {
+        name: c.name,
+        surname: c.surname ?? "",
+        phone: c.phone,
+        phone2: c.phone2 ?? "",
+        email: c.email ?? "",
+        fiscalCode: c.fiscalCode ?? "",
+        birthDate: c.birthDate ? c.birthDate.slice(0, 10) : "",
+        address: c.address ?? "",
+        lastVisit: c.lastVisit ? c.lastVisit.slice(0, 10) : "",
+        notes: c.notes ?? "",
+      };
+      this.formError = "";
+      this.modal = true;
+      this.$nextTick(() => this.$refs.firstField?.focus());
+    },
+
+    async save(keepOpen = false) {
+      this.formError = "";
+      this.saving = true;
+
+      const url = this.editing
+        ? `/admin/api/customers/${this.editing.id}`
+        : "/admin/api/customers";
+      const method = this.editing ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(this.form),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        this.formError = err.error || "Errore nel salvataggio";
+        this.saving = false;
+        return;
+      }
+
+      this.saving = false;
+      this.fetchCustomers();
+
+      if (keepOpen && !this.editing) {
+        this.form = {
+          name: "",
+          surname: "",
+          phone: "",
+          phone2: "",
+          email: "",
+          fiscalCode: "",
+          birthDate: "",
+          address: "",
+          lastVisit: "",
+          notes: "",
+        };
+        this.formError = "";
+        this.$nextTick(() => this.$refs.firstField?.focus());
+      } else {
+        this.modal = false;
+      }
+    },
+
+    confirmDelete(c: any) {
+      this.deleteTarget = c;
+    },
+
+    async doDelete() {
+      this.saving = true;
+      await fetch(`/admin/api/customers/${this.deleteTarget.id}`, {
+        method: "DELETE",
+      });
+      this.deleteTarget = null;
+      this.saving = false;
+      this.fetchCustomers();
+    },
+  }));
+};

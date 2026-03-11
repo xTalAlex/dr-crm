@@ -16,13 +16,17 @@
   "dependencies": {
     "@astrojs/alpinejs": "^0.5.0",
     "@astrojs/netlify": "^7.0.1",
+    "@getbrevo/brevo": "^4.0.1",
+    "@iconify-json/material-symbols-light": "^1.2.61",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
     "@tailwindcss/vite": "^4.2.1",
     "@types/alpinejs": "^3.13.11",
     "alpinejs": "^3.15.8",
     "astro": "^6.0.2",
+    "astro-icon": "^1.1.5",
     "better-auth": "^1.5.4",
+    "quill": "^2.0.3",
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {

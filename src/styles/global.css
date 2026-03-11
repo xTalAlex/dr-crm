@@ -1,20 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600&display=swap');
-
 @import "tailwindcss";
 
 @theme {
-  --font-serif: 'Playfair Display', serif;
-  --font-sans: 'Inter', sans-serif;
-  --color-gold-50: #fdf8f0;
-  --color-gold-100: #f5e6cc;
-  --color-gold-200: #e8c992;
-  --color-gold-400: #c9a45c;
-  --color-gold-500: #b8943e;
-  --color-gold-600: #a07d2e;
-  --color-gold-700: #7a5f22;
-  --color-navy-800: #1a2744;
-  --color-navy-900: #0f1a2e;
-  --color-navy-950: #080e1a;
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
+  --font-sans: Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
+  --color-petrol-50: #f0f8fa;
+  --color-petrol-100: #d9eef3;
+  --color-petrol-200: #b3dde7;
+  --color-petrol-300: #7ec4d4;
+  --color-petrol-400: #4eaabf;
+  --color-petrol-500: #3591a7;
+  --color-petrol-600: #29778d;
+  --color-petrol-700: #236374;
+  --color-petrol-800: #1e5160;
+  --color-petrol-900: #163a46;
 }
 
 [x-cloak] { display: none !important; }

@@ -1,0 +1,44 @@
+---
+import content from "@/data/content.json";
+
+const { doctor } = content;
+const user = Astro.locals.user;
+---
+
+<nav
+  class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200"
+>
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <span class="font-serif text-petrol-700 text-lg tracking-wide"
+      >{doctor.title} {doctor.lastName}</span
+    >
+    <div class="flex items-center gap-6 text-sm">
+      <a
+        href="#servizi"
+        class="text-gray-500 hover:text-petrol-700 transition-colors">Servizi</a
+      >
+      <a
+        href="#contatti"
+        class="text-gray-500 hover:text-petrol-700 transition-colors"
+        >Contatti</a
+      >
+      {
+        user?.role === "admin" ? (
+          <a
+            href="/admin"
+            class="text-xs bg-petrol-600 text-white px-3 py-1.5 rounded-full hover:bg-petrol-700 transition-colors"
+          >
+            Admin
+          </a>
+        ) : (
+          <a
+            href="/auth/login"
+            class="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            Login
+          </a>
+        )
+      }
+    </div>
+  </div>
+</nav>
