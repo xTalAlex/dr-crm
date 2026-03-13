@@ -1,5 +1,6 @@
 ---
 import content from "@/data/content.json";
+import logo from "@/assets/images/logo.svg";
 
 const { doctor } = content;
 const user = Astro.locals.user;
@@ -9,9 +10,12 @@ const user = Astro.locals.user;
   class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200"
 >
   <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-    <span class="font-serif text-petrol-700 text-lg tracking-wide"
-      >{doctor.title} {doctor.lastName}</span
-    >
+    <a href="/" class="flex items-center gap-2">
+      <img src={logo.src} alt="Logo" class="w-7 h-7" />
+      <span class="font-serif text-petrol-700 text-lg tracking-wide"
+        >{doctor.title} {doctor.lastName}</span
+      >
+    </a>
     <div class="flex items-center gap-6 text-sm">
       <a
         href="#servizi"
