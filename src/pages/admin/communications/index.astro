@@ -265,6 +265,7 @@ export const prerender = false;
                 >
                 <textarea
                   x-model="smsText"
+                  maxlength="160"
                   rows="5"
                   placeholder="Scrivi il messaggio..."
                   class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2.5 text-slate-800 text-sm outline-none transition-colors placeholder:text-gray-400 resize-none"
@@ -272,7 +273,7 @@ export const prerender = false;
                 <div class="flex items-center justify-between mt-1.5 mb-2">
                   <span
                     class="text-xs"
-                    :class="smsText.length > 160 ? 'text-amber-500' : 'text-gray-400'"
+                    :class="smsText.length >= 160 ? 'text-amber-500' : 'text-gray-400'"
                     x-text="smsText.length + '/160'"></span>
                   <span
                     class="text-xs text-gray-400"
@@ -333,6 +334,7 @@ export const prerender = false;
                 >
                 <textarea
                   x-model="smsText"
+                  maxlength="160"
                   rows="5"
                   placeholder="Scrivi il messaggio..."
                   class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2.5 text-slate-800 text-sm outline-none transition-colors placeholder:text-gray-400 resize-none"
@@ -340,7 +342,7 @@ export const prerender = false;
                 <div class="flex items-center justify-between mt-1.5 mb-4">
                   <span
                     class="text-xs"
-                    :class="smsText.length > 160 ? 'text-amber-500' : 'text-gray-400'"
+                    :class="smsText.length >= 160 ? 'text-amber-500' : 'text-gray-400'"
                     x-text="smsText.length + '/160'"></span>
                 </div>
 
