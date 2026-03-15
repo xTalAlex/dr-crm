@@ -3,16 +3,16 @@
 @theme {
   --font-serif: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
   --font-sans: Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
-  --color-petrol-50: #f0f8fa;
-  --color-petrol-100: #d9eef3;
-  --color-petrol-200: #b3dde7;
-  --color-petrol-300: #7ec4d4;
-  --color-petrol-400: #4eaabf;
-  --color-petrol-500: #3591a7;
-  --color-petrol-600: #29778d;
-  --color-petrol-700: #236374;
-  --color-petrol-800: #1e5160;
-  --color-petrol-900: #163a46;
+  --color-petrol-50: #f2f7f9;
+  --color-petrol-100: #dceaee;
+  --color-petrol-200: #b9d5dd;
+  --color-petrol-300: #8bb8c4;
+  --color-petrol-400: #6a9fad;
+  --color-petrol-500: #4f8696;
+  --color-petrol-600: #416e7c;
+  --color-petrol-700: #375b67;
+  --color-petrol-800: #2e4b55;
+  --color-petrol-900: #233940;
 }
 
 [x-cloak] { display: none !important; }
