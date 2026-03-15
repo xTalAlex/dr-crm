@@ -1,5 +1,6 @@
 ---
 import content from "@/data/content.json";
+import CookieConsent from "@/components/CookieConsent.astro";
 
 const { doctor, contacts } = content;
 ---
@@ -17,5 +18,12 @@ const { doctor, contacts } = content;
     <p class="text-gray-300 text-xs mt-4">
       &copy; {new Date().getFullYear()}
     </p>
+    <CookieConsent />
   </div>
 </footer>
+
+<script
+  is:inline
+  type="text/javascript"
+  src="https://embeds.iubenda.com/widgets/48a68501-5d13-4e95-88e3-6888160d72d4.js"
+/>
