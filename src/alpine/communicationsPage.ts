@@ -24,6 +24,10 @@ export default (Alpine: Alpine) => {
 
     // SMS
     smsText: "",
+    editCampaignName: "",
+    originalCampaignMessage: "",
+    originalCampaignName: "",
+    updatingCampaign: false,
     smsSending: false,
     smsResult: null as { sent: number; total: number } | null,
     smsError: "",
@@ -50,6 +54,14 @@ export default (Alpine: Alpine) => {
 
     get sentCount() {
       return this.sentIds.length;
+    },
+
+    get nameDirty() {
+      return this.campaignMode === 'existing' && this.editCampaignName !== this.originalCampaignName;
+    },
+
+    get messageDirty() {
+      return this.campaignMode === 'existing' && this.smsText !== this.originalCampaignMessage;
     },
 
     async init() {
@@ -107,6 +119,9 @@ export default (Alpine: Alpine) => {
         const campaign = this.campaigns.find((c: any) => c.id === value);
         if (campaign) {
           this.smsText = campaign.message;
+          this.originalCampaignMessage = campaign.message;
+          this.editCampaignName = campaign.name;
+          this.originalCampaignName = campaign.name;
         }
         this.loadSentIds();
       }
@@ -130,6 +145,48 @@ export default (Alpine: Alpine) => {
 
     excludeAlreadySent() {
       this.selectedIds = this.selectedIds.filter((id: string) => !this.sentIds.includes(id));
+    },
+
+    async saveCampaignName() {
+      if (!this.selectedCampaignId || !this.editCampaignName.trim()) return;
+      this.updatingCampaign = true;
+      const res = await fetch(`/admin/api/communications/campaigns/${this.selectedCampaignId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: this.editCampaignName.trim() }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const idx = this.campaigns.findIndex((c: any) => c.id === this.selectedCampaignId);
+        if (idx >= 0) this.campaigns[idx].name = data.campaign.name;
+        this.originalCampaignName = data.campaign.name;
+        this.editCampaignName = data.campaign.name;
+      } else {
+        const err = await res.json();
+        this.smsError = err.error || "Errore nell'aggiornamento";
+      }
+      this.updatingCampaign = false;
+    },
+
+    async saveCampaignMessage() {
+      if (!this.selectedCampaignId || !this.smsText.trim()) return;
+      this.updatingCampaign = true;
+      const res = await fetch(`/admin/api/communications/campaigns/${this.selectedCampaignId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: this.smsText.trim() }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const idx = this.campaigns.findIndex((c: any) => c.id === this.selectedCampaignId);
+        if (idx >= 0) this.campaigns[idx].message = data.campaign.message;
+        this.originalCampaignMessage = data.campaign.message;
+        this.smsText = data.campaign.message;
+      } else {
+        const err = await res.json();
+        this.smsError = err.error || "Errore nell'aggiornamento";
+      }
+      this.updatingCampaign = false;
     },
 
     // --- Customers ---

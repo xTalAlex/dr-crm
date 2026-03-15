@@ -46,4 +46,48 @@ export const GET: APIRoute = async ({ params, url }) => {
   }
 };
 
+/** PUT /admin/api/communications/campaigns/:id — update campaign */
+export const PUT: APIRoute = async ({ params, request }) => {
+  try {
+    const prisma = getDb();
+    const { id } = params;
+    if (!id) {
+      return Response.json({ error: "ID mancante" }, { status: 400 });
+    }
+
+    const body = await request.json();
+    const { name, message } = body as { name?: string; message?: string };
+
+    const data: Record<string, string> = {};
+    if (name !== undefined) {
+      if (!name.trim()) {
+        return Response.json({ error: "Il nome non può essere vuoto" }, { status: 400 });
+      }
+      data.name = name.trim();
+    }
+    if (message !== undefined) {
+      if (!message.trim()) {
+        return Response.json({ error: "Il messaggio non può essere vuoto" }, { status: 400 });
+      }
+      data.message = message.trim();
+    }
+
+    if (Object.keys(data).length === 0) {
+      return Response.json({ error: "Nessun campo da aggiornare" }, { status: 400 });
+    }
+
+    const campaign = await prisma.campaign.update({
+      where: { id },
+      data,
+    });
+
+    return Response.json({ campaign });
+  } catch (err: any) {
+    if (err.code === "P2025") {
+      return Response.json({ error: "Campagna non trovata" }, { status: 404 });
+    }
+    return Response.json({ error: err.message ?? "Errore del server" }, { status: 500 });
+  }
+};
+
 /** GET sent customer IDs for a campaign — used by frontend to mark already-sent */

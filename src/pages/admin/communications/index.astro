@@ -363,15 +363,77 @@ export const prerender = false;
             <!-- MODE: Existing campaign selected — ready to send -->
             <template x-if="campaignMode === 'existing'">
               <div>
-                <label class="text-xs font-medium text-gray-500 mb-1.5 block"
-                  >Messaggio</label
-                >
-                <div
-                  class="w-full bg-gray-100 border border-gray-200 rounded-lg px-3 py-2.5 text-slate-700 text-sm whitespace-pre-line mb-2 min-h-[6rem]"
-                  x-text="smsText"
-                >
+                <!-- Campaign name -->
+                <div class="flex items-center justify-between mb-1.5">
+                  <label class="text-xs font-medium text-gray-500"
+                    >Nome campagna</label
+                  >
+                  <div
+                    x-show="nameDirty"
+                    x-transition
+                    class="flex items-center gap-1.5"
+                  >
+                    <button
+                      x-on:click="saveCampaignName()"
+                      :disabled="updatingCampaign || !editCampaignName.trim()"
+                      class="text-[10px] text-petrol-600 hover:text-petrol-700 font-medium transition-colors disabled:opacity-50"
+                      >Salva</button
+                    >
+                    <button
+                      x-on:click="editCampaignName = originalCampaignName"
+                      class="text-gray-300 hover:text-petrol-600 transition-colors"
+                      title="Annulla"
+                    >
+                      <Icon
+                        name="material-symbols-light:undo"
+                        class="w-3.5 h-3.5"
+                      />
+                    </button>
+                  </div>
                 </div>
-                <div class="flex items-center justify-between mb-4">
+                <input
+                  type="text"
+                  x-model="editCampaignName"
+                  placeholder="Nome campagna"
+                  class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2 text-sm outline-none transition-colors placeholder:text-gray-400 mb-3"
+                />
+
+                <!-- Message -->
+                <div class="flex items-center justify-between mb-1.5">
+                  <label class="text-xs font-medium text-gray-500"
+                    >Messaggio</label
+                  >
+                  <div
+                    x-show="messageDirty"
+                    x-transition
+                    class="flex items-center gap-1.5"
+                  >
+                    <button
+                      x-on:click="saveCampaignMessage()"
+                      :disabled="updatingCampaign || !smsText.trim()"
+                      class="text-[10px] text-petrol-600 hover:text-petrol-700 font-medium transition-colors disabled:opacity-50"
+                      >Salva</button
+                    >
+                    <button
+                      x-on:click="smsText = originalCampaignMessage"
+                      class="text-gray-300 hover:text-petrol-600 transition-colors"
+                      title="Annulla"
+                    >
+                      <Icon
+                        name="material-symbols-light:undo"
+                        class="w-3.5 h-3.5"
+                      />
+                    </button>
+                  </div>
+                </div>
+                <textarea
+                  x-model="smsText"
+                  maxlength="160"
+                  rows="5"
+                  placeholder="Scrivi il messaggio..."
+                  class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2.5 text-slate-800 text-sm outline-none transition-colors placeholder:text-gray-400 resize-none"
+                ></textarea>
+                <div class="flex items-center justify-between mt-1.5 mb-2">
                   <span
                     class="text-xs"
                     :class="smsText.length > 160 ? 'text-amber-500' : 'text-gray-400'"
