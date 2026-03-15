@@ -3,7 +3,7 @@ import type Alpine from "alpinejs";
 export default (Alpine: Alpine) => {
   Alpine.data("communicationsPage", () => ({
     // Tab
-    activeTab: "sms" as "sms" | "email",
+    activeTab: "sms" as "sms" | "email" | "history",
 
     // Customers for SMS
     customers: [] as any[],
@@ -14,11 +14,26 @@ export default (Alpine: Alpine) => {
     custPage: 1,
     custPerPage: 20,
 
+    // Campaigns
+    campaigns: [] as any[],
+    campaignMode: "none" as "none" | "existing" | "new",
+    selectedCampaignId: "" as string,
+    newCampaignName: "",
+    creatingCampaign: false,
+    sentIds: [] as string[],
+
     // SMS
     smsText: "",
     smsSending: false,
     smsResult: null as { sent: number; total: number } | null,
     smsError: "",
+
+    // History
+    historyCampaigns: [] as any[],
+    loadingHistory: false,
+    expandedCampaignId: "" as string,
+    campaignDetail: null as any,
+    loadingDetail: false,
 
     get custTotalPages() {
       return Math.max(1, Math.ceil(this.totalCustomers / this.custPerPage));
@@ -33,9 +48,91 @@ export default (Alpine: Alpine) => {
       return this.selectedIds.length;
     },
 
-    async init() {
-      await this.fetchCustomers();
+    get sentCount() {
+      return this.sentIds.length;
     },
+
+    async init() {
+      await Promise.all([this.fetchCustomers(), this.fetchCampaigns()]);
+    },
+
+    // --- Campaigns ---
+
+    async fetchCampaigns() {
+      const res = await fetch("/admin/api/communications/campaigns?channel=sms");
+      if (res.ok) {
+        const data = await res.json();
+        this.campaigns = data.campaigns;
+      }
+    },
+
+    async createCampaign() {
+      if (!this.newCampaignName.trim() || !this.smsText.trim()) return;
+      this.creatingCampaign = true;
+      const res = await fetch("/admin/api/communications/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: this.newCampaignName.trim(),
+          channel: "sms",
+          message: this.smsText.trim(),
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        this.campaigns.unshift({ ...data.campaign, _count: { logs: 0 } });
+        // Auto-select the newly created campaign
+        this.selectedCampaignId = data.campaign.id;
+        this.campaignMode = "existing";
+        this.newCampaignName = "";
+        await this.loadSentIds();
+      }
+      this.creatingCampaign = false;
+    },
+
+    onCampaignModeChange(value: string) {
+      if (value === "__new__") {
+        this.campaignMode = "new";
+        this.selectedCampaignId = "";
+        this.smsText = "";
+        this.sentIds = [];
+      } else if (value === "") {
+        this.campaignMode = "none";
+        this.selectedCampaignId = "";
+        this.smsText = "";
+        this.sentIds = [];
+      } else {
+        this.campaignMode = "existing";
+        this.selectedCampaignId = value;
+        const campaign = this.campaigns.find((c: any) => c.id === value);
+        if (campaign) {
+          this.smsText = campaign.message;
+        }
+        this.loadSentIds();
+      }
+    },
+
+    async loadSentIds() {
+      if (!this.selectedCampaignId) {
+        this.sentIds = [];
+        return;
+      }
+      const res = await fetch(`/admin/api/communications/campaigns/${this.selectedCampaignId}/sent-ids`);
+      if (res.ok) {
+        const data = await res.json();
+        this.sentIds = data.sentIds;
+      }
+    },
+
+    isSent(id: string) {
+      return this.sentIds.includes(id);
+    },
+
+    excludeAlreadySent() {
+      this.selectedIds = this.selectedIds.filter((id: string) => !this.sentIds.includes(id));
+    },
+
+    // --- Customers ---
 
     async fetchCustomers() {
       this.loadingCustomers = true;
@@ -57,6 +154,12 @@ export default (Alpine: Alpine) => {
     async searchChanged() {
       this.custPage = 1;
       await this.fetchCustomers();
+    },
+
+    clearSearch() {
+      this.searchCustomers = "";
+      this.custPage = 1;
+      this.fetchCustomers();
     },
 
     async goPage(p: number) {
@@ -114,6 +217,8 @@ export default (Alpine: Alpine) => {
       return ((c.surname || "") + " " + (c.name || "")).trim() || "\u2014";
     },
 
+    // --- Send ---
+
     async sendBulkSms() {
       this.smsError = "";
       this.smsResult = null;
@@ -139,23 +244,67 @@ export default (Alpine: Alpine) => {
       const allData = await allRes.json();
       const recipients = allData.customers
         .filter((c: any) => this.selectedIds.includes(c.id))
-        .map((c: any) => ({ name: this.customerLabel(c), phone: c.phone }));
+        .map((c: any) => ({ id: c.id, name: this.customerLabel(c), phone: c.phone }));
+
+      const payload: any = { recipients, text: this.smsText };
+      if (this.selectedCampaignId) {
+        payload.campaignId = this.selectedCampaignId;
+      }
 
       const res = await fetch("/admin/api/communications/sms-bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipients, text: this.smsText }),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
         this.smsResult = await res.json();
-        this.smsText = "";
         this.selectedIds = [];
+        if (this.selectedCampaignId) {
+          await Promise.all([this.loadSentIds(), this.fetchCampaigns()]);
+        }
       } else {
         const err = await res.json();
         this.smsError = err.error || "Errore nell'invio";
       }
       this.smsSending = false;
+    },
+
+    // --- History ---
+
+    async fetchHistory() {
+      this.loadingHistory = true;
+      const res = await fetch("/admin/api/communications/campaigns");
+      if (res.ok) {
+        const data = await res.json();
+        this.historyCampaigns = data.campaigns;
+      }
+      this.loadingHistory = false;
+    },
+
+    async toggleCampaignDetail(id: string) {
+      if (this.expandedCampaignId === id) {
+        this.expandedCampaignId = "";
+        this.campaignDetail = null;
+        return;
+      }
+      this.expandedCampaignId = id;
+      this.loadingDetail = true;
+      const res = await fetch(`/admin/api/communications/campaigns/${id}`);
+      if (res.ok) {
+        this.campaignDetail = await res.json();
+      }
+      this.loadingDetail = false;
+    },
+
+    formatDate(d: string) {
+      return new Date(d).toLocaleDateString("it-IT", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
     },
   }));
 };

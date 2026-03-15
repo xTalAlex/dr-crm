@@ -33,6 +33,14 @@ export const prerender = false;
         <Icon name="material-symbols-light:mail-outline" class="w-4 h-4" />
         Email (Brevo)
       </button>
+      <button
+        x-on:click="activeTab = 'history'; fetchHistory()"
+        :class="activeTab === 'history' ? 'border-petrol-600 text-petrol-700' : 'border-transparent text-gray-400 hover:text-slate-800'"
+        class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors"
+      >
+        <Icon name="material-symbols-light:history" class="w-4 h-4" />
+        Storico
+      </button>
     </div>
 
     <!-- SMS Tab -->
@@ -51,6 +59,9 @@ export const prerender = false;
                 <p class="text-xs text-gray-400 mt-0.5">
                   <span x-text="selectedCount"></span> selezionati su
                   <span x-text="totalCustomers"></span>
+                  <template x-if="selectedCampaignId && sentCount > 0">
+                    <span> · <span x-text="sentCount" class="text-amber-600"></span> già inviati</span>
+                  </template>
                 </p>
               </div>
               <div class="flex items-center gap-2">
@@ -65,18 +76,34 @@ export const prerender = false;
                   >Seleziona tutti</button
                 >
                 <button
-                  x-show="selectedCount > 0"
                   x-on:click="deselectAll()"
-                  class="px-2.5 py-1 text-xs border border-gray-200 hover:border-red-300 text-gray-500 hover:text-red-500 rounded-lg transition-colors"
-                  >Azzera</button
+                  :disabled="selectedCount === 0"
+                  class="px-2.5 py-1 text-xs border border-gray-200 hover:border-red-300 text-gray-500 hover:text-red-500 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-500"
+                  >Deseleziona tutto</button
                 >
-                <input
-                  type="text"
-                  x-model="searchCustomers"
-                  x-on:input.debounce.300ms="searchChanged()"
-                  placeholder="Cerca..."
-                  class="w-40 bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-1.5 text-sm outline-none transition-colors placeholder:text-gray-400"
-                />
+                <button
+                  x-show="selectedCampaignId && sentCount > 0 && selectedIds.some(id => sentIds.includes(id))"
+                  x-on:click="excludeAlreadySent()"
+                  class="px-2.5 py-1 text-xs border border-amber-200 hover:border-amber-400 text-amber-600 hover:text-amber-700 rounded-lg transition-colors"
+                  >Escludi già inviati</button
+                >
+                <div class="relative">
+                  <input
+                    type="text"
+                    x-model="searchCustomers"
+                    x-on:input.debounce.300ms="searchChanged()"
+                    placeholder="Cerca..."
+                    class="w-40 bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg pl-3 pr-7 py-1.5 text-sm outline-none transition-colors placeholder:text-gray-400"
+                  />
+                  <button
+                    x-show="searchCustomers.length > 0"
+                    x-on:click="clearSearch()"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-slate-800 transition-colors"
+                    type="button"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -104,7 +131,8 @@ export const prerender = false;
                         />
                       </th>
                       <th class="text-left py-2.5 px-4 font-medium">Cliente</th>
-                      <th class="text-left py-2.5 px-4 font-medium">Telefono</th
+                      <th class="text-left py-2.5 px-4 font-medium">Telefono</th>
+                      <th class="w-20 text-left py-2.5 px-4 font-medium">Stato</th
                       >
                     </tr>
                   </thead>
@@ -127,6 +155,15 @@ export const prerender = false;
                         </td>
                         <td class="py-2.5 px-4 text-gray-500">
                           <span x-text="c.phone || '—'"></span>
+                        </td>
+                        <td class="py-2.5 px-4">
+                          <span
+                            x-show="selectedCampaignId && isSent(c.id)"
+                            class="inline-flex items-center gap-1 text-xs text-gray-400"
+                          >
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Inviato
+                          </span>
                         </td>
                       </tr>
                     </template>
@@ -171,51 +208,130 @@ export const prerender = false;
         <!-- Right: Message composer -->
         <div>
           <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-5">
-            <h2 class="text-sm font-medium text-slate-800 mb-4">Messaggio</h2>
-            <textarea
-              x-model="smsText"
-              rows="6"
-              placeholder="Scrivi il messaggio SMS..."
-              class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2.5 text-slate-800 text-sm outline-none transition-colors placeholder:text-gray-400 resize-none"
-            ></textarea>
-            <div class="flex items-center justify-between mt-2 mb-4">
-              <span
-                class="text-xs"
-                :class="smsText.length > 160 ? 'text-amber-500' : 'text-gray-400'"
-                x-text="smsText.length + '/160'"></span>
-              <span
-                class="text-xs text-gray-400"
-                x-text="selectedCount + ' destinatari'"></span>
-            </div>
+            <h2 class="text-sm font-medium text-slate-800 mb-4">Campagna</h2>
 
-            <template x-if="smsError">
-              <p class="text-red-500 text-sm mb-3" x-text="smsError"></p>
-            </template>
+            <!-- Campaign selector -->
+            <select
+              x-on:change="onCampaignModeChange($event.target.value)"
+              class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2 text-sm text-slate-800 outline-none transition-colors mb-4"
+            >
+              <option value="" :selected="campaignMode === 'none'">Senza campagna</option>
+              <option value="__new__" :selected="campaignMode === 'new'">+ Nuova campagna</option>
+              <template x-for="camp in campaigns" :key="camp.id">
+                <option :value="camp.id" :selected="selectedCampaignId === camp.id" x-text="camp.name + ' (' + camp._count.logs + ' inviati)'"></option>
+              </template>
+            </select>
 
-            <template x-if="smsResult">
-              <div
-                class="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg"
-              >
-                <p class="text-sm text-green-700">
-                  SMS inviati: <span class="font-medium" x-text="smsResult.sent"
-                  ></span>
-                  / <span x-text="smsResult.total"></span>
-                </p>
+            <!-- MODE: No campaign — free-form SMS without tracking -->
+            <template x-if="campaignMode === 'none'">
+              <div>
+                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Messaggio SMS</label>
+                <textarea
+                  x-model="smsText"
+                  rows="5"
+                  placeholder="Scrivi il messaggio..."
+                  class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2.5 text-slate-800 text-sm outline-none transition-colors placeholder:text-gray-400 resize-none"
+                ></textarea>
+                <div class="flex items-center justify-between mt-1.5 mb-2">
+                  <span class="text-xs" :class="smsText.length > 160 ? 'text-amber-500' : 'text-gray-400'" x-text="smsText.length + '/160'"></span>
+                  <span class="text-xs text-gray-400" x-text="selectedCount + ' destinatari'"></span>
+                </div>
+
+                <p class="text-xs text-amber-600 mb-3">Gli invii senza campagna non vengono tracciati</p>
+
+                <template x-if="smsError">
+                  <p class="text-red-500 text-sm mb-3" x-text="smsError"></p>
+                </template>
+
+                <template x-if="smsResult">
+                  <div class="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p class="text-sm text-green-700">
+                      SMS inviati: <span class="font-medium" x-text="smsResult.sent"></span>
+                      / <span x-text="smsResult.total"></span>
+                    </p>
+                  </div>
+                </template>
+
+                <button
+                  x-on:click="sendBulkSms()"
+                  :disabled="smsSending || selectedCount === 0 || !smsText.trim()"
+                  class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-petrol-600 hover:bg-petrol-700 text-white rounded-lg text-sm font-medium transition-all duration-300 disabled:opacity-50"
+                >
+                  <Icon name="material-symbols-light:send-outline" class="w-4 h-4" />
+                  <span x-show="!smsSending">Invia SMS</span>
+                  <span x-show="smsSending" x-cloak>Invio in corso...</span>
+                </button>
               </div>
             </template>
 
-            <button
-              x-on:click="sendBulkSms()"
-              :disabled="smsSending || selectedCount === 0"
-              class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-petrol-600 hover:bg-petrol-700 text-white rounded-lg text-sm font-medium transition-all duration-300 disabled:opacity-50"
-            >
-              <Icon
-                name="material-symbols-light:send-outline"
-                class="w-4 h-4"
-              />
-              <span x-show="!smsSending">Invia SMS</span>
-              <span x-show="smsSending" x-cloak>Invio in corso...</span>
-            </button>
+            <!-- MODE: New campaign creation -->
+            <template x-if="campaignMode === 'new'">
+              <div>
+                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Nome campagna</label>
+                <input
+                  type="text"
+                  x-model="newCampaignName"
+                  placeholder="es. Cambio sede studio"
+                  class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2 text-sm outline-none transition-colors placeholder:text-gray-400 mb-3"
+                />
+
+                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Messaggio SMS</label>
+                <textarea
+                  x-model="smsText"
+                  rows="5"
+                  placeholder="Scrivi il messaggio..."
+                  class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2.5 text-slate-800 text-sm outline-none transition-colors placeholder:text-gray-400 resize-none"
+                ></textarea>
+                <div class="flex items-center justify-between mt-1.5 mb-4">
+                  <span class="text-xs" :class="smsText.length > 160 ? 'text-amber-500' : 'text-gray-400'" x-text="smsText.length + '/160'"></span>
+                </div>
+
+                <button
+                  x-on:click="createCampaign()"
+                  :disabled="!newCampaignName.trim() || !smsText.trim() || creatingCampaign"
+                  class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-petrol-600 hover:bg-petrol-700 text-white rounded-lg text-sm font-medium transition-all duration-300 disabled:opacity-50"
+                >
+                  <span x-show="!creatingCampaign">Crea campagna</span>
+                  <span x-show="creatingCampaign" x-cloak>Creazione...</span>
+                </button>
+                <p class="text-xs text-gray-400 mt-2 text-center">Dopo averla creata potrai selezionare i destinatari e inviare</p>
+              </div>
+            </template>
+
+            <!-- MODE: Existing campaign selected — ready to send -->
+            <template x-if="campaignMode === 'existing'">
+              <div>
+                <label class="text-xs font-medium text-gray-500 mb-1.5 block">Messaggio</label>
+                <div class="w-full bg-gray-100 border border-gray-200 rounded-lg px-3 py-2.5 text-slate-700 text-sm whitespace-pre-line mb-2 min-h-[6rem]" x-text="smsText"></div>
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-xs" :class="smsText.length > 160 ? 'text-amber-500' : 'text-gray-400'" x-text="smsText.length + '/160'"></span>
+                  <span class="text-xs text-gray-400" x-text="selectedCount + ' destinatari'"></span>
+                </div>
+
+                <template x-if="smsError">
+                  <p class="text-red-500 text-sm mb-3" x-text="smsError"></p>
+                </template>
+
+                <template x-if="smsResult">
+                  <div class="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p class="text-sm text-green-700">
+                      SMS inviati: <span class="font-medium" x-text="smsResult.sent"></span>
+                      / <span x-text="smsResult.total"></span>
+                    </p>
+                  </div>
+                </template>
+
+                <button
+                  x-on:click="sendBulkSms()"
+                  :disabled="smsSending || selectedCount === 0"
+                  class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-petrol-600 hover:bg-petrol-700 text-white rounded-lg text-sm font-medium transition-all duration-300 disabled:opacity-50"
+                >
+                  <Icon name="material-symbols-light:send-outline" class="w-4 h-4" />
+                  <span x-show="!smsSending">Invia SMS</span>
+                  <span x-show="smsSending" x-cloak>Invio in corso...</span>
+                </button>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -282,6 +398,109 @@ export const prerender = false;
             </a>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- History Tab -->
+    <div x-show="activeTab === 'history'" x-cloak>
+      <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        <!-- Loading -->
+        <template x-if="loadingHistory">
+          <p class="text-center text-gray-400 py-8 text-sm">Caricamento...</p>
+        </template>
+
+        <template x-if="!loadingHistory && historyCampaigns.length === 0">
+          <p class="text-center text-gray-400 py-8 text-sm">Nessuna campagna ancora inviata</p>
+        </template>
+
+        <template x-if="!loadingHistory && historyCampaigns.length > 0">
+          <div>
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50">
+                <tr class="border-b border-gray-200 text-xs text-gray-400 uppercase tracking-wider">
+                  <th class="text-left py-2.5 px-5 font-medium">Campagna</th>
+                  <th class="text-left py-2.5 px-4 font-medium">Canale</th>
+                  <th class="text-left py-2.5 px-4 font-medium">Destinatari</th>
+                  <th class="text-left py-2.5 px-4 font-medium">Data</th>
+                  <th class="w-10 py-2.5 px-4"></th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                <template x-for="camp in historyCampaigns" :key="camp.id">
+                  <tr>
+                    <td colspan="5" class="p-0">
+                      <!-- Campaign row -->
+                      <div
+                        class="flex items-center cursor-pointer hover:bg-gray-50/60 transition-colors"
+                        x-on:click="toggleCampaignDetail(camp.id)"
+                      >
+                        <div class="flex-1 py-2.5 px-5 text-slate-800 font-medium" x-text="camp.name"></div>
+                        <div class="py-2.5 px-4 w-24">
+                          <span
+                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                            :class="camp.channel === 'sms' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700'"
+                            x-text="camp.channel.toUpperCase()"
+                          ></span>
+                        </div>
+                        <div class="py-2.5 px-4 w-28 text-gray-500" x-text="camp._count.logs"></div>
+                        <div class="py-2.5 px-4 w-40 text-gray-400 text-xs" x-text="formatDate(camp.createdAt)"></div>
+                        <div class="py-2.5 px-4 w-10 text-gray-400">
+                          <svg
+                            class="w-4 h-4 transition-transform"
+                            :class="expandedCampaignId === camp.id ? 'rotate-180' : ''"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                          ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                      </div>
+
+                      <!-- Expanded detail -->
+                      <div
+                        x-show="expandedCampaignId === camp.id"
+                        x-transition
+                        class="bg-gray-50/50 border-t border-gray-100"
+                      >
+                        <!-- Message preview -->
+                        <div class="px-5 py-3 border-b border-gray-100">
+                          <p class="text-xs text-gray-400 mb-1">Messaggio:</p>
+                          <p class="text-sm text-slate-700 whitespace-pre-line" x-text="camp.message"></p>
+                        </div>
+
+                        <template x-if="loadingDetail && expandedCampaignId === camp.id">
+                          <p class="text-center text-gray-400 py-4 text-xs">Caricamento destinatari...</p>
+                        </template>
+
+                        <template x-if="!loadingDetail && campaignDetail && expandedCampaignId === camp.id">
+                          <div class="max-h-64 overflow-y-auto">
+                            <table class="w-full text-xs">
+                              <thead class="bg-gray-100/60 sticky top-0">
+                                <tr class="text-gray-400 uppercase tracking-wider">
+                                  <th class="text-left py-2 px-5 font-medium">Cliente</th>
+                                  <th class="text-left py-2 px-4 font-medium">Telefono</th>
+                                  <th class="text-left py-2 px-4 font-medium">Inviato il</th>
+                                </tr>
+                              </thead>
+                              <tbody class="divide-y divide-gray-100">
+                                <template x-for="log in campaignDetail.logs" :key="log.id">
+                                  <tr class="hover:bg-white/60">
+                                    <td class="py-2 px-5 text-slate-700">
+                                      <span x-text="((log.customer.surname || '') + ' ' + (log.customer.name || '')).trim() || '—'"></span>
+                                    </td>
+                                    <td class="py-2 px-4 text-gray-500" x-text="log.customer.phone || '—'"></td>
+                                    <td class="py-2 px-4 text-gray-400" x-text="formatDate(log.sentAt)"></td>
+                                  </tr>
+                                </template>
+                              </tbody>
+                            </table>
+                          </div>
+                        </template>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </template>
       </div>
     </div>
   </div>
