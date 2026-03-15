@@ -6,6 +6,14 @@ export const prerender = false;
 
 const brevo = new BrevoClient({ apiKey: import.meta.env.BREVO_API_KEY });
 
+/** Normalize a phone number to E.164 international format (default country: +39 Italy) */
+function normalizePhone(raw: string): string {
+  const digits = raw.replace(/[^\d+]/g, "");
+  if (digits.startsWith("+")) return digits;
+  if (digits.startsWith("00")) return "+" + digits.slice(2);
+  return "+39" + digits;
+}
+
 /** POST /admin/api/communications/sms — send an SMS via Brevo */
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -18,7 +26,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     await brevo.transactionalSms.sendTransacSms({
       sender: content.contacts.smsSender,
-      recipient: phone,
+      recipient: normalizePhone(phone),
       content: text,
       type: "transactional",
     } as any);
