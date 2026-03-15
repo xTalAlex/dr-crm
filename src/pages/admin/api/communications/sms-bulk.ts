@@ -1,7 +1,11 @@
 import type { APIRoute } from "astro";
 import { getDb } from "@/lib/db";
+import { BrevoClient } from "@getbrevo/brevo";
+import content from "@/data/content.json";
 
 export const prerender = false;
+
+const brevo = new BrevoClient({ apiKey: import.meta.env.BREVO_API_KEY });
 
 /** POST /admin/api/communications/sms-bulk — send SMS to multiple customers */
 export const POST: APIRoute = async ({ request }) => {
@@ -33,17 +37,26 @@ export const POST: APIRoute = async ({ request }) => {
       return Response.json({ error: "Il messaggio è obbligatorio" }, { status: 400 });
     }
 
-    // TODO: integrate with Brevo transactional SMS API
+    // Send SMS via Brevo
     let sent = 0;
     const logsData: { campaignId: string; customerId: string }[] = [];
 
     for (const r of recipients) {
       if (!r.phone?.trim()) continue;
-      console.log(`[SMS-BULK] To: ${r.phone} (${r.name}) — ${messageText.slice(0, 80)}...`);
-      if (campaignId) {
-        logsData.push({ campaignId, customerId: r.id });
+      try {
+        await brevo.transactionalSms.sendTransacSms({
+          sender: content.contacts.smsSender,
+          recipient: r.phone,
+          content: messageText,
+          type: "transactional",
+        } as any);
+        if (campaignId) {
+          logsData.push({ campaignId, customerId: r.id });
+        }
+        sent++;
+      } catch (err) {
+        console.error(`[SMS-BULK] Failed for ${r.phone}:`, err);
       }
-      sent++;
     }
 
     // Persist communication logs (skipDuplicates avoids re-sending to same customer)

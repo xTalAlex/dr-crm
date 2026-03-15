@@ -28,6 +28,7 @@
       "note": "Appuntamenti e urgenze"
     },
     "email": "info@dottortalamona.it",
+    "smsSender": "DrTalamona",
     "address": {
       "street": "Piazza Statuto 9",
       "city": "Varese"
