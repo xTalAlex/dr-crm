@@ -408,6 +408,13 @@ export const prerender = false;
                   <span x-show="!smsSending">Invia SMS</span>
                   <span x-show="smsSending" x-cloak>Invio in corso...</span>
                 </button>
+                <button
+                  x-on:click="markAsSent()"
+                  :disabled="selectedCount === 0"
+                  class="w-full mt-2 inline-flex items-center justify-center gap-2 px-5 py-2 bg-white border border-gray-200 hover:border-petrol-300 text-gray-500 hover:text-petrol-700 rounded-lg text-xs font-medium transition-colors disabled:opacity-40"
+                >
+                  Segna come già inviati
+                </button>
               </div>
             </template>
           </div>

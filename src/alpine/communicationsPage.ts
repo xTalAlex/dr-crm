@@ -217,6 +217,30 @@ export default (Alpine: Alpine) => {
       return ((c.surname || "") + " " + (c.name || "")).trim() || "\u2014";
     },
 
+    // --- Mark as sent ---
+
+    async markAsSent() {
+      if (!this.selectedCampaignId || this.selectedIds.length === 0) return;
+      this.smsError = "";
+      this.smsResult = null;
+
+      const res = await fetch(`/admin/api/communications/campaigns/${this.selectedCampaignId}/mark-sent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customerIds: this.selectedIds }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        this.smsResult = { sent: data.marked, total: this.selectedIds.length };
+        this.selectedIds = [];
+        await Promise.all([this.loadSentIds(), this.fetchCampaigns()]);
+      } else {
+        const err = await res.json();
+        this.smsError = err.error || "Errore";
+      }
+    },
+
     // --- Send ---
 
     async sendBulkSms() {
