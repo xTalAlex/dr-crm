@@ -11,7 +11,7 @@ const { doctor } = content;
 <BaseLayout title="Documenti Condivisi" noindex>
   <div
     class="min-h-screen flex items-center justify-center p-4"
-    x-data="magicFiles()"
+    x-data={`magicFiles('${token}')`}
   >
     <div class="w-full max-w-lg">
       <div class="text-center mb-8">
@@ -108,32 +108,12 @@ const { doctor } = content;
     </div>
   </div>
 
-  <script define:vars={{ token }}>
-    document.addEventListener("alpine:init", () => {
-      Alpine.data("magicFiles", () => ({
-        loading: false,
-        error: "",
-        data: null,
-        pin: "",
+  <script>
+    import Alpine from "alpinejs";
+    import magicFilesPage from "@/alpine/magicFilesPage";
 
-        async verify() {
-          this.error = "";
-          this.loading = true;
-          const res = await fetch(`/api/files/${token}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ pin: this.pin }),
-          });
-          if (!res.ok) {
-            const body = await res.json().catch(() => ({}));
-            this.error = body.error || "Link non valido o scaduto";
-            this.loading = false;
-            return;
-          }
-          this.data = await res.json();
-          this.loading = false;
-        },
-      }));
+    document.addEventListener("alpine:init", () => {
+      magicFilesPage(Alpine);
     });
   </script>
 </BaseLayout>

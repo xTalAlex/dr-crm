@@ -8,7 +8,7 @@ const { id } = Astro.params;
 ---
 
 <AdminLayout title="Documenti Cliente">
-  <div x-data="customerFilesPage()" x-init="init()">
+  <div x-data={`customerFilesPage('${id}')`} x-init="init()">
     <!-- Header -->
     <div class="flex items-center gap-3 mb-8">
       <a
@@ -435,9 +435,6 @@ const { id } = Astro.params;
     </div>
   </div>
 
-  <script define:vars={{ customerId: id }}>
-    window.__customerId = customerId;
-  </script>
   <script>
     import Alpine from "alpinejs";
     import customerFilesPage from "@/alpine/customerFilesPage";

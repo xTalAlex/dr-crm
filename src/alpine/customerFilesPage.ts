@@ -1,14 +1,8 @@
 import type Alpine from "alpinejs";
 
-declare global {
-  interface Window {
-    __customerId: string;
-  }
-}
-
 export default (Alpine: Alpine) => {
-  Alpine.data("customerFilesPage", () => ({
-    customerId: window.__customerId,
+  Alpine.data("customerFilesPage", (customerId: string) => ({
+    customerId,
     customerName: "",
     customerPhone: "",
     groups: [] as any[],
