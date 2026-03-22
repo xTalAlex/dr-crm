@@ -1,0 +1,224 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Navbar from "@/components/Navbar.astro";
+import Footer from "@/components/Footer.astro";
+import content from "@/data/content.json";
+import volunteerImg from "@/assets/images/volunteer-doctor-africa.jpg";
+import deskImg from "@/assets/images/desk.jpg";
+
+export const prerender = false;
+
+const { doctor, contacts } = content;
+---
+
+<BaseLayout
+  title={`${doctor.title} ${doctor.firstName} ${doctor.lastName} — Dentista a Varese`}
+  description={`${doctor.title} ${doctor.firstName} ${doctor.lastName}, dentista a Varese dal 1984. Medico Chirurgo e Odontoiatra. Laureato all'Università di Pavia, missione umanitaria in Africa.`}
+  noindex={false}
+>
+  <Navbar />
+
+  <main class="pb-16">
+    <!-- Hero with desk photo -->
+    <section
+      class="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
+      <div class="absolute inset-0">
+        <Image
+          src={deskImg}
+          alt={`Dentista a Varese — ${doctor.title} ${doctor.lastName}, sulla scrivania la foto della missione in Africa`}
+          class="w-full h-full object-cover"
+          widths={[800, 1400]}
+          sizes="100vw"
+        />
+        <div
+          class="absolute inset-0 bg-linear-to-b from-slate-900/70 via-slate-900/50 to-slate-900/80"
+        >
+        </div>
+      </div>
+
+      <div class="relative max-w-4xl mx-auto px-6 text-center py-16">
+        <span
+          class="text-petrol-300/80 text-xs tracking-[0.3em] uppercase font-medium"
+        >
+          Il Dottore
+        </span>
+        <h1
+          class="mt-4 font-serif text-4xl md:text-6xl text-white leading-tight"
+        >
+          {doctor.title}
+          {doctor.firstName}
+          <span class="text-petrol-300">{doctor.lastName}</span>
+        </h1>
+        <p class="mt-6 text-petrol-100/80 text-lg">
+          Medico Chirurgo, Odontoiatra — Dentista a Varese dal 1984
+        </p>
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="py-20">
+      <div class="max-w-4xl mx-auto px-6">
+        <!-- Vertical line -->
+        <div class="relative">
+          <div
+            class="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-px bg-petrol-200/60"
+          >
+          </div>
+
+          <!-- 1983 — Laurea -->
+          <div
+            class="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 pb-16"
+          >
+            <div class="md:text-right md:pr-12 pl-12 md:pl-0">
+              <span class="font-serif text-petrol-500 text-sm">1983</span>
+              <h2 class="mt-1 font-serif text-2xl text-slate-800">
+                Laurea e Abilitazione
+              </h2>
+              <p class="mt-3 text-gray-600 leading-relaxed">
+                Laurea in Medicina e Chirurgia presso l'Università degli Studi
+                di Pavia. Abilitazione alla professione di Medico Chirurgo —
+                Ordine dei Medici e degli Odontoiatri della provincia di Varese.
+              </p>
+            </div>
+            <div class="hidden md:block"></div>
+            <!-- Dot -->
+            <div
+              class="absolute left-4 md:left-1/2 top-1 w-2.5 h-2.5 -translate-x-1/2 rounded-full bg-petrol-500 ring-4 ring-white"
+            >
+            </div>
+          </div>
+
+          <!-- 1983 — RSA -->
+          <div
+            class="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 pb-16"
+          >
+            <div class="hidden md:block"></div>
+            <div class="pl-12 md:pl-12">
+              <span class="font-serif text-petrol-500 text-sm"
+                >Primi anni '80</span
+              >
+              <h2 class="mt-1 font-serif text-2xl text-slate-800">
+                Direttore Sanitario
+              </h2>
+              <p class="mt-3 text-gray-600 leading-relaxed">
+                Direttore sanitario in RSA nei primi anni della carriera.
+              </p>
+            </div>
+            <div
+              class="absolute left-4 md:left-1/2 top-1 w-2.5 h-2.5 -translate-x-1/2 rounded-full bg-petrol-500 ring-4 ring-white"
+            >
+            </div>
+          </div>
+
+          <!-- 1983/84 — Africa -->
+          <div
+            class="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 pb-16"
+          >
+            <div class="md:text-right md:pr-12 pl-12 md:pl-0">
+              <span class="font-serif text-petrol-500 text-sm">1983–84</span>
+              <h2 class="mt-1 font-serif text-2xl text-slate-800">
+                Missione Umanitaria in Africa
+              </h2>
+              <p class="mt-3 text-gray-600 leading-relaxed">
+                Nel 1983/84 il Dott. Talamona ha partecipato a una missione
+                umanitaria in Africa come medico volontario, affrontando sfide
+                sanitarie complesse e trattando pazienti con risorse limitate.
+              </p>
+              <p class="mt-3 text-gray-600 leading-relaxed">
+                Quell'esperienza ha rafforzato la sua attenzione alla
+                prevenzione e alla cura della persona — un approccio che lo
+                accompagna tuttora nella pratica quotidiana a Varese.
+              </p>
+            </div>
+            <div class="pl-12 md:pl-12">
+              <div class="relative">
+                <Image
+                  src={volunteerImg}
+                  alt={`${doctor.title} ${doctor.lastName} durante la missione umanitaria in Africa, 1983-84`}
+                  class="rounded-2xl shadow-lg object-cover w-full aspect-4/3"
+                  widths={[400, 800]}
+                  sizes="(max-width: 768px) 100vw, 45vw"
+                />
+              </div>
+            </div>
+            <div
+              class="absolute left-4 md:left-1/2 top-1 w-2.5 h-2.5 -translate-x-1/2 rounded-full bg-petrol-500 ring-4 ring-white"
+            >
+            </div>
+          </div>
+
+          <!-- 1984 — Varese -->
+          <div class="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
+            <div class="hidden md:block"></div>
+            <div class="pl-12 md:pl-12">
+              <span class="font-serif text-petrol-500 text-sm">Dal 1984</span>
+              <h2 class="mt-1 font-serif text-2xl text-slate-800">
+                Dentista a Varese
+              </h2>
+              <p class="mt-3 text-gray-600 leading-relaxed">
+                Dal 1984 il Dott. Talamona esercita come dentista a Varese.
+                Attualmente riceve in
+                <strong class="text-slate-800">{contacts.address.street}</strong
+                > e collabora con colleghi in provincia.
+              </p>
+            </div>
+            <div
+              class="absolute left-4 md:left-1/2 top-1 w-2.5 h-2.5 -translate-x-1/2 rounded-full bg-petrol-600 ring-4 ring-petrol-100"
+            >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Servizi -->
+    <section class="py-16 bg-petrol-50/40">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <span
+          class="text-petrol-600/60 text-xs tracking-[0.3em] uppercase font-medium"
+        >
+          Servizi
+        </span>
+        <h2 class="mt-4 font-serif text-3xl text-slate-800">Cosa Offriamo</h2>
+        <div
+          class="mt-4 h-px w-24 mx-auto bg-linear-to-r from-transparent via-petrol-500/30 to-transparent"
+        >
+        </div>
+
+        <div class="mt-10 flex flex-wrap justify-center gap-3 max-w-md mx-auto">
+          {
+            [
+              "Conservativa",
+              "Protesi",
+              "Chirurgia",
+              "Implantologia",
+              "Ortodonzia",
+              "Sbiancamento",
+              "Riparazione protesi urgenti",
+            ].map((service) => (
+              <span class="bg-white border border-petrol-200/60 rounded-full px-5 py-2 text-sm text-slate-700 shadow-sm">
+                {service}
+              </span>
+            ))
+          }
+        </div>
+
+        <div class="mt-12">
+          <a
+            href={`tel:${contacts.phone.href}`}
+            class="inline-flex items-center gap-3 bg-petrol-600 hover:bg-petrol-700 text-white px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            <span class="text-sm font-medium tracking-wide"
+              >Prenota Appuntamento</span
+            >
+          </a>
+          <p class="mt-4 text-gray-400 text-sm">Prima visita gratuita</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -35,15 +35,12 @@ const { services } = content;
         </div>
       </div>
 
-      <div class="space-y-3">
+      <div class="space-y-2 md:mt-24">
         {
           services.map((service, i) => (
-            <div class="group flex items-center gap-5 py-4 px-5 rounded-xl hover:bg-white transition-colors cursor-default">
-              <span class="text-petrol-600/40 font-serif text-sm tabular-nums">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span class="h-px flex-1 bg-gray-200 group-hover:bg-petrol-300 transition-colors" />
-              <h3 class="font-medium text-slate-800 group-hover:text-petrol-700 transition-colors">
+            <div class="group flex items-center gap-5 py-4 px-5 rounded-xl cursor-default">
+              <span class="h-px flex-1 bg-petrol-100" />
+              <h3 class="text-lg font-medium text-slate-800 group-hover:text-petrol-500 transition-colors">
                 {service}
               </h3>
             </div>
