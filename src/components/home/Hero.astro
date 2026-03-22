@@ -2,7 +2,7 @@
 import { Icon } from "astro-icon/components";
 import content from "@/data/content.json";
 
-const { doctor, studio, contacts } = content;
+const { doctor, practice, contacts } = content;
 ---
 
 <header
@@ -28,7 +28,7 @@ const { doctor, studio, contacts } = content;
     <div class="inline-block mb-8">
       <span
         class="text-petrol-600/60 text-xs tracking-[0.3em] uppercase font-medium"
-        >{studio.name} · {studio.since}</span
+        >{practice.name} · {practice.since}</span
       >
       <div
         class="mt-1 h-px w-16 mx-auto bg-linear-to-r from-transparent via-petrol-500/40 to-transparent"
@@ -61,7 +61,7 @@ const { doctor, studio, contacts } = content;
       <span
         class="inline-block bg-petrol-100 text-petrol-800 font-medium text-sm px-4 py-1.5 rounded-full"
       >
-        ✦ {studio.badge} ✦
+        ✦ {practice.badge} ✦
       </span>
     </div>
 
@@ -70,7 +70,7 @@ const { doctor, studio, contacts } = content;
         href={`tel:${contacts.phone.href}`}
         class="group inline-flex items-center gap-3 bg-petrol-600 hover:bg-petrol-700 text-white px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
       >
-        <span class="text-sm font-medium tracking-wide">{studio.cta}</span>
+        <span class="text-sm font-medium tracking-wide">{practice.cta}</span>
         <Icon
           name="material-symbols-light:arrow-right-alt"
           class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"

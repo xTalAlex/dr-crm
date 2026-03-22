@@ -5,8 +5,8 @@
     "title": "Dott.",
     "roles": ["Medico Chirurgo", "Odontoiatra"]
   },
-  "studio": {
-    "name": "Studio Dentistico",
+  "practice": {
+    "name": "Dentista a Varese",
     "since": "Dal 1984",
     "badge": "Prima visita gratuita",
     "cta": "Prenota Appuntamento",
@@ -35,7 +35,7 @@
     }
   },
   "seo": {
-    "title": "Dott. Adriano Talamona — Studio Dentistico",
-    "description": "Studio Dentistico Dott. Adriano Talamona — Medico Chirurgo Odontoiatra a Varese. Dal 1984. Prima visita gratuita."
+    "title": "Dott. Adriano Talamona — Dentista a Varese",
+    "description": "Dott. Adriano Talamona, dentista a Varese dal 1984. Medico Chirurgo Odontoiatra. Prima visita gratuita."
   }
 }
