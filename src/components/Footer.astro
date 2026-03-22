@@ -5,25 +5,24 @@ import CookieConsent from "@/components/CookieConsent.astro";
 const { doctor, contacts } = content;
 ---
 
-<footer class="border-t border-gray-200 py-10">
-  <div class="max-w-6xl mx-auto px-6 text-center">
-    <p class="font-serif text-petrol-700 text-sm">
+<footer class="border-t border-petrol-100 py-10">
+  <div class="text-xs max-w-6xl mx-auto px-6 text-center">
+    <p class="font-serif text-petrol-500 text-sm">
       {doctor.title}
       {doctor.firstName}
       {doctor.lastName}
     </p>
-    <p class="text-gray-400 text-xs mt-2">
+    <p class="mt-2">
       {doctor.roles.join(" — ")} — {contacts.address.city}
     </p>
-    <p class="text-gray-300 text-xs mt-4">
-      &copy; {new Date().getFullYear()}
+    <p class="my-4">
+      &copy; {new Date().getFullYear()} — Sviluppato da <a
+        href="https://talale.it"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-petrol-500 transition-colors">talale.it</a
+      >
     </p>
     <CookieConsent />
   </div>
 </footer>
-
-<script
-  is:inline
-  type="text/javascript"
-  src="https://embeds.iubenda.com/widgets/48a68501-5d13-4e95-88e3-6888160d72d4.js"
-/>
