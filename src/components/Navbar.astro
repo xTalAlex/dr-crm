@@ -10,13 +10,33 @@ const user = Astro.locals.user;
   class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200"
 >
   <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="/" class="flex items-center gap-2">
-      <img src={logo.src} alt="Logo" class="w-7 h-7" />
-      <span class="font-serif text-petrol-700 text-lg tracking-wide"
-        >{doctor.title} {doctor.lastName}</span
-      >
-    </a>
-    <div class="flex items-center gap-6 text-sm">
+    <div class="flex items-center gap-2">
+      <a href="/" class="flex items-center gap-2">
+        <img src={logo.src} alt="Logo" class="w-7 h-7" />
+        <span
+          class="hidden sm:inline font-serif text-petrol-700 text-lg tracking-wide"
+          >{doctor.title} {doctor.lastName}</span
+        >
+      </a>
+      {
+        user?.role === "admin" ? (
+          <a
+            href="/admin"
+            class="sm:hidden text-xs border border-petrol-600 text-petrol-600 px-2 py-1 rounded-full hover:bg-petrol-600 hover:text-white transition-colors"
+          >
+            Admin
+          </a>
+        ) : (
+          <a
+            href="/auth/login"
+            class="sm:hidden text-xs text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            Login
+          </a>
+        )
+      }
+    </div>
+    <div class="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm">
       <a
         href="/about"
         class="text-gray-500 hover:text-petrol-700 transition-colors"
@@ -24,25 +44,26 @@ const user = Astro.locals.user;
       >
       <a
         href="/#servizi"
-        class="text-gray-500 hover:text-petrol-700 transition-colors">Servizi</a
+        class="hidden sm:inline text-gray-500 hover:text-petrol-700 transition-colors"
+        >Servizi</a
       >
       <a
         href="/#contatti"
-        class="text-gray-500 hover:text-petrol-700 transition-colors"
+        class="bg-petrol-600 text-white px-3 py-1.5 rounded-full hover:bg-petrol-700 transition-colors"
         >Contatti</a
       >
       {
         user?.role === "admin" ? (
           <a
             href="/admin"
-            class="text-xs bg-petrol-600 text-white px-3 py-1.5 rounded-full hover:bg-petrol-700 transition-colors"
+            class="hidden sm:inline-block text-xs border border-petrol-600 text-petrol-600 px-3 py-1.5 rounded-full hover:bg-petrol-600 hover:text-white transition-colors"
           >
             Admin
           </a>
         ) : (
           <a
             href="/auth/login"
-            class="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            class="hidden sm:inline-block text-xs text-gray-400 hover:text-gray-600 transition-colors"
           >
             Login
           </a>
