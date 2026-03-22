@@ -12,13 +12,23 @@ export const prerender = false;
       class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"
     >
       <h1 class="text-2xl font-serif text-slate-800">Clienti</h1>
-      <button
-        x-on:click="openCreate()"
-        class="inline-flex items-center gap-2 bg-petrol-50 hover:bg-petrol-100 border border-petrol-200 hover:border-petrol-300 text-petrol-700 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300"
-      >
-        <Icon name="material-symbols-light:add" class="w-4 h-4" />
-        Nuovo Cliente
-      </button>
+      <div class="flex items-center gap-2">
+        <a
+          href="/admin/api/customers/export"
+          download
+          class="inline-flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 text-gray-600 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300"
+        >
+          <Icon name="material-symbols-light:download" class="w-4 h-4" />
+          Esporta CSV
+        </a>
+        <button
+          x-on:click="openCreate()"
+          class="inline-flex items-center gap-2 bg-petrol-50 hover:bg-petrol-100 border border-petrol-200 hover:border-petrol-300 text-petrol-700 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300"
+        >
+          <Icon name="material-symbols-light:add" class="w-4 h-4" />
+          Nuovo Cliente
+        </button>
+      </div>
     </div>
 
     <!-- Search -->
