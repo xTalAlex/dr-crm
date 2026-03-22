@@ -15,15 +15,28 @@ export const GET: APIRoute = async ({ url }) => {
         const conditions: any[] = [];
 
         if (search) {
-            conditions.push({
-                OR: [
-                    { name: { contains: search, mode: "insensitive" as const } },
-                    { surname: { contains: search, mode: "insensitive" as const } },
-                    { phone: { contains: search } },
-                    { email: { contains: search, mode: "insensitive" as const } },
-                    { fiscalCode: { contains: search, mode: "insensitive" as const } },
-                ],
-            });
+            const terms = search.trim().split(/\s+/);
+            if (terms.length > 1) {
+                // Multi-word search: each term must match name or surname
+                conditions.push({
+                    AND: terms.map((term) => ({
+                        OR: [
+                            { name: { contains: term, mode: "insensitive" as const } },
+                            { surname: { contains: term, mode: "insensitive" as const } },
+                        ],
+                    })),
+                });
+            } else {
+                conditions.push({
+                    OR: [
+                        { name: { contains: search, mode: "insensitive" as const } },
+                        { surname: { contains: search, mode: "insensitive" as const } },
+                        { phone: { contains: search } },
+                        { email: { contains: search, mode: "insensitive" as const } },
+                        { fiscalCode: { contains: search, mode: "insensitive" as const } },
+                    ],
+                });
+            }
         }
 
         if (letter) {
