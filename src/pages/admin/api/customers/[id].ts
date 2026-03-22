@@ -29,6 +29,11 @@ export const PUT: APIRoute = async ({ params, request }) => {
             return Response.json({ error: "Il telefono è obbligatorio" }, { status: 400 });
         }
 
+        const duplicate = await prisma.customer.findFirst({ where: { phone: phone.trim(), id: { not: params.id } } });
+        if (duplicate) {
+            return Response.json({ error: "Esiste già un cliente con questo numero di telefono" }, { status: 409 });
+        }
+
         const existing = await prisma.customer.findUnique({ where: { id: params.id } });
         if (!existing) {
             return Response.json({ error: "Cliente non trovato" }, { status: 404 });

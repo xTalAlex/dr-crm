@@ -80,6 +80,11 @@ export const POST: APIRoute = async ({ request }) => {
             return Response.json({ error: "Il telefono è obbligatorio" }, { status: 400 });
         }
 
+        const duplicate = await prisma.customer.findFirst({ where: { phone: phone.trim() } });
+        if (duplicate) {
+            return Response.json({ error: "Esiste già un cliente con questo numero di telefono" }, { status: 409 });
+        }
+
         const customer = await prisma.customer.create({
             data: {
                 name: name?.trim() || "",
