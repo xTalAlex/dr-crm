@@ -10,14 +10,14 @@ const user = Astro.locals.user;
   class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200"
 >
   <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-    <div class="flex items-center gap-2">
-      <a href="/" class="flex items-center gap-2">
-        <img src={logo.src} alt="Logo" class="w-7 h-7" />
-        <span
-          class="hidden sm:inline font-serif text-petrol-700 text-lg tracking-wide"
-          >{doctor.title} {doctor.lastName}</span
-        >
-      </a>
+    <a href="/" class="inline-flex items-center gap-2">
+      <img src={logo.src} alt="Logo" class="w-7 h-7" />
+      <span
+        class="pt-2 hidden sm:inline font-serif text-petrol-700 text-lg tracking-wide"
+        >{doctor.title} {doctor.lastName}</span
+      >
+    </a>
+    <div class="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm">
       {
         user?.role === "admin" ? (
           <a
@@ -35,8 +35,6 @@ const user = Astro.locals.user;
           </a>
         )
       }
-    </div>
-    <div class="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm">
       <a
         href="/about"
         class="text-gray-500 hover:text-petrol-700 transition-colors"
