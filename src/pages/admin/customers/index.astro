@@ -36,18 +36,21 @@ export const prerender = false;
     <div class="flex gap-4">
       <!-- Alphabet sidebar -->
       <div
-        class="hidden sm:flex flex-col gap-0.5 shrink-0 sticky top-20 self-start"
+        class="hidden sm:grid grid-cols-2 gap-x-1 gap-y-0.5 shrink-0 sticky top-20 self-start"
       >
         <button
           x-on:click="activeLetter = ''; page = 1; fetchCustomers()"
           :class="activeLetter === '' ? 'bg-petrol-50 text-petrol-700 border-petrol-200' : 'text-gray-400 hover:text-petrol-700 border-transparent hover:border-gray-200'"
-          class="w-auto px-2 h-7 text-xs font-medium rounded border transition-all duration-200 flex items-center justify-center gap-1"
+          class="col-span-2 w-auto px-2 h-7 text-xs font-medium rounded border transition-all duration-200 flex items-center justify-center gap-1"
           >Tutti</button
         >
-        <template x-for="l in Object.keys(letterCounts).sort()" :key="l">
+        <template x-for="(l, i) in Object.keys(letterCounts).sort()" :key="l">
           <button
             x-on:click="activeLetter = l; page = 1; fetchCustomers()"
-            :class="activeLetter === l ? 'bg-petrol-50 text-petrol-700 border-petrol-200' : 'text-gray-400 hover:text-petrol-700 border-transparent hover:border-gray-200'"
+            :class="[
+              activeLetter === l ? 'bg-petrol-50 text-petrol-700 border-petrol-200' : 'text-gray-400 hover:text-petrol-700 border-transparent hover:border-gray-200',
+              i % 2 === 1 ? 'mt-3' : ''
+            ]"
             class="w-auto px-2 h-7 text-xs font-medium rounded border transition-all duration-200 flex items-center justify-center gap-1"
           >
             <span x-text="l"></span>
@@ -118,10 +121,6 @@ export const prerender = false;
                     >Email</th
                   >
                   <th
-                    class="px-4 py-3 text-xs text-gray-400 uppercase tracking-wider font-medium hidden lg:table-cell"
-                    >Codice Fiscale</th
-                  >
-                  <th
                     class="px-4 py-3 text-xs text-gray-400 uppercase tracking-wider font-medium text-right"
                     >Azioni</th
                   >
@@ -130,14 +129,14 @@ export const prerender = false;
               <tbody>
                 <template x-if="loading && customers.length === 0">
                   <tr
-                    ><td colspan="6" class="px-4 py-8 text-center text-gray-400"
+                    ><td colspan="5" class="px-4 py-8 text-center text-gray-400"
                       >Caricamento...</td
                     ></tr
                   >
                 </template>
                 <template x-if="!loading && customers.length === 0">
                   <tr
-                    ><td colspan="6" class="px-4 py-8 text-center text-gray-400"
+                    ><td colspan="5" class="px-4 py-8 text-center text-gray-400"
                       >Nessun cliente trovato</td
                     ></tr
                   >
@@ -155,9 +154,6 @@ export const prerender = false;
                     <td
                       class="px-4 py-3 text-gray-500 hidden md:table-cell"
                       x-text="c.email || '-'"></td>
-                    <td
-                      class="px-4 py-3 text-gray-500 hidden lg:table-cell"
-                      x-text="c.fiscalCode || '-'"></td>
                     <td class="px-4 py-3 text-right" x-on:click.stop>
                       <div class="inline-flex gap-1">
                         <a

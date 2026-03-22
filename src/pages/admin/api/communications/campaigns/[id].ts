@@ -13,7 +13,7 @@ export const GET: APIRoute = async ({ params, url }) => {
     }
 
     const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
-    const limit = Math.min(200, Math.max(1, Number(url.searchParams.get("limit")) || 50));
+    const limit = Math.min(5000, Math.max(1, Number(url.searchParams.get("limit")) || 50));
     const skip = (page - 1) * limit;
 
     const campaign = await prisma.campaign.findUnique({

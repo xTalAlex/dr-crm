@@ -11,8 +11,8 @@ export default (Alpine: Alpine) => {
     selectedIds: [] as string[],
     searchCustomers: "",
     loadingCustomers: true,
-    custPage: 1,
-    custPerPage: 20,
+    activeLetter: "",
+    letterCounts: {} as Record<string, number>,
 
     // Campaigns
     campaigns: [] as any[],
@@ -33,15 +33,9 @@ export default (Alpine: Alpine) => {
     smsError: "",
 
     // History
-    historyCampaigns: [] as any[],
+    historyEntries: [] as any[],
     loadingHistory: false,
-    expandedCampaignId: "" as string,
-    campaignDetail: null as any,
-    loadingDetail: false,
-
-    get custTotalPages() {
-      return Math.max(1, Math.ceil(this.totalCustomers / this.custPerPage));
-    },
+    expandedEntryId: "" as string,
 
     get pageAllSelected() {
       return this.customers.length > 0 &&
@@ -194,8 +188,8 @@ export default (Alpine: Alpine) => {
     async fetchCustomers() {
       this.loadingCustomers = true;
       const params = new URLSearchParams();
-      params.set("page", String(this.custPage));
-      params.set("limit", String(this.custPerPage));
+      params.set("limit", "5000");
+      if (this.activeLetter) params.set("letter", this.activeLetter);
       if (this.searchCustomers.trim()) {
         params.set("q", this.searchCustomers.trim());
       }
@@ -204,23 +198,24 @@ export default (Alpine: Alpine) => {
         const data = await res.json();
         this.customers = data.customers;
         this.totalCustomers = data.total;
+        this.letterCounts = data.letterCounts ?? {};
       }
       this.loadingCustomers = false;
     },
 
     async searchChanged() {
-      this.custPage = 1;
+      this.activeLetter = "";
       await this.fetchCustomers();
     },
 
     clearSearch() {
       this.searchCustomers = "";
-      this.custPage = 1;
       this.fetchCustomers();
     },
 
-    async goPage(p: number) {
-      this.custPage = p;
+    async goLetter(l: string) {
+      this.activeLetter = l;
+      this.searchCustomers = "";
       await this.fetchCustomers();
     },
 
@@ -240,6 +235,7 @@ export default (Alpine: Alpine) => {
     async selectAll() {
       const params = new URLSearchParams();
       params.set("limit", "5000");
+      if (this.activeLetter) params.set("letter", this.activeLetter);
       if (this.searchCustomers.trim()) {
         params.set("q", this.searchCustomers.trim());
       }
@@ -355,27 +351,16 @@ export default (Alpine: Alpine) => {
 
     async fetchHistory() {
       this.loadingHistory = true;
-      const res = await fetch("/admin/api/communications/campaigns");
+      const res = await fetch("/admin/api/communications/history");
       if (res.ok) {
         const data = await res.json();
-        this.historyCampaigns = data.campaigns;
+        this.historyEntries = data.entries;
       }
       this.loadingHistory = false;
     },
 
-    async toggleCampaignDetail(id: string) {
-      if (this.expandedCampaignId === id) {
-        this.expandedCampaignId = "";
-        this.campaignDetail = null;
-        return;
-      }
-      this.expandedCampaignId = id;
-      this.loadingDetail = true;
-      const res = await fetch(`/admin/api/communications/campaigns/${id}`);
-      if (res.ok) {
-        this.campaignDetail = await res.json();
-      }
-      this.loadingDetail = false;
+    toggleEntryDetail(id: string) {
+      this.expandedEntryId = this.expandedEntryId === id ? "" : id;
     },
 
     formatDate(d: string) {
