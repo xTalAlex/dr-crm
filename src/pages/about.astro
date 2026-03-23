@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import Button from "@/components/Button.astro";
 import Navbar from "@/components/Navbar.astro";
 import Footer from "@/components/Footer.astro";
 import content from "@/data/content.json";
@@ -42,7 +43,7 @@ const { doctor, contacts } = content;
         <span
           class="text-petrol-300/80 text-xs tracking-[0.3em] uppercase font-medium"
         >
-          Il Dottore
+          About
         </span>
         <h1
           class="mt-4 font-serif text-4xl md:text-6xl text-neutral-50 leading-tight"
@@ -122,9 +123,9 @@ const { doctor, contacts } = content;
                 Missione Umanitaria in Africa
               </h2>
               <p class="mt-3 text-neutral-500 leading-relaxed">
-                Nel 1983/84 il Dott. Talamona ha partecipato a una missione
-                umanitaria in Africa come medico volontario, affrontando sfide
-                sanitarie complesse e trattando pazienti con risorse limitate.
+                Nel 1983/84 ha partecipato a una missione umanitaria in Africa
+                come medico volontario, affrontando sfide sanitarie complesse e
+                trattando pazienti con risorse limitate.
               </p>
               <p class="mt-3 text-neutral-500 leading-relaxed">
                 Quell'esperienza ha rafforzato la sua attenzione alla
@@ -158,8 +159,7 @@ const { doctor, contacts } = content;
                 Dentista a Varese
               </h2>
               <p class="mt-3 text-neutral-500 leading-relaxed">
-                Dal 1984 il Dott. Talamona esercita come dentista a Varese.
-                Attualmente riceve in
+                Dal 1984 esercita come dentista a Varese. Attualmente riceve in
                 <strong class="text-neutral-900"
                   >{contacts.address.street}</strong
                 > e collabora con colleghi in provincia.
@@ -182,7 +182,9 @@ const { doctor, contacts } = content;
         >
           Servizi
         </span>
-        <h2 class="mt-4 font-serif text-3xl text-neutral-900">Cosa Offriamo</h2>
+        <h2 class="mt-4 font-serif text-3xl text-neutral-900">
+          Servizi Offerti
+        </h2>
         <div
           class="mt-4 h-px w-24 mx-auto bg-linear-to-r from-transparent via-petrol-500/30 to-transparent"
         >
@@ -207,14 +209,15 @@ const { doctor, contacts } = content;
         </div>
 
         <div class="mt-12">
-          <a
+          <Button
+            as="a"
             href={`tel:${contacts.phone.href}`}
-            class="inline-flex items-center gap-3 bg-petrol-600 hover:bg-petrol-700 text-neutral-50 px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+            variant="primary"
+            pill
+            class="px-8 py-3.5 shadow-md hover:shadow-lg tracking-wide"
           >
-            <span class="text-sm font-medium tracking-wide"
-              >Prenota Appuntamento</span
-            >
-          </a>
+            Prenota Appuntamento
+          </Button>
           <p class="mt-4 text-neutral-500 text-sm">Prima visita gratuita</p>
         </div>
       </div>

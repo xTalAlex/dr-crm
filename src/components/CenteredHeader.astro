@@ -1,0 +1,17 @@
+---
+import Wordmark from "@/components/Wordmark.astro";
+
+interface Props {
+  subtitle?: string;
+  [key: string]: any;
+}
+
+const { subtitle, ...rest } = Astro.props;
+---
+
+<div class="text-center mb-10">
+  <a href="/">
+    <Wordmark class="text-2xl" />
+  </a>
+  <p class="text-neutral-500 text-sm mt-2" {...rest}>{subtitle}</p>
+</div>

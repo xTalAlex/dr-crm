@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import CenteredHeader from "@/components/CenteredHeader.astro";
 import PinForm from "@/components/shared-files/PinForm.astro";
 import FileList from "@/components/shared-files/FileList.astro";
-import Wordmark from "@/components/Wordmark.astro";
 
 export const prerender = false;
 
@@ -11,14 +11,11 @@ const { token } = Astro.params;
 
 <BaseLayout title="Documenti Condivisi" noindex>
   <div
-    class="min-h-screen flex justify-center pt-16 sm:pt-0 sm:items-center p-4"
+    class="min-h-screen flex justify-center pt-16 sm:pt-8 sm:pb-8 sm:items-center p-4"
     x-data={`magicFiles('${token}')`}
   >
     <div class="w-full max-w-lg">
-      <div class="text-center mb-8">
-        <Wordmark class="text-lg" />
-        <p class="text-neutral-500 text-sm mt-1">Documenti condivisi</p>
-      </div>
+      <CenteredHeader subtitle="Documenti condivisi" />
 
       <div
         class="bg-neutral-50 border border-neutral-200 rounded-xl p-6 shadow-sm"
