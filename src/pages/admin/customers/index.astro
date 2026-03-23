@@ -30,13 +30,13 @@ export const prerender = false;
     <CustomersTable />
     <CustomerModals />
   </div>
+
+  <script>
+    import Alpine from "alpinejs";
+    import customersPage from "@/alpine/customersPage";
+
+    document.addEventListener("alpine:init", () => {
+      customersPage(Alpine);
+    });
+  </script>
 </AdminLayout>
-
-<script>
-  import Alpine from "alpinejs";
-  import customersPage from "@/alpine/customersPage";
-
-  document.addEventListener("alpine:init", () => {
-    customersPage(Alpine);
-  });
-</script>
