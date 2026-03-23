@@ -31,6 +31,7 @@ export const GET = apiHandler(async ({ url }, { prisma }) => {
                     { name: { contains: search, mode: "insensitive" as const } },
                     { surname: { contains: search, mode: "insensitive" as const } },
                     { phone: { contains: search } },
+                    { phone2: { contains: search } },
                     { email: { contains: search, mode: "insensitive" as const } },
                     { fiscalCode: { contains: search, mode: "insensitive" as const } },
                     { notes: { contains: search, mode: "insensitive" as const } },
