@@ -1,0 +1,28 @@
+---
+interface Props {
+  muted?: boolean;
+  align?: "left" | "center" | "right";
+  class?: string;
+  [key: string]: any;
+}
+
+const {
+  muted = false,
+  align = "left",
+  class: className = "",
+  ...rest
+} = Astro.props;
+---
+
+<td
+  class:list={[
+    "px-4 py-3",
+    muted ? "text-neutral-500" : "text-neutral-900",
+    align === "right" && "text-right",
+    align === "center" && "text-center",
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+</td>

@@ -1,5 +1,6 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
 import { Icon } from "astro-icon/components";
 import { getDb } from "@/lib/db";
 
@@ -11,7 +12,7 @@ let customerCount = 0;
 try {
   customerCount = await getDb().customer.count();
 } catch {
-  // DB not available — show 0
+  console.error("DB Connection error: Unable to fetch customer count");
 }
 
 const links = [
@@ -27,47 +28,37 @@ const links = [
     href: "/admin/documents",
     icon: "material-symbols-light:description-outline",
   },
-  {
-    label: "Comunicazioni",
-    desc: "SMS massivo e campagne email",
-    href: "/admin/communications",
-    icon: "material-symbols-light:campaign-outline",
-  },
 ];
 ---
 
 <AdminLayout title="Dashboard">
-  <div class="mb-8">
-    <h1 class="text-xl font-serif text-slate-800">
-      Ciao, {user?.name?.split(" ")[0] ?? "Admin"}
-    </h1>
-    <p class="text-sm text-gray-400 mt-1">
-      Ecco un riepilogo della tua attività
-    </p>
-  </div>
+  <PageHeader
+    title={`Ciao, ${user?.name?.split(" ")[0] ?? "Admin"}`}
+    subtitle="Ecco un riepilogo della tua attività"
+  />
 
   <!-- Stats -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
     <div
-      class="bg-white border border-gray-200 rounded-xl p-5 flex items-center gap-4"
+      class="bg-neutral-50 border border-neutral-200 rounded-xl p-5 flex items-center gap-4"
     >
       <div
         class="w-10 h-10 rounded-lg bg-petrol-50 border border-petrol-200 flex items-center justify-center"
       >
         <Icon
           name="material-symbols-light:group-outline"
-          class="w-5 h-5 text-petrol-700"
+          class="w-5 h-5 text-petrol-500"
         />
       </div>
       <div>
-        <p class="text-2xl font-semibold text-slate-800">{customerCount}</p>
-        <p class="text-xs text-gray-400">Clienti registrati</p>
+        <p class="text-2xl font-semibold text-neutral-900">{customerCount}</p>
+        <p class="text-xs text-neutral-500">Clienti registrati</p>
       </div>
     </div>
   </div>
 
   <!-- Quick links -->
-  <h2 class="text-xs text-gray-400 uppercase tracking-wider mb-3">
+  <h2 class="text-xs text-neutral-900 uppercase tracking-wider mb-3">
     Azioni rapide
   </h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -75,16 +66,16 @@ const links = [
       links.map(({ label, desc, href, icon }) => (
         <a
           href={href}
-          class="group bg-white border border-gray-200 hover:border-petrol-300 rounded-xl p-5 flex items-start gap-4 transition-colors"
+          class="group bg-neutral-50 border border-neutral-200 hover:border-petrol-200 rounded-xl p-5 flex items-start gap-4 transition-colors"
         >
           <div class="w-10 h-10 rounded-lg bg-petrol-50 border border-petrol-200 flex items-center justify-center shrink-0">
-            <Icon name={icon} class="w-5 h-5 text-petrol-700" />
+            <Icon name={icon} class="w-5 h-5 text-petrol-500" />
           </div>
           <div>
-            <p class="text-sm font-medium text-slate-800 group-hover:text-petrol-700 transition-colors">
+            <p class="text-sm font-medium text-neutral-900 group-hover:text-petrol-500 transition-colors">
               {label}
             </p>
-            <p class="text-xs text-gray-400 mt-0.5">{desc}</p>
+            <p class="text-xs text-neutral-500 mt-0.5">{desc}</p>
           </div>
         </a>
       ))

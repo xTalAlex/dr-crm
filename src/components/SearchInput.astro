@@ -1,0 +1,19 @@
+---
+interface Props {
+  placeholder?: string;
+  class?: string;
+  [key: string]: any;
+}
+
+const { placeholder = "Cerca...", class: className, ...rest } = Astro.props;
+---
+
+<div class:list={["mb-6 flex items-center gap-3", className]}>
+  <input
+    type="search"
+    placeholder={placeholder}
+    class="w-full sm:max-w-md bg-neutral-50 border border-neutral-200 focus:border-petrol-500 rounded-lg px-4 py-2.5 text-neutral-900 text-sm outline-none transition-colors placeholder:text-neutral-500"
+    {...rest}
+  />
+  <slot />
+</div>

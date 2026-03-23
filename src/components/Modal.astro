@@ -1,0 +1,33 @@
+---
+interface Props {
+  show: string;
+  close: string;
+  size?: "sm" | "md" | "lg";
+  class?: string;
+}
+
+const { show, close, size = "md", class: extraClass } = Astro.props;
+
+const maxWidth = {
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+}[size];
+---
+
+<div
+  x-show={show}
+  x-cloak
+  class="fixed inset-0 z-50 flex items-center justify-center p-4"
+>
+  <div class="absolute inset-0 bg-neutral-900/50" x-on:click={close}></div>
+  <div
+    class:list={[
+      "relative bg-neutral-50 border border-neutral-900/10 rounded-xl w-full p-6 shadow-lg",
+      maxWidth,
+      extraClass,
+    ]}
+  >
+    <slot />
+  </div>
+</div>

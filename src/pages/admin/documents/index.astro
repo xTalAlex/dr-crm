@@ -1,5 +1,14 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
+import SearchInput from "@/components/SearchInput.astro";
+import DataTable from "@/components/DataTable.astro";
+import Th from "@/components/Th.astro";
+import Td from "@/components/Td.astro";
+import IconButton from "@/components/IconButton.astro";
+import Button from "@/components/Button.astro";
+import DocumentsModals from "@/components/documents/DocumentsModals.astro";
+import Pagination from "@/components/Pagination.astro";
 import { Icon } from "astro-icon/components";
 
 export const prerender = false;
@@ -7,154 +16,95 @@ export const prerender = false;
 
 <AdminLayout title="Documenti">
   <div x-data="documentsPage()" x-init="init()">
-    <!-- Header -->
-    <div
-      class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"
+    <PageHeader
+      title="Documenti"
+      subtitle="Tutti i file caricati per i clienti"
     >
-      <div>
-        <h1 class="text-2xl font-serif text-slate-800">Documenti</h1>
-        <p class="text-sm text-gray-400 mt-1">
-          Tutti i file caricati per i clienti
-        </p>
-      </div>
-      <p class="text-sm text-gray-400">
-        <span x-text="total"></span> gruppi totali
-      </p>
-    </div>
+      <Button variant="outline" x-on:click="openUpload()">
+        <Icon name="material-symbols-light:upload" class="w-4 h-4" />
+        Carica documenti
+      </Button>
+    </PageHeader>
 
-    <!-- Search -->
-    <div class="mb-6">
-      <input
-        type="text"
-        x-model="search"
-        x-on:input.debounce.300ms="page = 1; fetchData()"
-        placeholder="Cerca per etichetta, nome o cognome cliente..."
-        class="w-full sm:max-w-md bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-4 py-2.5 text-slate-800 text-sm outline-none transition-colors placeholder:text-gray-400"
-      />
-    </div>
+    <SearchInput
+      placeholder="Cerca per etichetta, nome o cognome cliente..."
+      x-model="search"
+      x-on:input.debounce.300ms="page = 1; fetchData()"
+    >
+      <span
+        x-show="search"
+        x-cloak
+        class="text-xs text-neutral-500 whitespace-nowrap"
+        x-text="total + ' risultati'"></span>
+    </SearchInput>
 
-    <!-- Loading -->
     <template x-if="loading">
-      <p class="text-center text-gray-400 py-8">Caricamento...</p>
+      <p class="text-center text-neutral-500 py-8">Caricamento...</p>
     </template>
 
-    <!-- Empty state -->
     <template x-if="!loading && groups.length === 0">
-      <p class="text-center text-gray-400 py-8">Nessun documento trovato</p>
+      <p class="text-center text-neutral-500 py-8">Nessun documento trovato</p>
     </template>
 
-    <!-- Groups list -->
     <template x-if="!loading && groups.length > 0">
       <div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr
-                class="border-b border-gray-200 text-xs text-gray-400 uppercase tracking-wider"
-              >
-                <th class="text-left py-3 px-4 font-medium">Etichetta</th>
-                <th class="text-left py-3 px-4 font-medium">Cliente</th>
-                <th class="text-center py-3 px-4 font-medium">File</th>
-                <th class="text-center py-3 px-4 font-medium">Dimensione</th>
-                <th class="text-center py-3 px-4 font-medium">Magic Link</th>
-                <th class="text-left py-3 px-4 font-medium">Data</th>
-                <th class="text-right py-3 px-4 font-medium">Azioni</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-              <template x-for="g in groups" :key="g.id">
-                <tr class="hover:bg-gray-50/60 transition-colors">
-                  <!-- Label -->
-                  <td class="py-3 px-4">
-                    <span
-                      class="text-slate-800 font-medium"
-                      x-text="g.label || 'Senza etichetta'"></span>
-                  </td>
-                  <!-- Customer -->
-                  <td class="py-3 px-4">
-                    <a
+        <DataTable>
+          <thead>
+            <tr class="border-b border-neutral-200 text-left">
+              <Th>Etichetta</Th>
+              <Th>Cliente</Th>
+              <Th align="center">File</Th>
+              <Th align="center">Dimensione</Th>
+              <Th>Data</Th>
+              <Th align="right">Azioni</Th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-100">
+            <template x-for="g in groups" :key="g.id">
+              <tr class="hover:bg-neutral-50/60 transition-colors">
+                <Td class="font-medium" x-text="g.label || 'Senza nome'" />
+                <Td>
+                  <a
+                    :href="`/admin/customers/${g.customer.id}/files`"
+                    class="text-petrol-700 hover:text-petrol-900 transition-colors"
+                    x-text="customerLabel(g)"></a>
+                </Td>
+                <Td muted align="center">
+                  <span x-text="g.files.length"></span>
+                </Td>
+                <Td muted align="center">
+                  <span x-text="totalSize(g)"></span>
+                </Td>
+                <Td muted>
+                  <span
+                    x-text="new Date(g.createdAt).toLocaleDateString('it-IT')"
+                  ></span>
+                </Td>
+                <Td align="right">
+                  <div class="inline-flex gap-1">
+                    <IconButton
+                      as="a"
+                      variant="amber"
                       :href="`/admin/customers/${g.customer.id}/files`"
-                      class="text-petrol-700 hover:text-petrol-900 transition-colors"
-                      x-text="customerLabel(g)"></a>
-                  </td>
-                  <!-- File count -->
-                  <td class="py-3 px-4 text-center text-gray-500">
-                    <span x-text="g.files.length"></span>
-                  </td>
-                  <!-- Total size -->
-                  <td class="py-3 px-4 text-center text-gray-500">
-                    <span x-text="totalSize(g)"></span>
-                  </td>
-                  <!-- Magic link status -->
-                  <td class="py-3 px-4 text-center">
-                    <template x-if="g.magicLink">
-                      <span
-                        x-bind:class="new Date(g.magicLink.expiresAt).getTime() > Date.now()
-                          ? 'inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-green-50 text-green-600 border border-green-200'
-                          : 'inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-500 border border-red-200'"
-                        x-text="new Date(g.magicLink.expiresAt).getTime() > Date.now() ? 'Attivo' : 'Scaduto'"
-                      ></span>
-                    </template>
-                    <template x-if="!g.magicLink">
-                      <span class="text-xs text-gray-300">—</span>
-                    </template>
-                  </td>
-                  <!-- Date -->
-                  <td class="py-3 px-4 text-gray-500">
-                    <span
-                      x-text="new Date(g.createdAt).toLocaleDateString('it-IT')"
-                    ></span>
-                  </td>
-                  <!-- Actions -->
-                  <td class="py-3 px-4">
-                    <div class="flex justify-end">
-                      <a
-                        :href="`/admin/customers/${g.customer.id}/files`"
-                        class="p-1.5 text-gray-400 hover:text-petrol-700 transition-colors"
-                        title="Gestisci file"
-                      >
-                        <Icon
-                          name="material-symbols-light:folder-open-outline"
-                          class="w-4 h-4"
-                        />
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
+                      title="Gestisci file"
+                    >
+                      <Icon
+                        name="material-symbols-light:folder-open-outline"
+                        class="size-5"
+                      />
+                    </IconButton>
+                  </div>
+                </Td>
+              </tr>
+            </template>
+          </tbody>
+        </DataTable>
 
-        <!-- Pagination -->
-        <template x-if="totalPages > 1">
-          <div
-            class="flex items-center justify-between mt-6 pt-4 border-t border-gray-200"
-          >
-            <p class="text-xs text-gray-400">
-              Pagina <span x-text="page"></span> di <span x-text="totalPages"
-              ></span>
-            </p>
-            <div class="flex gap-2">
-              <button
-                x-on:click="page--; fetchData()"
-                :disabled="page <= 1"
-                class="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:text-petrol-700 hover:border-petrol-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                Precedente
-              </button>
-              <button
-                x-on:click="page++; fetchData()"
-                :disabled="page >= totalPages"
-                class="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:text-petrol-700 hover:border-petrol-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                Successiva
-              </button>
-            </div>
-          </div>
-        </template>
+        <Pagination />
       </div>
     </template>
+
+    <DocumentsModals />
   </div>
 
   <script>

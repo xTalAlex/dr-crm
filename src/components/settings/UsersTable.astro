@@ -1,0 +1,55 @@
+---
+import DataTable from "@/components/DataTable.astro";
+import Th from "@/components/Th.astro";
+import Td from "@/components/Td.astro";
+import IconButton from "@/components/IconButton.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<DataTable>
+  <thead>
+    <tr class="border-b border-neutral-200 text-left">
+      <Th>Nome</Th>
+      <Th>Email</Th>
+      <Th align="right">Azioni</Th>
+    </tr>
+  </thead>
+  <tbody>
+    <template x-if="loading && users.length === 0">
+      <tr>
+        <Td colspan="3" muted class="py-8 text-center">Caricamento...</Td>
+      </tr>
+    </template>
+    <template x-if="!loading && users.length === 0">
+      <tr>
+        <Td colspan="3" muted class="py-8 text-center">
+          Nessun utente trovato
+        </Td>
+      </tr>
+    </template>
+    <template x-for="u in users" :key="u.id">
+      <tr
+        class="border-b border-neutral-100 hover:bg-neutral-50 transition-colors"
+      >
+        <Td x-text="u.name" />
+        <Td muted x-text="u.email" />
+        <Td align="right">
+          <template x-if="u.id !== currentUserId">
+            <div class="inline-flex gap-1">
+              <IconButton
+                variant="danger"
+                x-on:click="confirmRemove(u)"
+                title="Elimina utente"
+              >
+                <Icon
+                  name="material-symbols-light:delete-outline"
+                  class="w-4 h-4"
+                />
+              </IconButton>
+            </div>
+          </template>
+        </Td>
+      </tr>
+    </template>
+  </tbody>
+</DataTable>

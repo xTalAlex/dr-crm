@@ -17,12 +17,13 @@ export const GET: APIRoute = async ({ url }) => {
         if (search) {
             const terms = search.trim().split(/\s+/);
             if (terms.length > 1) {
-                // Multi-word search: each term must match name or surname
+                // Multi-word search: each term must match name, surname, or notes
                 conditions.push({
                     AND: terms.map((term) => ({
                         OR: [
                             { name: { contains: term, mode: "insensitive" as const } },
                             { surname: { contains: term, mode: "insensitive" as const } },
+                            { notes: { contains: term, mode: "insensitive" as const } },
                         ],
                     })),
                 });
@@ -34,6 +35,7 @@ export const GET: APIRoute = async ({ url }) => {
                         { phone: { contains: search } },
                         { email: { contains: search, mode: "insensitive" as const } },
                         { fiscalCode: { contains: search, mode: "insensitive" as const } },
+                        { notes: { contains: search, mode: "insensitive" as const } },
                     ],
                 });
             }

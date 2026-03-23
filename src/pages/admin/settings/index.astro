@@ -1,211 +1,35 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Button from "@/components/Button.astro";
+import UsersTable from "@/components/settings/UsersTable.astro";
+import SettingsModals from "@/components/settings/SettingsModals.astro";
 import { Icon } from "astro-icon/components";
 
 export const prerender = false;
 ---
 
 <AdminLayout title="Impostazioni">
-  <div x-data="usersPage('${Astro.locals.user?.id}')" x-init="fetchUsers()">
-    <!-- Header -->
-    <div
-      class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"
-    >
-      <h1 class="text-2xl font-serif text-slate-800">Impostazioni</h1>
-    </div>
+  <div x-data={`usersPage('${Astro.locals.user?.id}')`} x-init="fetchUsers()">
+    <PageHeader title="Impostazioni" />
 
     <!-- Users section -->
     <div class="mb-8">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-sm font-medium text-gray-500 uppercase tracking-wider">
-          Utenti
-        </h2>
-        <button
-          x-on:click="openCreate()"
-          class="inline-flex items-center gap-2 bg-petrol-50 hover:bg-petrol-100 border border-petrol-200 hover:border-petrol-300 text-petrol-700 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300"
-        >
+      <SectionHeader title="Utenti">
+        <Button variant="outline" x-on:click="openCreate()">
           <Icon
             name="material-symbols-light:person-add-outline"
             class="w-4 h-4"
           />
           Nuovo Utente
-        </button>
-      </div>
+        </Button>
+      </SectionHeader>
 
-      <!-- Users table -->
-      <div
-        class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm"
-      >
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-gray-200 text-left">
-                <th
-                  class="px-4 py-3 text-xs text-gray-400 uppercase tracking-wider font-medium"
-                  >Nome</th
-                >
-                <th
-                  class="px-4 py-3 text-xs text-gray-400 uppercase tracking-wider font-medium"
-                  >Email</th
-                >
-                <th
-                  class="px-4 py-3 text-xs text-gray-400 uppercase tracking-wider font-medium text-right"
-                  >Azioni</th
-                >
-              </tr>
-            </thead>
-            <tbody>
-              <template x-if="loading && users.length === 0">
-                <tr
-                  ><td colspan="3" class="px-4 py-8 text-center text-gray-400"
-                    >Caricamento...</td
-                  ></tr
-                >
-              </template>
-              <template x-if="!loading && users.length === 0">
-                <tr
-                  ><td colspan="3" class="px-4 py-8 text-center text-gray-400"
-                    >Nessun utente trovato</td
-                  ></tr
-                >
-              </template>
-              <template x-for="u in users" :key="u.id">
-                <tr
-                  class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
-                >
-                  <td class="px-4 py-3 text-slate-800" x-text="u.name"></td>
-                  <td class="px-4 py-3 text-gray-500" x-text="u.email"></td>
-                  <td class="px-4 py-3 text-right">
-                    <template x-if="u.id !== currentUserId">
-                      <div class="inline-flex gap-1">
-                        <button
-                          x-on:click="confirmRemove(u)"
-                          class="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
-                          title="Elimina utente"
-                        >
-                          <Icon
-                            name="material-symbols-light:delete-outline"
-                            class="w-4 h-4"
-                          />
-                        </button>
-                      </div>
-                    </template>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <UsersTable />
     </div>
 
-    <!-- Create modal -->
-    <div
-      x-show="modal"
-      x-cloak
-      class="fixed inset-0 z-50 flex items-center justify-center p-4"
-    >
-      <div class="absolute inset-0 bg-black/40" x-on:click="modal = false">
-      </div>
-      <div
-        class="relative bg-white border border-gray-200 rounded-xl w-full max-w-md p-6 shadow-lg"
-      >
-        <h2 class="text-lg font-serif text-slate-800 mb-6">Nuovo Utente</h2>
-
-        <form x-on:submit.prevent="createUser()" class="space-y-4">
-          <div>
-            <label
-              class="block text-xs text-gray-400 uppercase tracking-wider mb-1.5"
-              >Nome *</label
-            >
-            <input
-              type="text"
-              x-model="form.name"
-              required
-              class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2.5 text-slate-800 text-sm outline-none transition-colors"
-            />
-          </div>
-          <div>
-            <label
-              class="block text-xs text-gray-400 uppercase tracking-wider mb-1.5"
-              >Email *</label
-            >
-            <input
-              type="email"
-              x-model="form.email"
-              required
-              class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2.5 text-slate-800 text-sm outline-none transition-colors"
-            />
-          </div>
-          <div>
-            <label
-              class="block text-xs text-gray-400 uppercase tracking-wider mb-1.5"
-              >Password *</label
-            >
-            <input
-              type="password"
-              x-model="form.password"
-              required
-              minlength="8"
-              class="w-full bg-gray-50 border border-gray-200 focus:border-petrol-400 rounded-lg px-3 py-2.5 text-slate-800 text-sm outline-none transition-colors"
-            />
-          </div>
-
-          <template x-if="formError">
-            <p class="text-red-500 text-sm" x-text="formError"></p>
-          </template>
-
-          <div class="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              x-on:click="modal = false"
-              class="px-4 py-2.5 text-sm text-gray-500 hover:text-slate-800 transition-colors"
-              >Annulla</button
-            >
-            <button
-              type="submit"
-              :disabled="saving"
-              class="px-5 py-2.5 bg-petrol-600 hover:bg-petrol-700 text-white rounded-lg text-sm font-medium transition-all duration-300 disabled:opacity-50"
-            >
-              <span x-show="!saving">Crea</span>
-              <span x-show="saving" x-cloak>Creazione...</span>
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Delete confirmation -->
-    <div
-      x-show="removeTarget"
-      x-cloak
-      class="fixed inset-0 z-50 flex items-center justify-center p-4"
-    >
-      <div
-        class="absolute inset-0 bg-black/40"
-        x-on:click="removeTarget = null"
-      >
-      </div>
-      <div
-        class="relative bg-white border border-gray-200 rounded-xl w-full max-w-sm p-6 text-center shadow-lg"
-      >
-        <p class="text-slate-800 mb-1">Eliminare questo utente?</p>
-        <p class="text-gray-500 text-sm mb-6" x-text="removeTarget?.email"></p>
-        <div class="flex justify-center gap-3">
-          <button
-            x-on:click="removeTarget = null"
-            class="px-4 py-2.5 text-sm text-gray-500 hover:text-slate-800 transition-colors"
-            >Annulla</button
-          >
-          <button
-            x-on:click="doRemove()"
-            :disabled="saving"
-            class="px-5 py-2.5 bg-red-50 hover:bg-red-100 border border-red-200 hover:border-red-300 text-red-600 rounded-lg text-sm font-medium transition-all duration-300 disabled:opacity-50"
-            >Elimina</button
-          >
-        </div>
-      </div>
-    </div>
+    <SettingsModals />
   </div>
 
   <script>

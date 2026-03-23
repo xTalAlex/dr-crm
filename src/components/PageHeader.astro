@@ -1,0 +1,55 @@
+---
+import { Icon } from "astro-icon/components";
+import IconButton from "@/components/IconButton.astro";
+
+interface Props {
+  title?: string;
+  titleExpr?: string;
+  subtitle?: string;
+  subtitleExpr?: string;
+  back?: string;
+}
+
+const { title, titleExpr, subtitle, subtitleExpr, back } = Astro.props;
+const hasActions = Astro.slots.has("default");
+---
+
+<div
+  class:list={[
+    "mb-8",
+    hasActions &&
+      "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4",
+  ]}
+>
+  <div class:list={[back && "flex items-center gap-3"]}>
+    {
+      back && (
+        <IconButton as="a" href={back}>
+          <Icon name="material-symbols-light:arrow-back" class="w-5 h-5" />
+        </IconButton>
+      )
+    }
+    <div>
+      {
+        titleExpr ? (
+          <h1 class="text-2xl font-serif text-neutral-900" x-text={titleExpr} />
+        ) : title ? (
+          <h1 class="text-2xl font-serif text-neutral-900">{title}</h1>
+        ) : null
+      }
+      {subtitle && <p class="text-sm text-neutral-500 mt-1">{subtitle}</p>}
+      {
+        subtitleExpr && (
+          <p class="text-sm text-neutral-500 mt-1" x-text={subtitleExpr} />
+        )
+      }
+    </div>
+  </div>
+  {
+    hasActions && (
+      <div class="flex items-center gap-2">
+        <slot />
+      </div>
+    )
+  }
+</div>

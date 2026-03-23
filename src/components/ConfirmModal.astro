@@ -1,0 +1,41 @@
+---
+import Modal from "./Modal.astro";
+import Button from "./Button.astro";
+
+interface Props {
+  show: string;
+  close: string;
+  title: string;
+  description: string;
+  confirm: string;
+  confirmLabel?: string;
+  disabled?: string;
+}
+
+const {
+  show,
+  close,
+  title,
+  description,
+  confirm,
+  confirmLabel = "Conferma",
+  disabled = "false",
+} = Astro.props;
+---
+
+<Modal show={show} close={close} size="sm">
+  <div class="text-center">
+    <p class="text-neutral-900 mb-1">{title}</p>
+    <p class="text-neutral-500 text-sm mb-6" x-text={description}></p>
+    <div class="flex justify-center gap-3">
+      <button
+        x-on:click={close}
+        class="px-4 py-2.5 text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
+        >Annulla</button
+      >
+      <Button variant="danger" x-on:click={confirm} x-bind:disabled={disabled}
+        >{confirmLabel}</Button
+      >
+    </div>
+  </div>
+</Modal>

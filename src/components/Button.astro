@@ -1,0 +1,74 @@
+---
+interface Props {
+  variant?: "primary" | "outline" | "secondary" | "danger" | "green";
+  size?: "xs" | "sm" | "md";
+  as?: "button" | "a";
+  href?: string;
+  fullWidth?: boolean;
+  class?: string;
+  [key: string]: any;
+}
+
+const {
+  variant = "primary",
+  size = "md",
+  as: Tag = "button",
+  href,
+  fullWidth = false,
+  class: className = "",
+  ...rest
+} = Astro.props;
+---
+
+{
+  Tag === "a" ? (
+    <a
+      href={href}
+      class:list={[
+        "inline-flex items-center justify-center gap-2 font-medium transition-all duration-300 disabled:opacity-50",
+        size === "xs" && "px-2.5 py-1 text-xs rounded-md",
+        size === "sm" && "px-3 py-1.5 text-xs rounded-lg",
+        size === "md" && "px-4 py-2.5 text-sm rounded-lg",
+        variant === "primary" &&
+          "bg-petrol-600 hover:bg-petrol-700 text-neutral-50",
+        variant === "outline" &&
+          "bg-petrol-50 hover:bg-petrol-100 border border-petrol-200 hover:border-petrol-300 text-petrol-700",
+        variant === "secondary" &&
+          "bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 hover:border-neutral-300 text-neutral-500",
+        variant === "danger" &&
+          "bg-red-50 hover:bg-red-100 border border-red-200 hover:border-red-300 text-red-600",
+        variant === "green" &&
+          "bg-green-600 hover:bg-green-700 text-neutral-50",
+        fullWidth && "w-full",
+        className,
+      ]}
+      {...rest}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button
+      class:list={[
+        "inline-flex items-center justify-center gap-2 font-medium transition-all duration-300 disabled:opacity-50",
+        size === "xs" && "px-2.5 py-1 text-xs rounded-md",
+        size === "sm" && "px-3 py-1.5 text-xs rounded-lg",
+        size === "md" && "px-4 py-2.5 text-sm rounded-lg",
+        variant === "primary" &&
+          "bg-petrol-600 hover:bg-petrol-700 text-neutral-50",
+        variant === "outline" &&
+          "bg-petrol-50 hover:bg-petrol-100 border border-petrol-200 hover:border-petrol-300 text-petrol-700",
+        variant === "secondary" &&
+          "bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 hover:border-neutral-300 text-neutral-500",
+        variant === "danger" &&
+          "bg-red-50 hover:bg-red-100 border border-red-200 hover:border-red-300 text-red-600",
+        variant === "green" &&
+          "bg-green-600 hover:bg-green-700 text-neutral-50",
+        fullWidth && "w-full",
+        className,
+      ]}
+      {...rest}
+    >
+      <slot />
+    </button>
+  )
+}

@@ -63,7 +63,7 @@ export const POST: APIRoute = async ({ params, request }) => {
     if (created.length === 0) {
       // Cleanup empty group
       await prisma.fileGroup.delete({ where: { id: group.id } });
-      return Response.json({ error: "Upload fallito per tutti i file" }, { status: 500 });
+      return Response.json({ error: `Upload fallito per tutti i file: ${lastError}` }, { status: 500 });
     }
 
     return Response.json({ group, files: created }, { status: 201 });

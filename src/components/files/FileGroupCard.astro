@@ -1,0 +1,153 @@
+---
+import Button from "@/components/Button.astro";
+import IconButton from "@/components/IconButton.astro";
+import SharingFooter from "@/components/files/SharingFooter.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<div class="bg-neutral-50 border border-neutral-200 rounded-xl shadow-sm">
+  <!-- Group header -->
+  <div
+    class="px-5 py-4 bg-neutral-100/80 border-b border-neutral-200 space-y-1"
+  >
+    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+      <div class="flex items-center gap-1.5 flex-1 min-w-0">
+        <Icon
+          is:inline
+          name="material-symbols-light:folder-outline"
+          class="w-4 h-4 text-neutral-400 shrink-0"
+        />
+        <template x-if="renameGroupId === g.id">
+          <input
+            type="text"
+            x-ref="renameInput"
+            x-model="renameLabel"
+            x-on:keydown.enter="confirmRename(g)"
+            x-on:keydown.escape="cancelRename()"
+            x-on:blur="confirmRename(g)"
+            class="w-48 text-sm font-medium text-neutral-900 bg-neutral-50 border border-neutral-200 focus:border-petrol-400 rounded-lg px-2 py-1 outline-none transition-colors"
+          />
+        </template>
+        <template x-if="renameGroupId !== g.id">
+          <h3
+            class="text-sm font-medium text-neutral-900 truncate"
+            x-text="g.label || 'Senza nome'"
+          >
+          </h3>
+        </template>
+        <template x-if="renameGroupId !== g.id">
+          <IconButton
+            x-on:click="startRename(g)"
+            title="Rinomina"
+            class="shrink-0"
+          >
+            <Icon
+              is:inline
+              name="material-symbols-light:edit-outline"
+              class="w-3.5 h-3.5"
+            />
+          </IconButton>
+        </template>
+      </div>
+      <div
+        class="flex items-center justify-between sm:justify-end gap-2 shrink-0"
+      >
+        <Button variant="outline" size="xs" x-on:click="openAddFiles(g)">
+          <Icon
+            is:inline
+            name="material-symbols-light:add"
+            class="w-3.5 h-3.5"
+          />
+          Aggiungi file
+        </Button>
+        <IconButton
+          variant="danger"
+          x-on:click="confirmDeleteGroup(g)"
+          title="Elimina cartella"
+        >
+          <Icon
+            is:inline
+            name="material-symbols-light:delete-outline"
+            class="w-4 h-4"
+          />
+        </IconButton>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add files inline form -->
+  <template x-if="addFilesGroupId === g.id">
+    <div class="px-5 py-3 bg-petrol-50/30 border-b border-neutral-100">
+      <div class="flex items-center gap-3">
+        <input
+          type="file"
+          x-ref="addFileInput"
+          multiple
+          class="min-w-0 flex-1 bg-neutral-50 border border-neutral-200 rounded-lg px-3 py-1.5 text-sm file:mr-3 file:px-3 file:py-1 file:rounded-md file:border-0 file:bg-petrol-50 file:text-petrol-700 file:text-xs file:font-medium file:cursor-pointer"
+        />
+        <div class="flex items-center gap-2 shrink-0">
+          <Button
+            variant="primary"
+            size="sm"
+            x-on:click="doAddFiles(g.id)"
+            :disabled="addFilesUploading"
+          >
+            <span x-show="!addFilesUploading">Carica</span>
+            <span x-show="addFilesUploading" x-cloak>...</span>
+          </Button>
+          <button
+            x-on:click="addFilesGroupId = null"
+            class="p-1.5 text-neutral-400 hover:text-neutral-700 transition-colors"
+          >
+            <Icon
+              is:inline
+              name="material-symbols-light:close"
+              class="w-4 h-4"
+            />
+          </button>
+        </div>
+      </div>
+      <template x-if="addFilesError">
+        <p class="text-red-500 text-xs mt-2" x-text="addFilesError"></p>
+      </template>
+    </div>
+  </template>
+
+  <!-- Files list -->
+  <ul class="divide-y divide-neutral-100">
+    <template x-for="f in g.files" :key="f.id">
+      <li class="flex items-center justify-between px-5 py-3">
+        <div class="min-w-0 flex-1">
+          <a
+            :href="`/admin/api/customers/${customerId}/files/entries/${f.id}`"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-sm text-petrol-700 hover:text-petrol-900 hover:underline truncate inline-block max-w-full"
+            x-text="f.fileName"
+          >
+          </a>
+          <p
+            class="text-xs text-neutral-500"
+            x-text="(f.size / 1024).toFixed(0) + ' KB · ' + new Date(f.createdAt).toLocaleString('it-IT')"
+          >
+          </p>
+        </div>
+        <IconButton
+          variant="danger"
+          x-on:click="confirmDeleteFile(g, f)"
+          title="Elimina file"
+          class="ml-3"
+        >
+          <Icon
+            is:inline
+            name="material-symbols-light:delete-outline"
+            class="w-4 h-4"
+          />
+        </IconButton>
+      </li>
+    </template>
+  </ul>
+
+  <!-- Sharing footer -->
+  <SharingFooter />
+</div>

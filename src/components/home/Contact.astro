@@ -12,7 +12,7 @@ const { practice, contacts } = content;
         class="text-petrol-600/60 text-xs tracking-[0.3em] uppercase font-medium"
         >Contatti</span
       >
-      <h2 class="mt-4 font-serif text-3xl md:text-4xl text-slate-800">
+      <h2 class="mt-4 font-serif text-3xl md:text-4xl text-neutral-900">
         Contatti
       </h2>
       <div
@@ -25,7 +25,7 @@ const { practice, contacts } = content;
       <!-- Phone -->
       <a
         href={`tel:${contacts.phone.href}`}
-        class="group bg-white border border-gray-200 hover:border-petrol-300 rounded-xl p-8 text-center transition-all duration-300 shadow-sm hover:shadow-md"
+        class="group bg-neutral-50 border border-neutral-200 hover:border-petrol-300 rounded-xl p-8 text-center transition-all duration-300 shadow-sm hover:shadow-md"
       >
         <div
           class="w-12 h-12 mx-auto mb-4 rounded-full bg-petrol-50 flex items-center justify-center"
@@ -35,21 +35,21 @@ const { practice, contacts } = content;
             class="w-5 h-5 text-petrol-700"
           />
         </div>
-        <p class="text-xs text-gray-400 uppercase tracking-wider mb-2">
+        <p class="text-xs text-neutral-500 uppercase tracking-wider mb-2">
           Telefono
         </p>
         <p
-          class="text-slate-800 group-hover:text-petrol-700 font-medium transition-colors"
+          class="text-neutral-900 group-hover:text-petrol-700 font-medium transition-colors"
         >
           {contacts.phone.display}
         </p>
-        <p class="text-gray-400 text-xs mt-2">{contacts.phone.note}</p>
+        <p class="text-neutral-500 text-xs mt-2">{contacts.phone.note}</p>
       </a>
 
       <!-- Email -->
       <a
         href={`mailto:${contacts.email}`}
-        class="group bg-white border border-gray-200 hover:border-petrol-300 rounded-xl p-8 text-center transition-all duration-300 shadow-sm hover:shadow-md"
+        class="group bg-neutral-50 border border-neutral-200 hover:border-petrol-300 rounded-xl p-8 text-center transition-all duration-300 shadow-sm hover:shadow-md"
       >
         <div
           class="w-12 h-12 mx-auto mb-4 rounded-full bg-petrol-50 flex items-center justify-center"
@@ -59,9 +59,11 @@ const { practice, contacts } = content;
             class="w-5 h-5 text-petrol-700"
           />
         </div>
-        <p class="text-xs text-gray-400 uppercase tracking-wider mb-2">Email</p>
+        <p class="text-xs text-neutral-500 uppercase tracking-wider mb-2">
+          Email
+        </p>
         <p
-          class="text-slate-800 group-hover:text-petrol-700 font-medium transition-colors text-sm"
+          class="text-neutral-900 group-hover:text-petrol-700 font-medium transition-colors text-sm"
         >
           {contacts.email}
         </p>
@@ -72,7 +74,7 @@ const { practice, contacts } = content;
         href={`https://maps.google.com/?q=${encodeURIComponent(contacts.address.street + " " + contacts.address.city)}`}
         target="_blank"
         rel="noopener noreferrer"
-        class="group bg-white border border-gray-200 hover:border-petrol-300 rounded-xl p-8 text-center transition-all duration-300 shadow-sm hover:shadow-md"
+        class="group bg-neutral-50 border border-neutral-200 hover:border-petrol-300 rounded-xl p-8 text-center transition-all duration-300 shadow-sm hover:shadow-md"
       >
         <div
           class="w-12 h-12 mx-auto mb-4 rounded-full bg-petrol-50 flex items-center justify-center"
@@ -82,20 +84,20 @@ const { practice, contacts } = content;
             class="w-5 h-5 text-petrol-700"
           />
         </div>
-        <p class="text-xs text-gray-400 uppercase tracking-wider mb-2">
+        <p class="text-xs text-neutral-500 uppercase tracking-wider mb-2">
           Indirizzo
         </p>
         <p
-          class="text-slate-800 group-hover:text-petrol-700 font-medium transition-colors"
+          class="text-neutral-900 group-hover:text-petrol-700 font-medium transition-colors"
         >
           {contacts.address.street}
         </p>
-        <p class="text-gray-400 text-sm">{contacts.address.city}</p>
+        <p class="text-neutral-500 text-sm">{contacts.address.city}</p>
       </a>
     </div>
 
     <div class="mt-12 text-center">
-      <p class="text-gray-400 text-sm italic">{practice.note}</p>
+      <p class="text-neutral-500 text-sm italic">{practice.note}</p>
     </div>
   </div>
 </section>

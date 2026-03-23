@@ -1,0 +1,37 @@
+---
+---
+
+<div>
+  <h2
+    class="text-lg font-serif text-neutral-900 mb-1"
+    x-text="data.label || 'Documenti'"
+  >
+  </h2>
+  <p class="text-xs text-neutral-500 mb-6">
+    Questo link scade il <span
+      x-text="new Date(data.expiresAt).toLocaleString('it-IT')"></span>
+  </p>
+  <ul class="space-y-2">
+    <template x-for="f in data.files" :key="f.fileName">
+      <li
+        class="flex items-center justify-between p-3 bg-neutral-50 rounded-lg border border-neutral-100"
+      >
+        <div class="min-w-0 flex-1">
+          <p class="text-sm text-neutral-900 truncate" x-text="f.fileName"></p>
+          <p
+            class="text-xs text-neutral-500"
+            x-text="(f.size / 1024).toFixed(0) + ' KB'"
+          >
+          </p>
+        </div>
+        <a
+          :href="f.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="ml-3 px-3 py-1.5 bg-petrol-600 hover:bg-petrol-700 text-neutral-50 text-xs rounded-lg transition-colors"
+          >Scarica</a
+        >
+      </li>
+    </template>
+  </ul>
+</div>

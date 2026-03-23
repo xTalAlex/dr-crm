@@ -1,0 +1,90 @@
+---
+import Modal from "@/components/Modal.astro";
+import FormModal from "@/components/FormModal.astro";
+import ConfirmModal from "@/components/ConfirmModal.astro";
+import Button from "@/components/Button.astro";
+import FormField from "@/components/FormField.astro";
+---
+
+<!-- Delete group confirmation -->
+<ConfirmModal
+  show="deleteGroupTarget"
+  close="deleteGroupTarget = null"
+  title="Eliminare questa cartella e tutti i suoi file?"
+  description="deleteGroupTarget?.label || 'Senza nome'"
+  confirm="doDeleteGroup()"
+  confirmLabel="Elimina"
+  disabled="deleting"
+/>
+
+<!-- Delete file confirmation -->
+<ConfirmModal
+  show="deleteFileTarget"
+  close="deleteFileTarget = null"
+  title="Eliminare questo file?"
+  description="deleteFileTarget?.file.fileName"
+  confirm="doDeleteFile()"
+  confirmLabel="Elimina"
+  disabled="deleting"
+/>
+
+<!-- Magic link modal -->
+<Modal show="magicLinkModal" close="magicLinkModal = false" size="sm">
+  <h2 class="text-lg font-serif text-neutral-900 mb-4">
+    Genera link di condivisione
+  </h2>
+  <template x-if="hasExistingLink">
+    <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+      <p class="text-xs text-amber-700">
+        Questa cartella ha già un link attivo. Generandone uno nuovo, il
+        precedente verrà invalidato.
+      </p>
+    </div>
+  </template>
+  <FormField
+    label="Scadenza (ore)"
+    type="number"
+    x-model.number="magicLinkHours"
+    min="1"
+    max="720"
+    class="mb-4"
+  />
+  <div class="flex justify-end gap-3">
+    <button
+      x-on:click="magicLinkModal = false"
+      class="px-4 py-2.5 text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
+      >Annulla</button
+    >
+    <Button
+      variant="primary"
+      x-on:click="doGenerateMagicLink()"
+      :disabled="generatingLink"
+    >
+      <span x-show="!generatingLink">Genera</span>
+      <span x-show="generatingLink" x-cloak>Generazione...</span>
+    </Button>
+  </div>
+</Modal>
+
+<!-- Upload modal -->
+<FormModal
+  show="uploadModal"
+  close="uploadModal = false"
+  title="Carica file"
+  action="upload()"
+  actionLabel="Carica"
+  disabled="uploading"
+  loadingLabel="Caricamento..."
+>
+  <form x-on:submit.prevent="upload()" class="space-y-4">
+    <FormField
+      label="Nome cartella"
+      x-model="uploadLabel"
+      placeholder="es. Referti, Fatture, Radiografie..."
+    />
+    <FormField label="File" type="file" x-ref="fileInput" multiple required />
+    <template x-if="uploadError">
+      <p class="text-red-500 text-sm" x-text="uploadError"></p>
+    </template>
+  </form>
+</FormModal>

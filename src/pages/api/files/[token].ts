@@ -4,59 +4,53 @@ import { getSupabase, BUCKET } from "@/lib/supabase";
 
 export const prerender = false;
 
-/** POST /api/files/:token — public endpoint: resolve magic link with PIN → signed URLs */
+function validate(pin: string, magicLink: { expiresAt: Date; pin: string } | null): { status: number; error: string } | null {
+  const checks: [boolean, number, string][] = [
+    [!pin, 400, "Inserisci il codice PIN"],
+    [!!pin && !magicLink, 404, "Link non valido"],
+    [!!magicLink && magicLink.expiresAt < new Date(), 410, "Link scaduto"],
+    [!!magicLink && magicLink.pin !== pin, 403, "Codice PIN errato"],
+  ];
+  const failed = checks.find(([condition]) => condition);
+  return failed ? { status: failed[1], error: failed[2] } : null;
+}
+
 export const POST: APIRoute = async ({ params, request }) => {
-  try {
-    const prisma = getDb();
-    const supabase = getSupabase();
-    const token = params.token!;
+  const prisma = getDb();
+  const supabase = getSupabase();
+  const token = params.token!;
 
-    const body = await request.json().catch(() => ({}));
-    const pin = String(body.pin ?? "").trim();
+  const body = await request.json().catch(() => ({}));
+  const pin = String(body.pin ?? "").trim();
 
-    if (!pin) {
-      return Response.json({ error: "Inserisci il codice PIN" }, { status: 400 });
-    }
-
-    const magicLink = await prisma.magicLink.findUnique({
-      where: { token },
-      include: {
-        group: {
-          include: { files: true },
-        },
-      },
-    });
-
-    if (!magicLink) {
-      return Response.json({ error: "Link non valido" }, { status: 404 });
-    }
-    if (magicLink.expiresAt < new Date()) {
-      return Response.json({ error: "Link scaduto" }, { status: 410 });
-    }
-    if (magicLink.pin !== pin) {
-      return Response.json({ error: "Codice PIN errato" }, { status: 403 });
-    }
-
-    const files = await Promise.all(
-      magicLink.group.files.map(async (f) => {
-        const { data } = await supabase.storage
-          .from(BUCKET)
-          .createSignedUrl(f.storagePath, 3600);
-        return {
-          fileName: f.fileName,
-          mimeType: f.mimeType,
-          size: f.size,
-          url: data?.signedUrl ?? null,
-        };
+  const magicLink = pin
+    ? await prisma.magicLink.findUnique({
+        where: { token },
+        include: { group: { include: { files: true } } },
       })
-    );
+    : null;
 
-    return Response.json({
-      label: magicLink.group.label,
-      expiresAt: magicLink.expiresAt,
-      files,
-    });
-  } catch (err: any) {
-    return Response.json({ error: err.message ?? "Errore del server" }, { status: 500 });
-  }
+  const error = validate(pin, magicLink);
+
+  const files = !error && magicLink
+    ? await Promise.all(
+        magicLink.group.files.map(async (f) => {
+          const { data } = await supabase.storage
+            .from(BUCKET)
+            .createSignedUrl(f.storagePath, 3600);
+          return {
+            fileName: f.fileName,
+            mimeType: f.mimeType,
+            size: f.size,
+            url: data?.signedUrl ?? null,
+          };
+        })
+      )
+    : [];
+
+  const payload = error
+    ? { error: error.error }
+    : { label: magicLink!.group.label, expiresAt: magicLink!.expiresAt, files };
+
+  return Response.json(payload, { status: error?.status ?? 200 });
 };

@@ -1,0 +1,42 @@
+---
+import FormModal from "@/components/FormModal.astro";
+import ConfirmModal from "@/components/ConfirmModal.astro";
+import FormField from "@/components/FormField.astro";
+---
+
+<!-- Create user modal -->
+<FormModal
+  show="modal"
+  close="modal = false"
+  title="Nuovo Utente"
+  action="createUser()"
+  actionLabel="Crea"
+  disabled="saving"
+  loadingLabel="Creazione..."
+>
+  <form x-on:submit.prevent="createUser()" class="space-y-4">
+    <FormField label="Nome" x-model="form.name" required />
+    <FormField label="Email" type="email" x-model="form.email" required />
+    <FormField
+      label="Password"
+      type="password"
+      x-model="form.password"
+      required
+      minlength="8"
+    />
+    <template x-if="formError">
+      <p class="text-red-500 text-sm" x-text="formError"></p>
+    </template>
+  </form>
+</FormModal>
+
+<!-- Delete user confirmation -->
+<ConfirmModal
+  show="removeTarget"
+  close="removeTarget = null"
+  title="Eliminare questo utente?"
+  description="removeTarget?.email"
+  confirm="doRemove()"
+  confirmLabel="Elimina"
+  disabled="saving"
+/>

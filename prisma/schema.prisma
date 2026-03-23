@@ -95,7 +95,6 @@ model Customer {
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
   fileGroups    FileGroup[]
-  communicationLogs CommunicationLog[]
 
   @@map("customer")
 }
@@ -140,29 +139,4 @@ model MagicLink {
   @@map("magic_link")
 }
 
-model Campaign {
-  id          String   @id @default(cuid())
-  name        String
-  channel     String   // "sms" | "email"
-  message     String
-  createdAt   DateTime @default(now())
-  logs        CommunicationLog[]
 
-  @@map("campaign")
-}
-
-model CommunicationLog {
-  id          String   @id @default(cuid())
-  campaignId  String
-  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  customerId  String
-  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  status      String   @default("sent")
-  sentAt      DateTime @default(now())
-
-  @@unique([campaignId, customerId])
-  @@index([customerId])
-  @@index([campaignId])
-  @@index([sentAt])
-  @@map("communication_log")
-}

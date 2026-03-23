@@ -1,0 +1,37 @@
+---
+interface Props {
+  variant?: "default" | "danger" | "green" | "amber";
+  as?: "button" | "a";
+  href?: string;
+  title?: string;
+  class?: string;
+  [key: string]: any;
+}
+
+const {
+  variant = "default",
+  as: Tag = "button",
+  href,
+  title,
+  class: className = "",
+  ...rest
+} = Astro.props;
+---
+
+<Tag
+  href={Tag === "a" ? href : undefined}
+  title={title}
+  class:list={[
+    "p-1.5 rounded-lg transition-colors",
+    variant === "default" &&
+      "text-neutral-500 hover:text-petrol-500 hover:bg-petrol-50",
+    variant === "danger" &&
+      "text-neutral-500 hover:text-red-500 hover:bg-red-50",
+    variant === "green" && "text-green-600 bg-green-50 hover:bg-green-100",
+    variant === "amber" && "text-amber-600 bg-amber-50 hover:bg-amber-100",
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+</Tag>

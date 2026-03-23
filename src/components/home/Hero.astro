@@ -37,7 +37,7 @@ const { doctor, practice, contacts } = content;
     </div>
 
     <h1
-      class="font-serif text-5xl md:text-7xl font-medium text-slate-800 leading-tight tracking-tight"
+      class="font-serif text-5xl md:text-7xl font-medium text-neutral-900 leading-tight tracking-tight"
     >
       {doctor.title}
       {doctor.firstName}<br />
@@ -45,7 +45,7 @@ const { doctor, practice, contacts } = content;
     </h1>
 
     <div
-      class="mt-6 flex items-center justify-center gap-3 text-gray-500 text-sm tracking-wide"
+      class="mt-6 flex items-center justify-center gap-3 text-neutral-500 text-sm tracking-wide"
     >
       {
         doctor.roles.map((role: string, i: number) => (
@@ -68,7 +68,7 @@ const { doctor, practice, contacts } = content;
     <div class="mt-10 mb-20">
       <a
         href={`tel:${contacts.phone.href}`}
-        class="group inline-flex items-center gap-3 bg-petrol-600 hover:bg-petrol-700 text-white px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+        class="group inline-flex items-center gap-3 bg-petrol-600 hover:bg-petrol-700 text-neutral-50 px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
       >
         <span class="text-sm font-medium tracking-wide">{practice.cta}</span>
         <Icon

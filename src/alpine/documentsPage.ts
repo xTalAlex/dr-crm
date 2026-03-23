@@ -9,6 +9,16 @@ export default (Alpine: Alpine) => {
     search: "",
     loading: true,
 
+    // Upload modal
+    uploadModal: false,
+    uploadLabel: "",
+    uploading: false,
+    uploadError: "",
+    customerSearch: "",
+    customerResults: [] as any[],
+    selectedCustomer: null as any,
+    searchingCustomers: false,
+
     get totalPages() {
       return Math.max(1, Math.ceil(this.total / this.perPage));
     },
@@ -33,6 +43,80 @@ export default (Alpine: Alpine) => {
       this.loading = false;
     },
 
+    openUpload() {
+      this.uploadLabel = "";
+      this.uploadError = "";
+      this.customerSearch = "";
+      this.customerResults = [];
+      this.selectedCustomer = null;
+      this.uploadModal = true;
+    },
+
+    async searchCustomers() {
+      const q = this.customerSearch.trim();
+      if (q.length < 2) {
+        this.customerResults = [];
+        return;
+      }
+      this.searchingCustomers = true;
+      const res = await fetch(`/admin/api/customers?q=${encodeURIComponent(q)}&limit=8`);
+      if (res.ok) {
+        const data = await res.json();
+        this.customerResults = data.customers;
+      }
+      this.searchingCustomers = false;
+    },
+
+    selectCustomer(c: any) {
+      this.selectedCustomer = c;
+      this.customerSearch = "";
+      this.customerResults = [];
+    },
+
+    clearCustomer() {
+      this.selectedCustomer = null;
+    },
+
+    customerDisplayName(c: any) {
+      return ((c.surname || "") + " " + (c.name || "")).trim() || "Cliente";
+    },
+
+    async upload() {
+      this.uploadError = "";
+      const cust = this.selectedCustomer;
+      if (!cust) {
+        this.uploadError = "Seleziona un cliente";
+        return;
+      }
+      const fileInput = this.$refs.docFileInput as HTMLInputElement;
+      const files = fileInput?.files;
+      if (!files || files.length === 0) {
+        this.uploadError = "Seleziona almeno un file";
+        return;
+      }
+
+      this.uploading = true;
+      const fd = new FormData();
+      fd.append("label", this.uploadLabel);
+      for (const f of files) fd.append("files", f);
+
+      const res = await fetch(`/admin/api/customers/${cust.id}/files/upload`, {
+        method: "POST",
+        body: fd,
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        this.uploadError = err.error || "Errore nel caricamento";
+        this.uploading = false;
+        return;
+      }
+
+      this.uploading = false;
+      this.uploadModal = false;
+      await this.fetchData();
+    },
+
     customerLabel(g: any) {
       return ((g.customer?.surname || "") + " " + (g.customer?.name || "")).trim() || "—";
     },
@@ -42,14 +126,6 @@ export default (Alpine: Alpine) => {
       if (bytes < 1024) return bytes + " B";
       if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + " KB";
       return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-    },
-
-    magicLinkUrl(token: string) {
-      return `${window.location.origin}/files/${token}`;
-    },
-
-    async copyLink(token: string) {
-      await navigator.clipboard.writeText(this.magicLinkUrl(token));
     },
   }));
 };

@@ -1,0 +1,21 @@
+---
+interface Props {
+  align?: "left" | "center" | "right";
+  class?: string;
+  [key: string]: any;
+}
+
+const { align = "left", class: className = "", ...rest } = Astro.props;
+---
+
+<th
+  class:list={[
+    "px-4 py-3 text-xs text-neutral-500 uppercase tracking-wider font-medium",
+    align === "right" && "text-right",
+    align === "center" && "text-center",
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+</th>

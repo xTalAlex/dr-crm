@@ -7,6 +7,7 @@ export default (Alpine: Alpine) => {
     error: "",
     data: null as null | { label?: string; expiresAt: string; files: { fileName: string; size: number; url: string }[] },
     pin: "",
+    pinDigits: ['', '', '', ''] as string[],
 
     async verify() {
       this.error = "";

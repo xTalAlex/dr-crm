@@ -1,0 +1,71 @@
+---
+import Modal from "./Modal.astro";
+import Button from "./Button.astro";
+
+interface Props {
+  show: string;
+  close: string;
+  size?: "sm" | "md" | "lg";
+  class?: string;
+  title?: string;
+  titleExpr?: string;
+  subtitle?: string;
+  subtitleExpr?: string;
+  action: string;
+  actionLabel?: string;
+  actionLabelExpr?: string;
+  disabled?: string;
+  loadingLabel?: string;
+}
+
+const {
+  show,
+  close,
+  size = "md",
+  class: extraClass,
+  title,
+  titleExpr,
+  subtitle,
+  subtitleExpr,
+  action,
+  actionLabel = "Salva",
+  actionLabelExpr,
+  disabled = "false",
+  loadingLabel = "Salvataggio...",
+} = Astro.props;
+---
+
+<Modal show={show} close={close} size={size} class={extraClass}>
+  <div class="mb-6">
+    {title && <h2 class="text-lg font-serif text-neutral-900">{title}</h2>}
+    {
+      titleExpr && (
+        <h2 class="text-lg font-serif text-neutral-900" x-text={titleExpr} />
+      )
+    }
+    {subtitle && <p class="text-sm text-neutral-500 mt-1">{subtitle}</p>}
+    {
+      subtitleExpr && (
+        <p class="text-sm text-neutral-500 mt-1" x-text={subtitleExpr} />
+      )
+    }
+  </div>
+
+  <slot />
+
+  <div class="flex justify-end gap-3 pt-4">
+    <button
+      type="button"
+      x-on:click={close}
+      class="px-4 py-2.5 text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
+      >Annulla</button
+    >
+    <slot name="extra-actions" />
+    <Button variant="primary" x-on:click={action} x-bind:disabled={disabled}>
+      <span x-show={`!(${disabled})`}>
+        {actionLabelExpr ? <span x-text={actionLabelExpr} /> : actionLabel}
+      </span>
+      <span x-show={disabled} x-cloak>{loadingLabel}</span>
+    </Button>
+  </div>
+</Modal>
