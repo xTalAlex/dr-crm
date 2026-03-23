@@ -44,13 +44,8 @@ export function sharingMixin() {
       await navigator.clipboard.writeText(this.magicLinkUrl(token));
     },
 
-    waLinkWithMagic(this: any) {
-      const text = `Ecco i tuoi documenti: ${this.magicLinkUrl(this.magicLinkResult!)}\nCodice PIN: ${this.magicLinkPin}`;
-      return waLink(this.customerPhone, text);
-    },
-
-    waLinkForGroup(this: any, g: any) {
-      const text = `Ecco i tuoi documenti: ${this.magicLinkUrl(g.magicLink.token)}\nCodice PIN: ${g.magicLink.pin}`;
+    waLinkMessage(this: any, token: string, pin: string) {
+      const text = `Ecco i tuoi documenti: ${this.magicLinkUrl(token)}\nCodice PIN: ${pin}`;
       return waLink(this.customerPhone, text);
     },
 
@@ -59,29 +54,29 @@ export function sharingMixin() {
         g.magicLink && new Date(g.magicLink.expiresAt) >= new Date();
       if (hasValidLink) {
         window.open(
-          this.waLinkForGroup(g),
+          this.waLinkMessage(g.magicLink.token, g.magicLink.pin),
           "_blank",
           "noopener,noreferrer"
         );
-        return;
-      }
-      const res = await fetch(
-        `/admin/api/customers/${this.customerId}/files/groups/${g.id}/magic-link`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ expiresInHours: 72 }),
-        }
-      );
-      if (res.ok) {
-        await this.fetchData();
-        const freshGroup = this.groups.find((gr: any) => gr.id === g.id);
-        if (freshGroup) {
-          window.open(
-            this.waLinkForGroup(freshGroup),
-            "_blank",
-            "noopener,noreferrer"
-          );
+      } else {
+        const res = await fetch(
+          `/admin/api/customers/${this.customerId}/files/groups/${g.id}/magic-link`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ expiresInHours: 72 }),
+          }
+        );
+        if (res.ok) {
+          await this.fetchData();
+          const freshGroup = this.groups.find((gr: any) => gr.id === g.id);
+          if (freshGroup) {
+            window.open(
+            this.waLinkMessage(freshGroup.magicLink.token, freshGroup.magicLink.pin),
+              "_blank",
+              "noopener,noreferrer"
+            );
+          }
         }
       }
     },

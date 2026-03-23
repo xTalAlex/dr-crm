@@ -1,6 +1,6 @@
 import { waLink } from "@/lib/wa-link";
 
-export function tableState() {
+export function tableMixin() {
   return {
     customers: [] as any[],
     total: 0,
@@ -10,7 +10,6 @@ export function tableState() {
     loading: false,
 
     waLink,
-
 
     async init() {
       this.loading = true;
@@ -27,7 +26,6 @@ export function tableState() {
       const params = new URLSearchParams();
       if (this.search) params.set("q", this.search);
       if (this.activeLetter) params.set("letter", this.activeLetter);
-      params.set("limit", "5000");
 
       const res = await fetch(`/admin/api/customers?${params}`);
       const data = await res.json();

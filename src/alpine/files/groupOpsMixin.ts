@@ -1,3 +1,5 @@
+import { validateFiles, uploadFiles } from "@/lib/file-upload-client";
+
 export function groupOpsMixin() {
   return {
     // Rename group
@@ -52,46 +54,25 @@ export function groupOpsMixin() {
     async doAddFiles(this: any, groupId: string) {
       this.addFilesError = "";
       const fileInput = (this.$refs as any).addFileInput as HTMLInputElement;
-      const files = fileInput?.files;
-      if (!files || files.length === 0) {
-        this.addFilesError = "Seleziona almeno un file";
-        return;
-      }
+      const validationError = validateFiles(fileInput?.files);
 
-      const maxSize = 5 * 1024 * 1024;
-      const oversized = Array.from(files).filter((f) => f.size > maxSize);
-      if (oversized.length > 0) {
-        this.addFilesError = `File troppo grandi (max 5 MB): ${oversized.map((f) => f.name).join(", ")}`;
-        return;
-      }
-
-      const totalSize = Array.from(files).reduce((sum, f) => sum + f.size, 0);
-      if (totalSize > 20 * 1024 * 1024) {
-        this.addFilesError = `Upload troppo grande: ${(totalSize / 1024 / 1024).toFixed(1)} MB (max 20 MB)`;
-        return;
-      }
-
-      this.addFilesUploading = true;
-      const fd = new FormData();
-      for (const f of files) {
-        fd.append("files", f);
-      }
-
-      const res = await fetch(
-        `/admin/api/customers/${this.customerId}/files/groups/${groupId}`,
-        { method: "POST", body: fd }
-      );
-
-      if (!res.ok) {
-        const err = await res.json();
-        this.addFilesError = err.error || "Errore nel caricamento";
+      if (validationError) {
+        this.addFilesError = validationError;
+      } else {
+        this.addFilesUploading = true;
+        const error = await uploadFiles(
+          `/admin/api/customers/${this.customerId}/files/groups/${groupId}`,
+          fileInput.files!,
+        );
         this.addFilesUploading = false;
-        return;
-      }
 
-      this.addFilesUploading = false;
-      this.addFilesGroupId = null;
-      await this.fetchData();
+        if (error) {
+          this.addFilesError = error;
+        } else {
+          this.addFilesGroupId = null;
+          await this.fetchData();
+        }
+      }
     },
 
     confirmDeleteGroup(this: any, g: any) {
@@ -114,16 +95,17 @@ export function groupOpsMixin() {
     },
 
     async doDeleteFile(this: any) {
-      if (!this.deleteFileTarget) return;
-      const { group, file } = this.deleteFileTarget;
-      this.deleting = true;
-      await fetch(
-        `/admin/api/customers/${this.customerId}/files/entries/${file.id}`,
-        { method: "DELETE" }
-      );
-      group.files = group.files.filter((x: any) => x.id !== file.id);
-      this.deleteFileTarget = null;
-      this.deleting = false;
+      if (this.deleteFileTarget) {
+        const { group, file } = this.deleteFileTarget;
+        this.deleting = true;
+        await fetch(
+          `/admin/api/customers/${this.customerId}/files/entries/${file.id}`,
+          { method: "DELETE" }
+        );
+        group.files = group.files.filter((x: any) => x.id !== file.id);
+        this.deleteFileTarget = null;
+        this.deleting = false;
+      }
     },
   };
 }

@@ -9,8 +9,9 @@ export const GET: APIRoute = async ({ url }) => {
         const prisma = getDb();
         const search = url.searchParams.get("q") ?? "";
         const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
-        const limit = Math.min(5000, Math.max(1, Number(url.searchParams.get("limit")) || 25));
-        const skip = (page - 1) * limit;
+        const limitParam = url.searchParams.get("limit");
+        const limit = limitParam ? Math.min(5000, Math.max(1, Number(limitParam))) : undefined;
+        const skip = limit ? (page - 1) * limit : 0;
         const letter = url.searchParams.get("letter") ?? "";
 
         const conditions: any[] = [];

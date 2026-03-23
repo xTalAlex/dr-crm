@@ -1,7 +1,8 @@
-import type Alpine from "alpinejs";
-import { uploadMixin } from "./files/upload";
-import { groupOpsMixin } from "./files/groupOps";
-import { sharingMixin } from "./files/sharing";
+import type { Alpine } from "alpinejs";
+import { uploadMixin } from "./files/uploadMixin";
+import { groupOpsMixin } from "./files/groupOpsMixin";
+import { sharingMixin } from "./files/sharingMixin";
+import content from "@/data/content.json";
 
 export default (Alpine: Alpine) => {
   Alpine.data("customerFilesPage", (customerId: string) => ({
@@ -24,15 +25,15 @@ export default (Alpine: Alpine) => {
       const res = await fetch(`/admin/api/customers/${this.customerId}/files`);
       if (!res.ok) {
         this.loading = false;
-        return;
+      } else {
+        const data = await res.json();
+        this.customerName =
+          ((data.customer.surname || "") + " " + (data.customer.name || "")).trim() ||
+          content.app.customerLabel;
+        this.customerPhone = data.customer.phone || "";
+        this.groups = data.groups;
+        this.loading = false;
       }
-      const data = await res.json();
-      this.customerName =
-        ((data.customer.surname || "") + " " + (data.customer.name || "")).trim() ||
-        "Cliente";
-      this.customerPhone = data.customer.phone || "";
-      this.groups = data.groups;
-      this.loading = false;
     },
   }));
 };

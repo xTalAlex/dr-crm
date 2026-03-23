@@ -27,12 +27,11 @@ export function userFormMixin() {
       if (error) {
         this.formError = error.message || "Errore nella creazione";
         this.saving = false;
-        return;
+      } else {
+        this.modal = false;
+        this.saving = false;
+        this.fetchUsers();
       }
-
-      this.modal = false;
-      this.saving = false;
-      this.fetchUsers();
     },
 
     confirmRemove(this: any, u: any) {

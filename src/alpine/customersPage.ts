@@ -1,10 +1,10 @@
-import type Alpine from "alpinejs";
-import { tableState } from "./customers/tableState";
-import { formState } from "./customers/formState";
+import type { Alpine } from "alpinejs";
+import { tableMixin } from "./customers/tableMixin";
+import { formMixin } from "./customers/formMixin";
 
 export default (Alpine: Alpine) => {
   Alpine.data("customersPage", () => ({
-    ...tableState(),
-    ...formState(),
+    ...tableMixin(),
+    ...formMixin(),
   }));
 };

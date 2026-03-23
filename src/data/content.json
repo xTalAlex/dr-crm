@@ -36,5 +36,9 @@
   "seo": {
     "title": "Dott. Adriano Talamona — Dentista a Varese",
     "description": "Dott. Adriano Talamona, dentista a Varese dal 1984. Medico Chirurgo Odontoiatra. Prima visita gratuita."
+  },
+  "app": {
+    "customerLabel": "Paziente",
+    "customerLabelPlural": "Pazienti"
   }
 }

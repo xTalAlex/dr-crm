@@ -1,5 +1,5 @@
 import { authClient } from "@/lib/auth-client";
-import type Alpine from "alpinejs";
+import type { Alpine } from "alpinejs";
 
 export default (Alpine: Alpine) => {
   Alpine.data("resetPage", () => ({
@@ -25,44 +25,38 @@ export default (Alpine: Alpine) => {
 
       if (error) {
         this.error = "Errore nell'invio. Riprova.";
-        return;
+      } else {
+        this.success = "Link di reset inviato alla tua email.";
       }
-
-      this.success = "Link di reset inviato alla tua email.";
     },
 
     async submitNewPassword() {
       this.error = "";
       this.success = "";
 
+      const token = new URLSearchParams(window.location.search).get("token");
+
       if (this.password !== this.confirm) {
         this.error = "Le password non coincidono";
-        return;
-      }
-
-      this.loading = true;
-
-      const token = new URLSearchParams(window.location.search).get("token");
-      if (!token) {
+      } else if (!token) {
         this.error = "Token mancante. Richiedi un nuovo link.";
+      } else {
+        this.loading = true;
+
+        const { error } = await authClient.resetPassword({
+          newPassword: this.password,
+          token,
+        });
+
         this.loading = false;
-        return;
+
+        if (error) {
+          this.error = "Impossibile resettare la password. Il link potrebbe essere scaduto.";
+        } else {
+          this.success = "Password aggiornata. Reindirizzamento...";
+          setTimeout(() => (window.location.href = "/auth/login"), 1500);
+        }
       }
-
-      const { error } = await authClient.resetPassword({
-        newPassword: this.password,
-        token,
-      });
-
-      this.loading = false;
-
-      if (error) {
-        this.error = "Errore nel reset. Il link potrebbe essere scaduto.";
-        return;
-      }
-
-      this.success = "Password aggiornata. Reindirizzamento...";
-      setTimeout(() => (window.location.href = "/auth/login"), 1500);
     },
   }));
 };

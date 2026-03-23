@@ -1,5 +1,5 @@
 import { signIn } from "@/lib/auth-client";
-import type Alpine from "alpinejs";
+import type { Alpine } from "alpinejs";
 
 export default (Alpine: Alpine) => {
   Alpine.data("loginForm", () => ({
@@ -20,10 +20,9 @@ export default (Alpine: Alpine) => {
       if (error) {
         this.error = "Credenziali non valide";
         this.loading = false;
-        return;
+      } else {
+        window.location.href = "/admin";
       }
-
-      window.location.href = "/admin";
     },
   }));
 };

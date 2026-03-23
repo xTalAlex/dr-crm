@@ -10,7 +10,7 @@ const emptyForm = () => ({
   notes: "",
 });
 
-export function formState() {
+export function formMixin() {
   return {
     modal: false,
     editing: null as any,
@@ -20,7 +20,7 @@ export function formState() {
     showExtra: false,
     deleteTarget: null as any,
 
-    openCreate() {
+    openCreate(this: any) {
       this.editing = null;
       this.form = emptyForm();
       this.formError = "";
@@ -29,7 +29,7 @@ export function formState() {
       this.$nextTick(() => this.$refs.firstField?.focus());
     },
 
-    openEdit(c: any) {
+    openEdit(this: any, c: any) {
       this.editing = c;
       this.form = {
         name: c.name,
@@ -53,7 +53,7 @@ export function formState() {
       this.$nextTick(() => this.$refs.firstField?.focus());
     },
 
-    async save(keepOpen = false) {
+    async save(this: any, keepOpen = false) {
       this.formError = "";
       this.saving = true;
 
@@ -77,18 +77,17 @@ export function formState() {
         const err = await res.json();
         this.formError = err.error || "Errore nel salvataggio";
         this.saving = false;
-        return;
-      }
-
-      this.saving = false;
-      this.fetchCustomers();
-
-      if (keepOpen && !this.editing) {
-        this.form = emptyForm();
-        this.formError = "";
-        this.$nextTick(() => this.$refs.firstField?.focus());
       } else {
-        this.modal = false;
+        this.saving = false;
+        this.fetchCustomers();
+
+        if (keepOpen && !this.editing) {
+          this.form = emptyForm();
+          this.formError = "";
+          this.$nextTick(() => this.$refs.firstField?.focus());
+        } else {
+          this.modal = false;
+        }
       }
     },
 
@@ -96,7 +95,7 @@ export function formState() {
       this.deleteTarget = c;
     },
 
-    async doDelete() {
+    async doDelete(this: any) {
       this.saving = true;
       await fetch(`/admin/api/customers/${this.deleteTarget.id}`, {
         method: "DELETE",

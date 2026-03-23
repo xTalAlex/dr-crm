@@ -1,4 +1,4 @@
-import type Alpine from "alpinejs";
+import type { Alpine } from "alpinejs";
 
 export default (Alpine: Alpine) => {
   Alpine.data("magicFiles", (token: string) => ({
@@ -21,10 +21,10 @@ export default (Alpine: Alpine) => {
         const body = await res.json().catch(() => ({}));
         this.error = body.error || "Link non valido o scaduto";
         this.loading = false;
-        return;
+      } else {
+        this.data = await res.json();
+        this.loading = false;
       }
-      this.data = await res.json();
-      this.loading = false;
     },
   }));
 };

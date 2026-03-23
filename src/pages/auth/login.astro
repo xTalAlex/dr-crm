@@ -87,10 +87,10 @@ if (user?.role === "admin") return Astro.redirect("/admin");
 
   <script>
     import Alpine from "alpinejs";
-    import loginForm from "@/alpine/loginForm";
+    import loginPage from "@/alpine/loginPage";
 
     document.addEventListener("alpine:init", () => {
-      loginForm(Alpine);
+      loginPage(Alpine);
     });
   </script>
 </BaseLayout>
