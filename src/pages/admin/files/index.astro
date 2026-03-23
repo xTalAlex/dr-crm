@@ -7,7 +7,7 @@ import Th from "@/components/Th.astro";
 import Td from "@/components/Td.astro";
 import IconButton from "@/components/IconButton.astro";
 import Button from "@/components/Button.astro";
-import DocumentsModals from "@/components/documents/DocumentsModals.astro";
+import FilesPageModals from "@/components/files/FilesPageModals.astro";
 import Pagination from "@/components/Pagination.astro";
 import { Icon } from "astro-icon/components";
 
@@ -15,7 +15,7 @@ export const prerender = false;
 ---
 
 <AdminLayout title="Documenti">
-  <div x-data="documentsPage()" x-init="init()">
+  <div x-data="filesPage()" x-init="init()">
     <PageHeader
       title="Documenti"
       subtitle="Tutti i file caricati per i clienti"
@@ -104,15 +104,15 @@ export const prerender = false;
       </div>
     </template>
 
-    <DocumentsModals />
+    <FilesPageModals />
   </div>
 
   <script>
     import Alpine from "alpinejs";
-    import documentsPage from "@/alpine/documentsPage";
+    import filesPage from "@/alpine/filesPage";
 
     document.addEventListener("alpine:init", () => {
-      documentsPage(Alpine);
+      filesPage(Alpine);
     });
   </script>
 </AdminLayout>

@@ -58,6 +58,19 @@ export function groupOpsMixin() {
         return;
       }
 
+      const maxSize = 5 * 1024 * 1024;
+      const oversized = Array.from(files).filter((f) => f.size > maxSize);
+      if (oversized.length > 0) {
+        this.addFilesError = `File troppo grandi (max 5 MB): ${oversized.map((f) => f.name).join(", ")}`;
+        return;
+      }
+
+      const totalSize = Array.from(files).reduce((sum, f) => sum + f.size, 0);
+      if (totalSize > 20 * 1024 * 1024) {
+        this.addFilesError = `Upload troppo grande: ${(totalSize / 1024 / 1024).toFixed(1)} MB (max 20 MB)`;
+        return;
+      }
+
       this.addFilesUploading = true;
       const fd = new FormData();
       for (const f of files) {

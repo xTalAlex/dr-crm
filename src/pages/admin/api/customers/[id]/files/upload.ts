@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { getDb } from "@/lib/db";
-import { getSupabase, BUCKET } from "@/lib/supabase";
-import { randomBytes } from "node:crypto";
+import { getSupabase } from "@/lib/supabase";
+import { uploadFiles, FileSizeError } from "@/lib/file-upload";
 
 export const prerender = false;
 
@@ -25,49 +25,22 @@ export const POST: APIRoute = async ({ params, request }) => {
       return Response.json({ error: "Nessun file selezionato" }, { status: 400 });
     }
 
-    // Create group
     const group = await prisma.fileGroup.create({
       data: { customerId, label },
     });
 
-    const created: any[] = [];
-
-    for (const file of files) {
-      const ext = file.name.includes(".") ? file.name.slice(file.name.lastIndexOf(".")) : "";
-      const safeName = `${randomBytes(8).toString("hex")}${ext}`;
-      const storagePath = `${customerId}/${group.id}/${safeName}`;
-
-      const buffer = await file.arrayBuffer();
-      const { error } = await supabase.storage.from(BUCKET).upload(storagePath, buffer, {
-        contentType: file.type || "application/octet-stream",
-        upsert: false,
-      });
-
-      if (error) {
-        console.error("Supabase upload error:", error);
-        continue;
-      }
-
-      const entry = await prisma.fileEntry.create({
-        data: {
-          fileName: file.name,
-          storagePath,
-          mimeType: file.type || "application/octet-stream",
-          size: file.size,
-          groupId: group.id,
-        },
-      });
-      created.push(entry);
-    }
+    const created = await uploadFiles(prisma, supabase, customerId, group.id, files);
 
     if (created.length === 0) {
-      // Cleanup empty group
       await prisma.fileGroup.delete({ where: { id: group.id } });
-      return Response.json({ error: `Upload fallito per tutti i file: ${lastError}` }, { status: 500 });
+      return Response.json({ error: "Upload fallito per tutti i file" }, { status: 500 });
     }
 
     return Response.json({ group, files: created }, { status: 201 });
   } catch (err: any) {
+    if (err instanceof FileSizeError) {
+      return Response.json({ error: err.message }, { status: 413 });
+    }
     return Response.json({ error: err.message ?? "Errore del server" }, { status: 500 });
   }
 };

@@ -1,7 +1,7 @@
 import type Alpine from "alpinejs";
 
 export default (Alpine: Alpine) => {
-  Alpine.data("documentsPage", () => ({
+  Alpine.data("filesPage", () => ({
     groups: [] as any[],
     total: 0,
     page: 1,
@@ -32,7 +32,7 @@ export default (Alpine: Alpine) => {
       const params = new URLSearchParams();
       params.set("page", String(this.page));
       if (this.search) params.set("search", this.search);
-      const res = await fetch(`/admin/api/documents?${params}`);
+      const res = await fetch(`/admin/api/files?${params}`);
       if (res.ok) {
         const data = await res.json();
         this.groups = data.groups;
@@ -88,10 +88,23 @@ export default (Alpine: Alpine) => {
         this.uploadError = "Seleziona un cliente";
         return;
       }
-      const fileInput = this.$refs.docFileInput as HTMLInputElement;
+      const fileInput = this.$refs.filesPageInput as HTMLInputElement;
       const files = fileInput?.files;
       if (!files || files.length === 0) {
         this.uploadError = "Seleziona almeno un file";
+        return;
+      }
+
+      const maxSize = 5 * 1024 * 1024;
+      const oversized = Array.from(files).filter((f) => f.size > maxSize);
+      if (oversized.length > 0) {
+        this.uploadError = `File troppo grandi (max 5 MB): ${oversized.map((f) => f.name).join(", ")}`;
+        return;
+      }
+
+      const totalSize = Array.from(files).reduce((sum, f) => sum + f.size, 0);
+      if (totalSize > 20 * 1024 * 1024) {
+        this.uploadError = `Upload troppo grande: ${(totalSize / 1024 / 1024).toFixed(1)} MB (max 20 MB)`;
         return;
       }
 

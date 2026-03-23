@@ -9,13 +9,13 @@ const currentPath = Astro.url.pathname;
 const iconMap: Record<string, string> = {
   dashboard: "material-symbols-light:dashboard-outline",
   customers: "material-symbols-light:group-outline",
-  documents: "material-symbols-light:description-outline",
+  files: "material-symbols-light:description-outline",
 };
 
 const nav = [
   { label: "Dashboard", href: "/admin", icon: "dashboard" },
   { label: "Clienti", href: "/admin/customers", icon: "customers" },
-  { label: "Documenti", href: "/admin/documents", icon: "documents" },
+  { label: "Documenti", href: "/admin/files", icon: "files" },
 ];
 ---
 

@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { getDb } from "@/lib/db";
+import { sanitizeCustomer, validatePhone } from "@/lib/customer";
 
 export const prerender = false;
 
@@ -74,32 +75,15 @@ export const GET: APIRoute = async ({ url }) => {
 export const POST: APIRoute = async ({ request }) => {
     try {
         const prisma = getDb();
-        const body = await request.json();
+        const data = sanitizeCustomer(await request.json());
 
-        const { name, surname, phone, phone2, email, fiscalCode, birthDate, address, notes } = body;
-
-        if (!phone?.trim()) {
-            return Response.json({ error: "Il telefono è obbligatorio" }, { status: 400 });
+        const phoneError = await validatePhone(prisma, data.phone);
+        if (phoneError) {
+            const status = phoneError.includes("obbligatorio") ? 400 : 409;
+            return Response.json({ error: phoneError }, { status });
         }
 
-        const duplicate = await prisma.customer.findFirst({ where: { phone: phone.trim() } });
-        if (duplicate) {
-            return Response.json({ error: "Esiste già un cliente con questo numero di telefono" }, { status: 409 });
-        }
-
-        const customer = await prisma.customer.create({
-            data: {
-                name: name?.trim() || "",
-                surname: surname?.trim() || "",
-                phone: phone.trim(),
-                phone2: phone2?.trim() || null,
-                email: email?.trim() || null,
-                fiscalCode: fiscalCode?.trim() || null,
-                birthDate: birthDate ? new Date(birthDate) : null,
-                address: address?.trim() || null,
-                notes: notes?.trim() || null,
-            },
-        });
+        const customer = await prisma.customer.create({ data });
 
         return Response.json(customer, { status: 201 });
     } catch (err: any) {

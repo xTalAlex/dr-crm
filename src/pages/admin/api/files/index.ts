@@ -3,7 +3,7 @@ import { getDb } from "@/lib/db";
 
 export const prerender = false;
 
-/** GET /admin/api/documents — list all file groups across all customers */
+/** GET /admin/api/files — list all file groups across all customers */
 export const GET: APIRoute = async ({ url }) => {
   try {
     const prisma = getDb();
