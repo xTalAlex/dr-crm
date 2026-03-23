@@ -95,8 +95,32 @@ model Customer {
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
   fileGroups    FileGroup[]
+  tags          CustomerTag[]
 
   @@map("customer")
+}
+
+model Tag {
+  id        String        @id @default(cuid())
+  name      String        @unique
+  color     String?       
+  createdAt DateTime      @default(now())
+  customers CustomerTag[]
+
+  @@map("tag")
+}
+
+model CustomerTag {
+  customerId String
+  tagId      String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@id([customerId, tagId])
+  @@index([customerId])
+  @@index([tagId])
+  @@map("customer_tag")
 }
 
 model FileGroup {
