@@ -14,15 +14,22 @@ export function sanitizeCustomer(body: any) {
   };
 }
 
-export async function validatePhone(prisma: PrismaClient, phone: string, excludeId?: string) {
-  if (!phone) {
-    return "Il telefono è obbligatorio";
+export async function validateCustomer(
+  prisma: PrismaClient,
+  data: ReturnType<typeof sanitizeCustomer>,
+  excludeId?: string,
+): Promise<{ status: number; message: string } | null> {
+  if (!data.surname) {
+    return { status: 400, message: "Il cognome è obbligatorio" };
   }
-  const where: any = { phone };
+  if (!data.phone) {
+    return { status: 400, message: "Il telefono è obbligatorio" };
+  }
+  const where: any = { phone: data.phone };
   if (excludeId) where.id = { not: excludeId };
   const duplicate = await prisma.customer.findFirst({ where });
   if (duplicate) {
-    return "Esiste già un cliente con questo numero di telefono";
+    return { status: 409, message: "Esiste già un cliente con questo numero di telefono" };
   }
   return null;
 }

@@ -1,5 +1,5 @@
 import { apiHandler, ApiError } from "@/lib/api";
-import { sanitizeCustomer, validatePhone } from "@/lib/customer";
+import { sanitizeCustomer, validateCustomer } from "@/lib/customer";
 
 export const prerender = false;
 
@@ -70,11 +70,8 @@ export const GET = apiHandler(async ({ url }, { prisma }) => {
 export const POST = apiHandler(async ({ request }, { prisma }) => {
     const data = sanitizeCustomer(await request.json());
 
-    const phoneError = await validatePhone(prisma, data.phone);
-    if (phoneError) {
-        const status = phoneError.includes("obbligatorio") ? 400 : 409;
-        throw new ApiError(status, phoneError);
-    }
+    const error = await validateCustomer(prisma, data);
+    if (error) throw new ApiError(error.status, error.message);
 
     const customer = await prisma.customer.create({ data });
     return Response.json(customer, { status: 201 });

@@ -1,17 +1,14 @@
 import { apiHandler, ApiError } from "@/lib/api";
 import { BUCKET } from "@/lib/supabase";
-import { sanitizeCustomer, validatePhone } from "@/lib/customer";
+import { sanitizeCustomer, validateCustomer } from "@/lib/customer";
 
 export const prerender = false;
 
 export const PUT = apiHandler(async ({ params, request }, { prisma }) => {
     const data = sanitizeCustomer(await request.json());
 
-    const phoneError = await validatePhone(prisma, data.phone, params.id);
-    if (phoneError) {
-        const status = phoneError.includes("obbligatorio") ? 400 : 409;
-        throw new ApiError(status, phoneError);
-    }
+    const error = await validateCustomer(prisma, data, params.id);
+    if (error) throw new ApiError(error.status, error.message);
 
     const existing = await prisma.customer.findUnique({ where: { id: params.id } });
     if (!existing) throw new ApiError(404, "Cliente non trovato");
