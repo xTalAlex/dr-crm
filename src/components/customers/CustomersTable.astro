@@ -1,9 +1,11 @@
 ---
 import SearchInput from "@/components/SearchInput.astro";
 import DataTable from "@/components/DataTable.astro";
+import AlphabetFilter from "@/components/customers/AlphabetFilter.astro";
 import Th from "@/components/Th.astro";
 import Td from "@/components/Td.astro";
 import IconButton from "@/components/IconButton.astro";
+import Button from "@/components/Button.astro";
 import { Icon } from "astro-icon/components";
 ---
 
@@ -20,62 +22,10 @@ import { Icon } from "astro-icon/components";
     x-text="total + ' risultati'"></span>
 </SearchInput>
 
-<!-- Mobile letter filter -->
-<div class="sm:hidden mb-4">
-  <div class="flex flex-wrap gap-1">
-    <template x-for="l in Object.keys(letterCounts).sort()" :key="l">
-      <button
-        x-on:click="search = ''; activeLetter = l; fetchCustomers()"
-        :class="activeLetter === l ? 'bg-petrol-50 text-petrol-500 border-petrol-200' : 'text-neutral-500 border-neutral-200'"
-        class="px-2 py-1 text-xs rounded border transition-colors"
-      >
-        <span x-text="l"></span>
-        <span class="text-[10px] opacity-60" x-text="letterCounts[l]"></span>
-      </button>
-    </template>
-    <button
-      x-on:click="search = ''; activeLetter = ''; fetchCustomers()"
-      :class="activeLetter === '' ? 'bg-petrol-50 text-petrol-500 border-petrol-200' : 'text-neutral-500 border-neutral-200'"
-      class="px-2 py-1 text-xs rounded border transition-colors"
-    >
-      Tutti
-      <span
-        class="text-[10px] opacity-60"
-        x-text="Object.values(letterCounts).reduce((a, b) => a + b, 0)"></span>
-    </button>
-  </div>
-</div>
+<AlphabetFilter mode="mobile" />
 
-<!-- Layout: Alphabet sidebar + Table -->
 <div class="flex gap-4">
-  <!-- Alphabet sidebar -->
-  <div
-    class="hidden sm:grid grid-cols-2 gap-x-1 gap-y-0.5 shrink-0 sticky top-20 self-start"
-  >
-    <template x-for="(l, i) in Object.keys(letterCounts).sort()" :key="l">
-      <button
-        x-on:click="search = ''; activeLetter = l; fetchCustomers()"
-        :class="[
-          activeLetter === l ? 'bg-petrol-50 text-petrol-500 border-petrol-200' : 'text-neutral-500 hover:text-petrol-500 border-transparent hover:border-neutral-200',
-          i % 2 === 1 ? 'mt-3' : ''
-        ]"
-        class="w-auto px-2 h-7 text-xs font-medium rounded border transition-all duration-200 flex items-center justify-center gap-1"
-      >
-        <span x-text="l"></span>
-        <span class="text-[10px] opacity-60" x-text="letterCounts[l]"></span>
-      </button>
-    </template>
-    <button
-      x-on:click="search = ''; activeLetter = ''; fetchCustomers()"
-      :class="activeLetter === '' ? 'bg-petrol-50 text-petrol-500 border-petrol-200' : 'text-neutral-500 hover:text-petrol-500 border-transparent hover:border-neutral-200'"
-      class="col-span-2 w-auto px-2 h-7 text-xs font-medium rounded border transition-all duration-200 flex items-center justify-center gap-1 mt-3"
-    >
-      Tutti
-      <span
-        class="text-[10px] opacity-60"
-        x-text="Object.values(letterCounts).reduce((a, b) => a + b, 0)"></span>
-    </button>
-  </div>
+  <AlphabetFilter mode="sidebar" />
 
   <!-- Table -->
   <div class="flex-1 min-w-0">
@@ -98,26 +48,28 @@ import { Icon } from "astro-icon/components";
         </template>
         <template x-if="!loading && customers.length === 0">
           <tr>
-            <td colspan="6" class="px-4 py-8 text-center">
+            <Td colspan="6" muted class="py-8 text-center">
               <p class="text-neutral-500">Nessun cliente trovato</p>
-              <button
+              <Button
+                variant="outline"
+                size="xs"
+                class="mt-3"
                 x-show="search || activeLetter"
                 x-on:click="search = ''; activeLetter = ''; fetchCustomers()"
-                class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-neutral-200 hover:border-petrol-300 text-neutral-500 hover:text-petrol-500 rounded-lg transition-colors"
               >
                 <Icon
                   name="material-symbols-light:filter-alt-off-outline"
-                  class="w-3.5 h-3.5"
+                  class="size-3.5"
                 />
                 Rimuovi filtri
-              </button>
-            </td>
+              </Button>
+            </Td>
           </tr>
         </template>
         <template x-for="c in customers" :key="c.id">
           <tr
             x-on:click="openEdit(c)"
-            class="border-b border-neutral-100 hover:bg-neutral-50 transition-colors cursor-pointer"
+            class="border-b border-neutral-100 hover:bg-neutral-100 transition-colors cursor-pointer"
           >
             <Td class="font-medium" x-text="c.surname || '-'" />
             <Td x-text="c.name" />
@@ -163,7 +115,7 @@ import { Icon } from "astro-icon/components";
                 >
                   <Icon
                     name="material-symbols-light:delete-outline"
-                    class="w-4 h-4"
+                    class="size-4"
                   />
                 </IconButton>
               </div>

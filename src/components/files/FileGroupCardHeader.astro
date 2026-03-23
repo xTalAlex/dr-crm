@@ -1,0 +1,69 @@
+---
+import Button from "@/components/Button.astro";
+import IconButton from "@/components/IconButton.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<div
+  class="px-5 py-4 bg-neutral-100 rounded-t-xl border-b border-neutral-200"
+>
+  <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+    <div class="flex items-center gap-1.5 flex-1 min-w-0">
+      <Icon
+        is:inline
+        name="material-symbols-light:folder-outline"
+        class="size-4 text-neutral-500 shrink-0"
+      />
+      <template x-if="renameGroupId === g.id">
+        <input
+          type="text"
+          x-ref="renameInput"
+          x-model="renameLabel"
+          x-on:keydown.enter="confirmRename(g)"
+          x-on:keydown.escape="cancelRename()"
+          x-on:blur="confirmRename(g)"
+          class="w-48 text-sm font-medium text-neutral-900 bg-neutral-50 border border-neutral-200 focus:border-petrol-500 rounded-lg px-2 py-1 outline-none transition-colors"
+        />
+      </template>
+      <template x-if="renameGroupId !== g.id">
+        <h3
+          class="text-sm font-medium text-neutral-900 truncate"
+          x-text="g.label || 'Senza nome'"
+        >
+        </h3>
+      </template>
+      <template x-if="renameGroupId !== g.id">
+        <IconButton
+          x-on:click="startRename(g)"
+          title="Rinomina"
+          class="shrink-0"
+        >
+          <Icon
+            is:inline
+            name="material-symbols-light:edit-outline"
+            class="size-3.5"
+          />
+        </IconButton>
+      </template>
+    </div>
+    <div
+      class="flex items-center justify-between sm:justify-end gap-2 shrink-0"
+    >
+      <Button variant="outline" size="xs" x-on:click="openAddFiles(g)">
+        <Icon is:inline name="material-symbols-light:add" class="size-3.5" />
+        Aggiungi file
+      </Button>
+      <IconButton
+        variant="danger"
+        x-on:click="confirmDeleteGroup(g)"
+        title="Elimina cartella"
+      >
+        <Icon
+          is:inline
+          name="material-symbols-light:delete-outline"
+          class="size-4"
+        />
+      </IconButton>
+    </div>
+  </div>
+</div>

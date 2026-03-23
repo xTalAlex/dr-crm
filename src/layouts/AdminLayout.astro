@@ -2,9 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import AdminSidebar from "@/components/AdminSidebar.astro";
 import { Icon } from "astro-icon/components";
-import content from "@/data/content.json";
-
-const { doctor } = content;
+import Wordmark from "@/components/Wordmark.astro";
 
 export const prerender = false;
 
@@ -15,18 +13,14 @@ interface Props {
 const { title } = Astro.props;
 ---
 
-<BaseLayout
-  title={`${title} — CRM`}
-  bodyClass="bg-neutral-50 text-neutral-900 font-sans antialiased min-h-screen"
-  noindex
->
+<BaseLayout title={`${title} — CRM`} bodyClass="min-h-screen" noindex>
   <div x-data="{ sidebarOpen: false }">
     <!-- Mobile overlay -->
     <div
       x-show="sidebarOpen"
       x-cloak
       x-on:click="sidebarOpen = false"
-      class="fixed inset-0 bg-neutral-900/40 z-20 lg:hidden"
+      class="fixed inset-0 bg-neutral-900/50 z-20 lg:hidden"
     >
     </div>
 
@@ -34,17 +28,15 @@ const { title } = Astro.props;
 
     <!-- Mobile header -->
     <header
-      class="lg:hidden fixed top-0 left-0 right-0 z-10 bg-neutral-50/80 backdrop-blur-md border-b border-neutral-200 px-4 py-3 flex items-center justify-between"
+      class="lg:hidden fixed top-0 inset-x-0 z-10 bg-neutral-50 border-b border-neutral-200 px-4 py-3 flex items-center justify-between"
     >
       <button
         x-on:click="sidebarOpen = true"
-        class="text-neutral-500 hover:text-petrol-700"
+        class="text-neutral-500 hover:text-petrol-500"
       >
-        <Icon name="material-symbols-light:menu" class="w-6 h-6" />
+        <Icon name="material-symbols-light:menu" class="size-6" />
       </button>
-      <span class="font-serif text-petrol-700 text-sm tracking-wide"
-        >{doctor.title} {doctor.lastName}</span
-      >
+      <Wordmark class="text-sm" />
       <div class="w-6"></div>
     </header>
 
@@ -55,15 +47,4 @@ const { title } = Astro.props;
       </div>
     </main>
   </div>
-
-  <script>
-    import { signOut } from "@/lib/auth-client";
-
-    document
-      .getElementById("logout-btn")
-      ?.addEventListener("click", async () => {
-        await signOut();
-        window.location.href = "/auth/login";
-      });
-  </script>
 </BaseLayout>

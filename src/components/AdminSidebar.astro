@@ -1,8 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
-import content from "@/data/content.json";
-
-const { doctor } = content;
+import Wordmark from "@/components/Wordmark.astro";
 const user = Astro.locals.user;
 const currentPath = Astro.url.pathname;
 
@@ -25,9 +23,9 @@ const nav = [
   class="w-60 bg-neutral-50 border-r border-neutral-200 flex flex-col fixed inset-y-0 left-0 z-30 transition-transform duration-200 lg:translate-x-0"
 >
   <div class="p-6 border-b border-neutral-200">
-    <a href="/" class="font-serif text-petrol-500 text-lg tracking-wide"
-      >{doctor.title} {doctor.lastName}</a
-    >
+    <a href="/">
+      <Wordmark class="text-lg" />
+    </a>
     <p class="text-neutral-500 text-xs mt-1">Pannello Admin</p>
   </div>
 
@@ -48,7 +46,7 @@ const nav = [
                 : "text-neutral-500 hover:text-petrol-500 hover:bg-neutral-50",
             ]}
           >
-            <Icon name={iconMap[icon]} class="w-5 h-5" />
+            <Icon name={iconMap[icon]} class="size-5" />
             {label}
           </a>
         );
@@ -59,7 +57,7 @@ const nav = [
   <div class="p-4 border-t border-neutral-200">
     <div class="flex items-center gap-3 px-2">
       <div
-        class="w-8 h-8 rounded-full bg-petrol-50 border border-petrol-200 flex items-center justify-center text-petrol-500 text-xs font-medium"
+        class="size-8 rounded-full bg-petrol-50 border border-petrol-200 flex items-center justify-center text-petrol-500 text-xs font-medium"
       >
         {user?.name?.[0]?.toUpperCase() ?? "A"}
       </div>
@@ -72,14 +70,14 @@ const nav = [
       <a
         href="/admin/settings"
         class:list={[
-          "w-8 h-8 flex items-center justify-center rounded-lg transition-colors",
+          "size-8 flex items-center justify-center rounded-lg transition-colors",
           currentPath.startsWith("/admin/settings")
             ? "text-petrol-500 bg-petrol-50"
             : "text-neutral-500 hover:text-petrol-500 hover:bg-neutral-50",
         ]}
         title="Impostazioni"
       >
-        <Icon name="material-symbols-light:settings-outline" class="w-5 h-5" />
+        <Icon name="material-symbols-light:settings-outline" class="size-5" />
       </a>
     </div>
     <button
@@ -90,3 +88,14 @@ const nav = [
     </button>
   </div>
 </aside>
+
+<script>
+  import { signOut } from "@/lib/auth-client";
+
+  document
+    .getElementById("logout-btn")
+    ?.addEventListener("click", async () => {
+      await signOut();
+      window.location.href = "/auth/login";
+    });
+</script>

@@ -1,0 +1,21 @@
+---
+interface Props {
+  variant?: "default" | "muted";
+  class?: string;
+  [key: string]: any;
+}
+
+const { variant = "default", class: className = "", ...rest } = Astro.props;
+---
+
+<a
+  class:list={[
+    "transition-colors",
+    variant === "default" && "text-petrol-500 hover:text-petrol-700",
+    variant === "muted" && "text-neutral-500 hover:text-petrol-500",
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+</a>

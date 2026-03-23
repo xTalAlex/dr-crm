@@ -2,6 +2,7 @@
 import Modal from "@/components/Modal.astro";
 import FormModal from "@/components/FormModal.astro";
 import ConfirmModal from "@/components/ConfirmModal.astro";
+import Alert from "@/components/Alert.astro";
 import Button from "@/components/Button.astro";
 import FormField from "@/components/FormField.astro";
 ---
@@ -34,12 +35,10 @@ import FormField from "@/components/FormField.astro";
     Genera link di condivisione
   </h2>
   <template x-if="hasExistingLink">
-    <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-      <p class="text-xs text-amber-700">
-        Questa cartella ha già un link attivo. Generandone uno nuovo, il
-        precedente verrà invalidato.
-      </p>
-    </div>
+    <Alert class="mb-4">
+      Questa cartella ha già un link attivo. Generandone uno nuovo, il
+      precedente verrà invalidato.
+    </Alert>
   </template>
   <FormField
     label="Scadenza (ore)"
@@ -50,11 +49,7 @@ import FormField from "@/components/FormField.astro";
     class="mb-4"
   />
   <div class="flex justify-end gap-3">
-    <button
-      x-on:click="magicLinkModal = false"
-      class="px-4 py-2.5 text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
-      >Annulla</button
-    >
+    <Button variant="ghost" x-on:click="magicLinkModal = false">Annulla</Button>
     <Button
       variant="primary"
       x-on:click="doGenerateMagicLink()"

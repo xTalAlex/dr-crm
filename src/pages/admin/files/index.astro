@@ -21,7 +21,7 @@ export const prerender = false;
       subtitle="Tutti i file caricati per i clienti"
     >
       <Button variant="outline" x-on:click="openUpload()">
-        <Icon name="material-symbols-light:upload" class="w-4 h-4" />
+        <Icon name="material-symbols-light:upload" class="size-4" />
         Carica documenti
       </Button>
     </PageHeader>
@@ -61,14 +61,12 @@ export const prerender = false;
           </thead>
           <tbody class="divide-y divide-neutral-100">
             <template x-for="g in groups" :key="g.id">
-              <tr class="hover:bg-neutral-50/60 transition-colors">
+              <tr
+                class="hover:bg-neutral-100 transition-colors cursor-pointer"
+                x-on:click={`window.location.href = '/admin/customers/' + g.customer.id + '/files'`}
+              >
                 <Td class="font-medium" x-text="g.label || 'Senza nome'" />
-                <Td>
-                  <a
-                    :href="`/admin/customers/${g.customer.id}/files`"
-                    class="text-petrol-700 hover:text-petrol-900 transition-colors"
-                    x-text="customerLabel(g)"></a>
-                </Td>
+                <Td x-text="customerLabel(g)" />
                 <Td muted align="center">
                   <span x-text="g.files.length"></span>
                 </Td>
@@ -82,12 +80,7 @@ export const prerender = false;
                 </Td>
                 <Td align="right">
                   <div class="inline-flex gap-1">
-                    <IconButton
-                      as="a"
-                      variant="amber"
-                      :href="`/admin/customers/${g.customer.id}/files`"
-                      title="Gestisci file"
-                    >
+                    <IconButton variant="amber" title="Gestisci file">
                       <Icon
                         name="material-symbols-light:folder-open-outline"
                         class="size-5"

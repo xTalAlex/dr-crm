@@ -46,8 +46,7 @@ export function formMixin() {
       this.showExtra = !!(
         this.form.fiscalCode ||
         this.form.birthDate ||
-        this.form.address ||
-        this.form.notes
+        this.form.address
       );
       this.modal = true;
       this.$nextTick(() => this.$refs.firstField?.focus());

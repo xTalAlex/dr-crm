@@ -2,12 +2,11 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import PinForm from "@/components/shared-files/PinForm.astro";
 import FileList from "@/components/shared-files/FileList.astro";
-import content from "@/data/content.json";
+import Wordmark from "@/components/Wordmark.astro";
 
 export const prerender = false;
 
 const { token } = Astro.params;
-const { doctor } = content;
 ---
 
 <BaseLayout title="Documenti Condivisi" noindex>
@@ -17,10 +16,7 @@ const { doctor } = content;
   >
     <div class="w-full max-w-lg">
       <div class="text-center mb-8">
-        <p class="font-serif text-petrol-500 text-lg">
-          {doctor.title}
-          {doctor.lastName}
-        </p>
+        <Wordmark class="text-lg" />
         <p class="text-neutral-500 text-sm mt-1">Documenti condivisi</p>
       </div>
 

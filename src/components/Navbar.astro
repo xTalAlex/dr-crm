@@ -1,8 +1,7 @@
 ---
-import content from "@/data/content.json";
+import Wordmark from "@/components/Wordmark.astro";
+import Button from "@/components/Button.astro";
 import logo from "@/assets/images/logo.svg";
-
-const { doctor } = content;
 const user = Astro.locals.user;
 ---
 
@@ -10,61 +9,52 @@ const user = Astro.locals.user;
   class="fixed top-0 w-full z-50 bg-neutral-50/80 backdrop-blur-md border-b border-neutral-200"
 >
   <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="/" class="inline-flex items-center gap-2">
-      <img src={logo.src} alt="Logo" class="w-7 h-7" />
-      <span
-        class="pt-2 hidden sm:inline font-serif text-petrol-700 text-lg tracking-wide"
-        >{doctor.title} {doctor.lastName}</span
-      >
-    </a>
-    <div class="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm">
+    <div class="flex items-center gap-3">
+      <a href="/" class="inline-flex items-center gap-2">
+        <img src={logo.src} alt="Logo" class="size-7" />
+        <span class="pt-2 hidden sm:inline"><Wordmark class="text-lg" /></span>
+      </a>
       {
         user?.role === "admin" ? (
-          <a
-            href="/admin"
-            class="sm:hidden text-xs border border-petrol-600 text-petrol-600 px-2 py-1 rounded-full hover:bg-petrol-600 hover:text-neutral-50 transition-colors"
-          >
-            Admin
-          </a>
+          <span class="sm:hidden">
+            <Button as="a" href="/admin" variant="outline" size="xs" pill>
+              Admin
+            </Button>
+          </span>
         ) : (
-          <a
-            href="/auth/login"
-            class="sm:hidden text-xs text-neutral-500 hover:text-neutral-500 transition-colors"
-          >
-            Login
-          </a>
+          <span class="sm:hidden">
+            <Button as="a" href="/auth/login" variant="ghost" size="xs">
+              Login
+            </Button>
+          </span>
         )
       }
+    </div>
+    <div class="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm">
       <a
         href="/about"
-        class="text-neutral-500 hover:text-petrol-700 transition-colors"
+        class="text-neutral-500 hover:text-petrol-500 transition-colors"
         >Il Dottore</a
       >
       <a
         href="/#servizi"
-        class="hidden sm:inline text-neutral-500 hover:text-petrol-700 transition-colors"
+        class="hidden sm:inline text-neutral-500 hover:text-petrol-500 transition-colors"
         >Servizi</a
       >
-      <a
-        href="/#contatti"
-        class="bg-petrol-600 text-neutral-50 px-3 py-1.5 rounded-full hover:bg-petrol-700 transition-colors"
-        >Contatti</a
-      >
+      <Button as="a" href="/#contatti" size="sm" pill> Contatti </Button>
       {
         user?.role === "admin" ? (
-          <a
-            href="/admin"
-            class="hidden sm:inline-block text-xs border border-petrol-600 text-petrol-600 px-3 py-1.5 rounded-full hover:bg-petrol-600 hover:text-neutral-50 transition-colors"
-          >
-            Admin
-          </a>
+          <span class="hidden sm:inline-flex">
+            <Button as="a" href="/admin" variant="outline" size="xs" pill>
+              Admin
+            </Button>
+          </span>
         ) : (
-          <a
-            href="/auth/login"
-            class="hidden sm:inline-block text-xs text-neutral-500 hover:text-neutral-500 transition-colors"
-          >
-            Login
-          </a>
+          <span class="hidden sm:inline-flex">
+            <Button as="a" href="/auth/login" variant="ghost" size="xs">
+              Login
+            </Button>
+          </span>
         )
       }
     </div>

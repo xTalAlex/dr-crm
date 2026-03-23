@@ -1,24 +1,23 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import content from "@/data/content.json";
+import Link from "@/components/Link.astro";
+import Wordmark from "@/components/Wordmark.astro";
 
 export const prerender = false;
-
-const { doctor } = content;
 const user = Astro.locals.user;
 if (user?.role === "admin") return Astro.redirect("/admin");
 ---
 
 <BaseLayout
   title="Login"
-  bodyClass="bg-neutral-50 text-neutral-900 font-sans antialiased min-h-screen flex items-center justify-center"
+  bodyClass="min-h-screen flex items-center justify-center"
   noindex
 >
   <div class="w-full max-w-sm px-6" x-data="loginForm">
     <div class="text-center mb-10">
-      <a href="/" class="font-serif text-petrol-700 text-2xl tracking-wide"
-        >{doctor.title} {doctor.lastName}</a
-      >
+      <a href="/">
+        <Wordmark class="text-2xl" />
+      </a>
       <p class="text-neutral-500 text-sm mt-2">Accesso riservato</p>
     </div>
 
@@ -67,21 +66,18 @@ if (user?.role === "admin") return Astro.redirect("/admin");
       </button>
 
       <div class="text-center">
-        <a
+        <Link
+          variant="muted"
           href="/auth/reset-password"
-          class="text-neutral-500 text-xs hover:text-petrol-700 transition-colors"
+          class="text-xs"
         >
           Password dimenticata?
-        </a>
+        </Link>
       </div>
     </form>
 
     <div class="mt-8 text-center">
-      <a
-        href="/"
-        class="text-neutral-500 text-xs hover:text-petrol-700 transition-colors"
-        >&larr; Torna al sito</a
-      >
+      <Link variant="muted" href="/" class="text-xs">&larr; Torna al sito</Link>
     </div>
   </div>
 

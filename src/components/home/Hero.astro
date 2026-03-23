@@ -15,11 +15,11 @@ const { doctor, practice, contacts } = content;
     >
     </div>
     <div
-      class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-50/40 rounded-full blur-3xl"
+      class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-petrol-50/40 rounded-full blur-3xl"
     >
     </div>
     <div
-      class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(13,148,136,0.04),transparent_60%)]"
+      class="absolute inset-0 bg-radial-[ellipse_at_top] from-petrol-500/10 to-transparent to-60%"
     >
     </div>
   </div>
@@ -27,11 +27,11 @@ const { doctor, practice, contacts } = content;
   <div class="relative text-center px-6 max-w-3xl">
     <div class="inline-block mb-8">
       <span
-        class="text-petrol-600/60 text-xs tracking-[0.3em] uppercase font-medium"
+        class="text-petrol-500/50 text-xs tracking-[0.3em] uppercase font-medium"
         >{practice.name} · {practice.since}</span
       >
       <div
-        class="mt-1 h-px w-16 mx-auto bg-linear-to-r from-transparent via-petrol-500/40 to-transparent"
+        class="mt-1 h-px w-16 mx-auto bg-linear-to-r from-transparent via-petrol-500/50 to-transparent"
       >
       </div>
     </div>
@@ -41,7 +41,7 @@ const { doctor, practice, contacts } = content;
     >
       {doctor.title}
       {doctor.firstName}<br />
-      <span class="text-petrol-700">{doctor.lastName}</span>
+      <span class="text-petrol-500">{doctor.lastName}</span>
     </h1>
 
     <div
@@ -50,7 +50,7 @@ const { doctor, practice, contacts } = content;
       {
         doctor.roles.map((role: string, i: number) => (
           <>
-            {i > 0 && <span class="w-1 h-1 rounded-full bg-petrol-500/40" />}
+            {i > 0 && <span class="size-1 rounded-full bg-petrol-500/50" />}
             <span>{role}</span>
           </>
         ))
@@ -59,7 +59,7 @@ const { doctor, practice, contacts } = content;
 
     <div class="mt-8">
       <span
-        class="inline-block bg-petrol-100 text-petrol-800 font-medium text-sm px-4 py-1.5 rounded-full"
+        class="inline-block bg-petrol-100 text-petrol-500 font-medium text-sm px-4 py-1.5 rounded-full"
       >
         ✦ {practice.badge} ✦
       </span>
@@ -73,7 +73,7 @@ const { doctor, practice, contacts } = content;
         <span class="text-sm font-medium tracking-wide">{practice.cta}</span>
         <Icon
           name="material-symbols-light:arrow-right-alt"
-          class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"
+          class="size-4 group-hover:translate-x-0.5 transition-transform"
         />
       </a>
     </div>
@@ -82,7 +82,7 @@ const { doctor, practice, contacts } = content;
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
     <Icon
       name="material-symbols-light:keyboard-arrow-down"
-      class="w-5 h-5 mx-auto text-petrol-500/30"
+      class="size-5 mx-auto text-petrol-500"
     />
   </div>
 </header>

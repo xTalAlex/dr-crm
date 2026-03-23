@@ -1,0 +1,65 @@
+---
+interface Props {
+  mode: "mobile" | "sidebar";
+}
+
+const { mode } = Astro.props;
+const isMobile = mode === "mobile";
+---
+
+{
+  isMobile ? (
+    <div class="sm:hidden mb-4">
+      <div class="flex flex-wrap gap-1">
+        <template x-for="l in Object.keys(letterCounts).sort()" x-bind:key="l">
+          <button
+            x-on:click="search = ''; activeLetter = l; fetchCustomers()"
+            x-bind:class="activeLetter === l ? 'bg-petrol-50 text-petrol-500 border-petrol-200' : 'text-neutral-500 border-neutral-200'"
+            class="px-2 py-1 text-xs rounded border transition-colors"
+          >
+            <span x-text="l" />
+            <span class="text-[10px] opacity-60" x-text="letterCounts[l]" />
+          </button>
+        </template>
+        <button
+          x-on:click="search = ''; activeLetter = ''; fetchCustomers()"
+          x-bind:class="activeLetter === '' ? 'bg-petrol-50 text-petrol-500 border-petrol-200' : 'text-neutral-500 border-neutral-200'"
+          class="px-2 py-1 text-xs rounded border transition-colors"
+        >
+          Tutti
+          <span
+            class="text-[10px] opacity-60"
+            x-text="Object.values(letterCounts).reduce((a, b) => a + b, 0)"
+          />
+        </button>
+      </div>
+    </div>
+  ) : (
+    <div class="hidden sm:grid grid-cols-2 gap-x-1 gap-y-0.5 shrink-0 sticky top-20 self-start">
+      <template
+        x-for="(l, i) in Object.keys(letterCounts).sort()"
+        x-bind:key="l"
+      >
+        <button
+          x-on:click="search = ''; activeLetter = l; fetchCustomers()"
+          x-bind:class="[activeLetter === l ? 'bg-petrol-50 text-petrol-500 border-petrol-200' : 'text-neutral-500 hover:text-petrol-500 border-transparent hover:border-neutral-200', i % 2 === 1 ? 'mt-3' : '']"
+          class="w-auto px-2 h-7 text-xs font-medium rounded border transition-all duration-200 flex items-center justify-center gap-1"
+        >
+          <span x-text="l" />
+          <span class="text-[10px] opacity-60" x-text="letterCounts[l]" />
+        </button>
+      </template>
+      <button
+        x-on:click="search = ''; activeLetter = ''; fetchCustomers()"
+        x-bind:class="activeLetter === '' ? 'bg-petrol-50 text-petrol-500 border-petrol-200' : 'text-neutral-500 hover:text-petrol-500 border-transparent hover:border-neutral-200'"
+        class="col-span-2 w-auto px-2 h-7 text-xs font-medium rounded border transition-all duration-200 flex items-center justify-center gap-1 mt-3"
+      >
+        Tutti
+        <span
+          class="text-[10px] opacity-60"
+          x-text="Object.values(letterCounts).reduce((a, b) => a + b, 0)"
+        />
+      </button>
+    </div>
+  )
+}

@@ -1,0 +1,86 @@
+---
+import Button from "@/components/Button.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<div
+  class="px-5 py-3 border-t border-neutral-200 bg-neutral-100"
+  x-data="{ showPin: false, copied: false }"
+>
+  <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+    <!-- Magic link info -->
+    <template x-if="g.magicLink">
+      <div class="flex items-center gap-3 flex-wrap">
+        <button
+          x-on:click="copyLink(g.magicLink.token); copied = true; setTimeout(() => copied = false, 2000)"
+          class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium border rounded-lg transition-colors min-w-[6.5rem]"
+          :class="copied ? 'border-green-300 text-green-600 bg-green-50' : 'border-neutral-200 hover:border-petrol-300 text-neutral-500 hover:text-petrol-700'"
+        >
+          <Icon
+            is:inline
+            x-show="!copied"
+            name="material-symbols-light:content-copy"
+            class="size-3.5"
+          />
+          <Icon
+            is:inline
+            x-show="copied"
+            name="material-symbols-light:check"
+            class="size-3.5"
+            x-cloak
+          />
+          <span x-text="copied ? 'Copiato!' : 'Copia link'"></span>
+        </button>
+        <button
+          x-on:click="showPin = !showPin"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-neutral-200 hover:border-petrol-300 text-neutral-500 hover:text-petrol-700 rounded-lg transition-colors"
+        >
+          <span class="text-xs">PIN:</span>
+          <span
+            class="font-mono font-medium text-xs text-neutral-900"
+            x-text="showPin ? g.magicLink.pin : '••••'"></span>
+          <Icon
+            is:inline
+            x-show="!showPin"
+            name="material-symbols-light:visibility-outline"
+            class="size-3.5"
+          />
+          <Icon
+            is:inline
+            x-show="showPin"
+            name="material-symbols-light:visibility-off-outline"
+            class="size-3.5"
+            x-cloak
+          />
+        </button>
+        <p
+          class="text-[10px]"
+          :class="new Date(g.magicLink.expiresAt) < new Date() ? 'text-red-500' : 'text-neutral-500'"
+          x-text="new Date(g.magicLink.expiresAt) < new Date()
+            ? 'Scaduto il ' + new Date(g.magicLink.expiresAt).toLocaleString('it-IT')
+            : 'Scade il ' + new Date(g.magicLink.expiresAt).toLocaleString('it-IT')"
+        >
+        </p>
+      </div>
+    </template>
+
+    <!-- Actions -->
+    <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:ml-auto">
+      <button
+        x-on:click="generateMagicLink(g)"
+        class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-neutral-200 hover:border-petrol-300 text-neutral-500 hover:text-petrol-700 rounded-lg transition-colors"
+      >
+        <Icon is:inline name="material-symbols-light:link" class="size-3.5" />
+        Genera link di condivisione
+      </button>
+      <Button variant="green" size="sm" x-on:click="sendViaWhatsApp(g)">
+        <Icon
+          is:inline
+          name="material-symbols-light:chat-outline"
+          class="size-3.5"
+        />
+        Invia con WhatsApp
+      </Button>
+    </div>
+  </div>
+</div>

@@ -1,18 +1,15 @@
 ---
 import content from "@/data/content.json";
 import CookieConsent from "@/components/CookieConsent.astro";
+import Wordmark from "@/components/Wordmark.astro";
 
 const { doctor, contacts } = content;
 const user = Astro.locals.user;
 ---
 
-<footer class="border-t border-petrol-100 py-10">
+<footer class="border-t border-neutral-200 py-10">
   <div class="text-xs max-w-6xl mx-auto px-6 text-center">
-    <p class="font-serif text-petrol-500 text-sm">
-      {doctor.title}
-      {doctor.firstName}
-      {doctor.lastName}
-    </p>
+    <Wordmark full class="text-sm" />
     <p class="mt-2">
       {doctor.roles.join(" — ")} — {contacts.address.city}
     </p>

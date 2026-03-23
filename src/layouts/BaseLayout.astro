@@ -11,7 +11,7 @@ interface Props {
 const {
   title,
   description,
-  bodyClass = "bg-neutral-50 text-neutral-900 font-sans antialiased",
+  bodyClass = "",
   noindex = false,
 } = Astro.props;
 ---
@@ -34,7 +34,7 @@ const {
 
     <slot name="head" />
   </head>
-  <body class={bodyClass}>
+  <body class:list={["bg-neutral-50 text-neutral-900 font-sans antialiased", bodyClass]}>
     <slot />
   </body>
 </html>

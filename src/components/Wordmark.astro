@@ -1,0 +1,16 @@
+---
+import content from "@/data/content.json";
+
+const { doctor } = content;
+
+interface Props {
+  full?: boolean;
+  class?: string;
+}
+
+const { full = false, class: className } = Astro.props;
+---
+
+<span class:list={["font-serif text-petrol-500 tracking-wide", className]}
+  >{doctor.title} {full && `${doctor.firstName} `}{doctor.lastName}</span
+>

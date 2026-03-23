@@ -54,12 +54,7 @@ const {
   <slot />
 
   <div class="flex justify-end gap-3 pt-4">
-    <button
-      type="button"
-      x-on:click={close}
-      class="px-4 py-2.5 text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
-      >Annulla</button
-    >
+    <Button variant="ghost" type="button" x-on:click={close}>Annulla</Button>
     <slot name="extra-actions" />
     <Button variant="primary" x-on:click={action} x-bind:disabled={disabled}>
       <span x-show={`!(${disabled})`}>
