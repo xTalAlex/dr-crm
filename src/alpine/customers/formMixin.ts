@@ -8,6 +8,7 @@ const emptyForm = () => ({
   birthDate: "",
   address: "",
   notes: "",
+  tagIds: [] as string[],
 });
 
 export function formMixin() {
@@ -19,17 +20,19 @@ export function formMixin() {
     saving: false,
     showExtra: false,
     deleteTarget: null as any,
+    allTags: [] as any[],
 
-    openCreate(this: any) {
+    async openCreate(this: any) {
       this.editing = null;
       this.form = emptyForm();
       this.formError = "";
       this.showExtra = false;
+      await this.loadTags();
       this.modal = true;
       this.$nextTick(() => this.$refs.firstField?.focus());
     },
 
-    openEdit(this: any, c: any) {
+    async openEdit(this: any, c: any) {
       this.editing = c;
       this.form = {
         name: c.name,
@@ -41,6 +44,7 @@ export function formMixin() {
         birthDate: c.birthDate ? c.birthDate.slice(0, 10) : "",
         address: c.address ?? "",
         notes: c.notes ?? "",
+        tagIds: (c.tags ?? []).map((ct: any) => ct.tag.id),
       };
       this.formError = "";
       this.showExtra = !!(
@@ -48,6 +52,7 @@ export function formMixin() {
         this.form.birthDate ||
         this.form.address
       );
+      await this.loadTags();
       this.modal = true;
       this.$nextTick(() => this.$refs.firstField?.focus());
     },
@@ -88,6 +93,17 @@ export function formMixin() {
           this.modal = false;
         }
       }
+    },
+
+    async loadTags(this: any) {
+      const res = await fetch("/admin/api/tags");
+      if (res.ok) this.allTags = await res.json();
+    },
+
+    toggleTag(this: any, tagId: string) {
+      const idx = this.form.tagIds.indexOf(tagId);
+      if (idx === -1) this.form.tagIds.push(tagId);
+      else this.form.tagIds.splice(idx, 1);
     },
 
     confirmDelete(c: any) {

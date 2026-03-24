@@ -8,6 +8,7 @@ import Th from "@/components/Th.astro";
 import Td from "@/components/Td.astro";
 import IconButton from "@/components/IconButton.astro";
 import Button from "@/components/Button.astro";
+import TagChip from "@/components/TagChip.astro";
 import { Icon } from "astro-icon/components";
 ---
 
@@ -77,7 +78,20 @@ import { Icon } from "astro-icon/components";
               <Td x-text="c.name" />
               <Td muted x-text="c.phone" />
               <Td>
-                <div class="flex flex-col gap-1"></div>
+                <div class="flex flex-col gap-1">
+                  <template
+                    x-for="ct in (c.tags ?? []).slice(0, 2)"
+                    :key="ct.tag.id"
+                  >
+                    <TagChip :style="{ '--tag-color': ct.tag.color }">
+                      <span x-text="ct.tag.name"></span>
+                    </TagChip>
+                  </template>
+                  <span
+                    x-show="(c.tags ?? []).length > 2"
+                    class="w-fit text-xs font-medium tabular-nums text-petrol-500"
+                    x-text="'+' + ((c.tags ?? []).length - 2)"></span>
+                </div>
               </Td>
               <Td
                 muted
