@@ -16,7 +16,7 @@ export function uploadMixin() {
         this.uploadError = validationError;
       } else {
         this.uploading = true;
-        const error = await uploadFiles(
+        const { error } = await uploadFiles(
           `/admin/api/customers/${this.customerId}/files/upload`,
           fileInput.files!,
           this.uploadLabel,

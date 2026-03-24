@@ -30,7 +30,7 @@ export function filesPageUploadMixin() {
           this.uploadError = validationError;
         } else {
           this.uploading = true;
-          const error = await uploadFiles(
+          const { error } = await uploadFiles(
             `/admin/api/customers/${cust.id}/files/upload`,
             fileInput.files!,
             this.uploadLabel,

@@ -18,13 +18,13 @@ export const POST = apiHandler(async ({ params, request }, { prisma, supabase })
 
   if (files.length === 0) throw new ApiError(400, "Nessun file selezionato");
 
-  const created = await uploadFiles(prisma, supabase, customerId, groupId, files);
+  const { created, failed } = await uploadFiles(prisma, supabase, customerId, groupId, files);
 
   if (created.length === 0) {
     throw new ApiError(500, "Upload fallito per tutti i file");
   }
 
-  return Response.json({ files: created }, { status: 201 });
+  return Response.json({ files: created, failed }, { status: 201 });
 });
 
 export const DELETE = apiHandler(async ({ params }, { prisma, supabase }) => {

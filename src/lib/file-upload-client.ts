@@ -19,10 +19,13 @@ export async function uploadFiles(
   url: string,
   files: FileList,
   label?: string,
-): Promise<string | null> {
+): Promise<{ error: string | null; warning: string | null }> {
   const fd = new FormData();
   if (label) fd.append("label", label);
   for (const f of files) fd.append("files", f);
+
+  let error: string | null = null;
+  let warning: string | null = null;
 
   const res = await fetch(url, {
     method: "POST",
@@ -31,8 +34,14 @@ export async function uploadFiles(
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    return err.error || "Errore nel caricamento";
+    error = err.error || "Errore nel caricamento";
+  } else {
+    const data = await res.json().catch(() => ({}));
+    const failed: string[] = data.failed ?? [];
+    if (failed.length > 0) {
+      warning = `Upload parziale: falliti ${failed.join(", ")}`;
+    }
   }
 
-  return null;
+  return { error, warning };
 }

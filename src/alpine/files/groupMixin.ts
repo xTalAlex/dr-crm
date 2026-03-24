@@ -59,7 +59,7 @@ export function groupMixin() {
         this.addFilesError = validationError;
       } else {
         this.addFilesUploading = true;
-        const error = await uploadFiles(
+        const { error } = await uploadFiles(
           `/admin/api/customers/${this.customerId}/files/groups/${groupId}`,
           fileInput.files!,
         );

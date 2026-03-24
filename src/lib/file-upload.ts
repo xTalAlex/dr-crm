@@ -36,6 +36,7 @@ export async function uploadFiles(
   }
 
   const created: any[] = [];
+  const failed: string[] = [];
 
   for (const file of files) {
     const ext = file.name.includes(".") ? file.name.slice(file.name.lastIndexOf(".")) : "";
@@ -50,6 +51,7 @@ export async function uploadFiles(
 
     if (error) {
       console.error("Supabase upload error:", error);
+      failed.push(file.name);
       continue;
     }
 
@@ -65,7 +67,7 @@ export async function uploadFiles(
     created.push(entry);
   }
 
-  return created;
+  return { created, failed };
 }
 
 export class FileSizeError extends Error {

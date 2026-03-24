@@ -19,12 +19,12 @@ export const POST = apiHandler(async ({ params, request }, { prisma, supabase })
     data: { customerId, label },
   });
 
-  const created = await uploadFiles(prisma, supabase, customerId, group.id, files);
+  const { created, failed } = await uploadFiles(prisma, supabase, customerId, group.id, files);
 
   if (created.length === 0) {
     await prisma.fileGroup.delete({ where: { id: group.id } });
     throw new ApiError(500, "Upload fallito per tutti i file");
   }
 
-  return Response.json({ group, files: created }, { status: 201 });
+  return Response.json({ group, files: created, failed }, { status: 201 });
 });
