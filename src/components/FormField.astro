@@ -36,12 +36,14 @@ const {
       />
     ) : (
       <input
-        type={type}
+        type={type as astroHTML.JSX.HTMLInputTypeAttribute}
         class:list={[
           {
-            color: "h-10 w-16 bg-neutral-50 border border-neutral-200 rounded-lg p-1 cursor-pointer",
+            color:
+              "h-10 w-16 bg-neutral-50 border border-neutral-200 rounded-lg p-1 cursor-pointer",
             file: "w-full bg-neutral-50 border border-neutral-200 rounded-lg px-3 py-2 text-neutral-900 text-sm file:mr-3 file:px-3 file:py-1 file:rounded-md file:border-0 file:bg-petrol-50 file:text-petrol-700 file:text-xs file:font-medium file:cursor-pointer",
-          }[type] ?? "w-full bg-neutral-50 border border-neutral-200 focus:border-petrol-500 rounded-lg px-3 py-2.5 text-neutral-900 text-sm outline-none transition-colors",
+          }[type] ??
+            "w-full bg-neutral-50 border border-neutral-200 focus:border-petrol-500 rounded-lg px-3 py-2.5 text-neutral-900 text-sm outline-none transition-colors",
           className,
         ]}
         required={required}

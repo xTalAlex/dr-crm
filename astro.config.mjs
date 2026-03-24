@@ -12,6 +12,7 @@ export default defineConfig({
   adapter: netlify(),
 
   vite: {
+    // @ts-ignore - tailwindcss/vite version mismatch with Astro's bundled Vite
     plugins: [tailwindcss()]
   },
 

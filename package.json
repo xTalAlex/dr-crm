@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "prisma generate && astro build",
+    "build": "prisma generate && astro check && astro build",
     "preview": "astro preview",
     "postinstall": "prisma generate",
     "astro": "astro",

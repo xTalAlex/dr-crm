@@ -21,7 +21,7 @@ async function main() {
 
   // Create user with a random temporary password
   const { user } = await auth.api.signUpEmail({
-    body: { email: ADMIN_EMAIL, password: crypto.randomUUID(), name: "Admin" },
+    body: { email: ADMIN_EMAIL!, password: crypto.randomUUID(), name: "Admin" },
   });
 
   // Set role directly via Prisma (no admin session needed)
