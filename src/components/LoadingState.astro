@@ -1,4 +1,6 @@
 ---
+import { Icon } from "astro-icon/components";
+
 interface Props {
   class?: string;
 }
@@ -6,6 +8,15 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<p class:list={["text-center text-neutral-500 py-8", className]}>
-  Caricamento...
-</p>
+<div
+  class:list={[
+    "flex flex-col items-center justify-center gap-2 py-8",
+    className,
+  ]}
+>
+  <Icon
+    is:inline
+    name="material-symbols-light:progress-activity"
+    class="size-6 animate-spin text-petrol-500"
+  />
+</div>
