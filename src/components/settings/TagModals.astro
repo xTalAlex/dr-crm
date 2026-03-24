@@ -1,0 +1,44 @@
+---
+import FormModal from "@/components/FormModal.astro";
+import ConfirmModal from "@/components/ConfirmModal.astro";
+import FormField from "@/components/FormField.astro";
+---
+
+<!-- Create/Edit tag modal -->
+<FormModal
+  show="tagModal"
+  close="tagModal = false"
+  titleExpr="editingTag ? 'Modifica Tag' : 'Nuovo Tag'"
+  action="saveTag()"
+  actionLabelExpr="editingTag ? 'Salva' : 'Crea'"
+  disabled="tagSaving"
+  loadingLabel="Salvataggio..."
+  size="sm"
+>
+  <form x-on:submit.prevent="saveTag()" class="space-y-4">
+    <FormField
+      label="Nome"
+      x-model="tagForm.name"
+      x-ref="tagNameField"
+      required
+      placeholder=""
+    />
+
+    <FormField label="Colore" type="color" x-model="tagForm.color" />
+
+    <template x-if="tagError">
+      <p class="text-red-500 text-sm" x-text="tagError"></p>
+    </template>
+  </form>
+</FormModal>
+
+<!-- Delete tag confirmation -->
+<ConfirmModal
+  show="deleteTagTarget"
+  close="deleteTagTarget = null"
+  title="Eliminare questo tag?"
+  description="deleteTagTarget?.name"
+  confirm="doDeleteTag()"
+  confirmLabel="Elimina"
+  disabled="tagSaving"
+/>

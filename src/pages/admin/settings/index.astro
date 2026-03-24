@@ -4,16 +4,21 @@ import PageHeader from "@/components/PageHeader.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Button from "@/components/Button.astro";
 import UsersTable from "@/components/settings/UsersTable.astro";
-import SettingsModals from "@/components/settings/SettingsModals.astro";
+import UserModals from "@/components/settings/UserModals.astro";
+import TagsTable from "@/components/settings/TagsTable.astro";
+import TagModals from "@/components/settings/TagModals.astro";
 import { Icon } from "astro-icon/components";
 
 export const prerender = false;
 ---
 
 <AdminLayout title="Impostazioni">
-  <div x-data={`usersPage('${Astro.locals.user?.id}')`} x-init="fetchUsers()">
-    <PageHeader title="Impostazioni" />
+  <PageHeader title="Impostazioni" />
 
+  <div
+    x-data={`usersManager('${Astro.locals.user?.id}')`}
+    x-init="fetchUsers()"
+  >
     <div class="mb-8">
       <SectionHeader title="Utenti">
         <Button variant="outline" x-on:click="openCreate()">
@@ -28,15 +33,35 @@ export const prerender = false;
       <UsersTable />
     </div>
 
-    <SettingsModals />
+    <UserModals />
+  </div>
+
+  <div x-data="tagsManager()" x-init="fetchTags()">
+    <div class="mb-8">
+      <SectionHeader title="Tag">
+        <Button variant="outline" x-on:click="openTagForm()">
+          <Icon
+            name="material-symbols-light:new-label-outline"
+            class="size-4"
+          />
+          Nuovo Tag
+        </Button>
+      </SectionHeader>
+
+      <TagsTable />
+    </div>
+
+    <TagModals />
   </div>
 
   <script>
     import Alpine from "alpinejs";
-    import usersPage from "@/alpine/usersPage";
+    import usersManager from "@/alpine/usersManager";
+    import tagsManager from "@/alpine/tagsManager";
 
     document.addEventListener("alpine:init", () => {
-      usersPage(Alpine);
+      usersManager(Alpine);
+      tagsManager(Alpine);
     });
   </script>
 </AdminLayout>

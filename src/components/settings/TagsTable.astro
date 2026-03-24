@@ -1,0 +1,66 @@
+---
+import { Icon } from "astro-icon/components";
+import EmptyState from "@/components/EmptyState.astro";
+---
+
+<!-- Empty state -->
+<template x-if="tags.length === 0">
+  <EmptyState
+    icon="material-symbols-light:label-outline"
+    title="Nessun tag creato"
+    description="Crea tag per categorizzare i tuoi clienti"
+  />
+</template>
+
+<!-- Tag chips grid -->
+<div x-show="tags.length > 0" class="flex flex-wrap gap-2">
+  <template x-for="tag in tags" :key="tag.id">
+    <div
+      class="group relative inline-flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-full border transition-all duration-200 hover:shadow-sm"
+      :style="`border-color: color-mix(in srgb, ${tag.color || 'var(--color-neutral-300)'} 12%, transparent); background: color-mix(in srgb, ${tag.color || 'var(--color-neutral-300)'} 6%, transparent)`"
+    >
+      <!-- Color dot -->
+      <span
+        class="size-2.5 rounded-full shrink-0"
+        :style="`background: ${tag.color || 'var(--color-neutral-500)'}`"
+      ></span>
+
+      <!-- Name -->
+      <span class="text-sm font-medium text-neutral-700" x-text="tag.name"
+      ></span>
+
+      <!-- Count badge -->
+      <span
+        class="text-xs text-neutral-500/50 tabular-nums p-0.5 select-none"
+        x-text="tag._count?.customers ?? 0"></span>
+
+      <!-- Actions (visible on hover) -->
+      <div
+        class="inline-flex items-center gap-0.5 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
+      >
+        <button
+          x-on:click.stop="openTagForm(tag)"
+          class="p-0.5 rounded text-neutral-500 hover:text-petrol-500 transition-colors"
+          title="Modifica"
+        >
+          <Icon
+            is:inline
+            name="material-symbols-light:edit-outline"
+            class="size-3.5"
+          />
+        </button>
+        <button
+          x-on:click.stop="confirmDeleteTag(tag)"
+          class="p-0.5 rounded text-neutral-500 hover:text-red-500 transition-colors"
+          title="Elimina"
+        >
+          <Icon
+            is:inline
+            name="material-symbols-light:close"
+            class="size-3.5"
+          />
+        </button>
+      </div>
+    </div>
+  </template>
+</div>

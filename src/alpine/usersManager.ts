@@ -1,11 +1,23 @@
 import { authClient } from "@/lib/auth-client";
+import type { Alpine } from "alpinejs";
 
-export function userFormMixin() {
-  return {
+export default (Alpine: Alpine) => {
+  Alpine.data("usersManager", (currentUserId: string) => ({
+    users: [] as any[],
+    loading: false,
+    currentUserId,
+    removeTarget: null as any,
     modal: false,
     form: { name: "", email: "", password: "" },
     formError: "",
     saving: false,
+
+    async fetchUsers() {
+      this.loading = true;
+      const { data } = await authClient.admin.listUsers({ query: {} });
+      this.users = data?.users ?? [];
+      this.loading = false;
+    },
 
     openCreate(this: any) {
       this.form = { name: "", email: "", password: "" };
@@ -46,5 +58,5 @@ export function userFormMixin() {
       this.saving = false;
       this.fetchUsers();
     },
-  };
-}
+  }));
+};
