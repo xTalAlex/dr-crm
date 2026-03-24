@@ -54,6 +54,7 @@ export const GET = apiHandler(async ({ url }, { prisma }) => {
             orderBy: [{ surname: "asc" }, { name: "asc" }],
             skip,
             take: limit,
+            include: { tags: { include: { tag: true } } },
         }),
         prisma.customer.count({ where }),
         prisma.$queryRaw`SELECT UPPER(LEFT(surname, 1)) AS letter, COUNT(*)::int AS count FROM customer WHERE surname != '' GROUP BY letter ORDER BY letter` as Promise<{ letter: string; count: number }[]>,
@@ -68,11 +69,21 @@ export const GET = apiHandler(async ({ url }, { prisma }) => {
 });
 
 export const POST = apiHandler(async ({ request }, { prisma }) => {
-    const data = sanitizeCustomer(await request.json());
+    const body = await request.json();
+    const data = sanitizeCustomer(body);
+    const tagIds: string[] = body.tagIds ?? [];
 
     const error = await validateCustomer(prisma, data);
     if (error) throw new ApiError(error.status, error.message);
 
-    const customer = await prisma.customer.create({ data });
+    const customer = await prisma.customer.create({
+        data: {
+            ...data,
+            ...(tagIds.length > 0 && {
+                tags: { create: tagIds.map((tagId: string) => ({ tagId })) },
+            }),
+        },
+        include: { tags: { include: { tag: true } } },
+    });
     return Response.json(customer, { status: 201 });
 });

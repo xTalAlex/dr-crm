@@ -5,7 +5,9 @@ import { sanitizeCustomer, validateCustomer } from "@/lib/customer";
 export const prerender = false;
 
 export const PUT = apiHandler(async ({ params, request }, { prisma }) => {
-    const data = sanitizeCustomer(await request.json());
+    const body = await request.json();
+    const data = sanitizeCustomer(body);
+    const tagIds: string[] | undefined = body.tagIds;
 
     const error = await validateCustomer(prisma, data, params.id);
     if (error) throw new ApiError(error.status, error.message);
@@ -15,7 +17,16 @@ export const PUT = apiHandler(async ({ params, request }, { prisma }) => {
 
     const customer = await prisma.customer.update({
         where: { id: params.id },
-        data,
+        data: {
+            ...data,
+            ...(tagIds !== undefined && {
+                tags: {
+                    deleteMany: {},
+                    create: tagIds.map((tagId: string) => ({ tagId })),
+                },
+            }),
+        },
+        include: { tags: { include: { tag: true } } },
     });
 
     return Response.json(customer);
