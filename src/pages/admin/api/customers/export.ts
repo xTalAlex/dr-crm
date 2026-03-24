@@ -3,6 +3,9 @@ import { apiHandler } from "@/lib/api";
 export const prerender = false;
 
 function escapeCsv(value: string): string {
+    if (/^[=+\-@\t\r]/.test(value)) {
+        value = "'" + value;
+    }
     if (value.includes(",") || value.includes('"') || value.includes("\n")) {
         return `"${value.replace(/"/g, '""')}"`;
     }

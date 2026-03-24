@@ -3,6 +3,12 @@ import { BUCKET } from "@/lib/supabase";
 
 export const prerender = false;
 
+/**
+ * TODO: Aggiungere rate limiting sui tentativi PIN.
+ * Aggiungere un campo `failedAttempts` alla tabella MagicLink e incrementarlo
+ * ad ogni PIN errato. Raggiunta la soglia (es. 5), impostare `expiresAt` a now()
+ * per invalidare il link e restituire un errore "Link disabilitato per troppi tentativi".
+ */
 export const POST = apiHandler(async ({ params, request }, { prisma, supabase }) => {
   const token = params.token!;
   const body = await request.json().catch(() => ({}));
