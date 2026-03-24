@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { getDb } from "@/lib/db";
 import { getSupabase } from "@/lib/supabase";
 import { FileSizeError } from "@/lib/file-upload";
+import { logError } from "@/lib/log";
 
 export class ApiError extends Error {
   constructor(
@@ -23,19 +24,23 @@ type HandlerFn = (ctx: APIContext, deps: Deps) => Promise<Response>;
 
 export function apiHandler(fn: HandlerFn): APIRoute {
   return async (ctx) => {
+    let status = 500;
+    let message = "Errore del server";
+
     try {
       return await fn(ctx, { prisma: getDb(), supabase: getSupabase() });
-    } catch (err: any) {
+    } catch (err) {
       if (err instanceof ApiError) {
-        return Response.json({ error: err.message }, { status: err.status });
+        status = err.status;
+        message = err.message;
+      } else if (err instanceof FileSizeError) {
+        status = 413;
+        message = err.message;
+      } else {
+        logError(ctx.url.pathname, err);
       }
-      if (err instanceof FileSizeError) {
-        return Response.json({ error: err.message }, { status: 413 });
-      }
-      return Response.json(
-        { error: err.message ?? "Errore del server" },
-        { status: 500 },
-      );
     }
+
+    return Response.json({ error: message }, { status });
   };
 }
