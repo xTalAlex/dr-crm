@@ -12,6 +12,7 @@ function escapeCsv(value: string): string {
 export const GET = apiHandler(async (_ctx, { prisma }) => {
     const customers = await prisma.customer.findMany({
         orderBy: [{ surname: "asc" }, { name: "asc" }],
+        include: { tags: { include: { tag: true } } },
     });
 
     const headers = [
@@ -24,6 +25,7 @@ export const GET = apiHandler(async (_ctx, { prisma }) => {
         "Data di Nascita",
         "Indirizzo",
         "Note",
+        "Tag",
         "Data Creazione",
     ];
 
@@ -37,6 +39,7 @@ export const GET = apiHandler(async (_ctx, { prisma }) => {
         c.birthDate ? new Date(c.birthDate).toLocaleDateString("it-IT") : "",
         escapeCsv(c.address ?? ""),
         escapeCsv(c.notes ?? ""),
+        escapeCsv(c.tags.map((ct) => ct.tag.name).join(", ")),
         new Date(c.createdAt).toLocaleDateString("it-IT"),
     ]);
 
