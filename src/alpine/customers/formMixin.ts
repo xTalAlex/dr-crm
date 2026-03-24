@@ -45,15 +45,19 @@ export function formMixin() {
       },
     }),
 
-    async openCreate(this: any) {
-      this.editing = null;
-      this.form = emptyForm();
+    async openFormModal(this: any) {
       this.formError = "";
-      this.showExtra = false;
       this.multiselectReset();
       await this.loadTags();
       this.modal = true;
       this.$nextTick(() => this.$refs.firstField?.focus());
+    },
+
+    async openCreate(this: any) {
+      this.editing = null;
+      this.form = emptyForm();
+      this.showExtra = false;
+      await this.openFormModal();
     },
 
     async openEdit(this: any, c: any) {
@@ -70,16 +74,12 @@ export function formMixin() {
         notes: c.notes ?? "",
         tagIds: (c.tags ?? []).map((ct: any) => ct.tag.id),
       };
-      this.formError = "";
       this.showExtra = !!(
         this.form.fiscalCode ||
         this.form.birthDate ||
         this.form.address
       );
-      this.multiselectReset();
-      await this.loadTags();
-      this.modal = true;
-      this.$nextTick(() => this.$refs.firstField?.focus());
+      await this.openFormModal();
     },
 
     async save(this: any, keepOpen = false) {

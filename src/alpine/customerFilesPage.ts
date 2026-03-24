@@ -1,6 +1,6 @@
 import type { Alpine } from "alpinejs";
 import { uploadMixin } from "./files/uploadMixin";
-import { groupOpsMixin } from "./files/groupOpsMixin";
+import { groupMixin } from "./files/groupMixin";
 import { sharingMixin } from "./files/sharingMixin";
 import content from "@/data/content.json";
 
@@ -13,7 +13,7 @@ export default (Alpine: Alpine) => {
     loading: true,
 
     ...uploadMixin(),
-    ...groupOpsMixin(),
+    ...groupMixin(),
     ...sharingMixin(),
 
     async init() {

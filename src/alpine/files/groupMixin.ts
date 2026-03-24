@@ -1,6 +1,6 @@
 import { validateFiles, uploadFiles } from "@/lib/file-upload-client";
 
-export function groupOpsMixin() {
+export function groupMixin() {
   return {
     // Rename group
     renameGroupId: null as string | null,
@@ -12,8 +12,7 @@ export function groupOpsMixin() {
     addFilesError: "",
 
     // Delete group / file
-    deleteGroupTarget: null as any,
-    deleteFileTarget: null as { group: any; file: any } | null,
+    deleteTarget: null as { type: "group" | "file"; group: any; file?: any } | null,
     deleting: false,
 
     startRename(this: any, g: any) {
@@ -75,37 +74,23 @@ export function groupOpsMixin() {
       }
     },
 
-    confirmDeleteGroup(this: any, g: any) {
-      this.deleteGroupTarget = g;
+    confirmDelete(this: any, type: "group" | "file", group: any, file?: any) {
+      this.deleteTarget = { type, group, file };
     },
 
-    async doDeleteGroup(this: any) {
+    async doDelete(this: any) {
+      if (!this.deleteTarget) return;
+      const { type, group, file } = this.deleteTarget;
       this.deleting = true;
-      await fetch(
-        `/admin/api/customers/${this.customerId}/files/groups/${this.deleteGroupTarget.id}`,
-        { method: "DELETE" }
-      );
-      this.deleteGroupTarget = null;
+      const url =
+        type === "group"
+          ? `/admin/api/customers/${this.customerId}/files/groups/${group.id}`
+          : `/admin/api/customers/${this.customerId}/files/entries/${file!.id}`;
+      await fetch(url, { method: "DELETE" });
+      if (type === "file") group.files = group.files.filter((x: any) => x.id !== file!.id);
+      this.deleteTarget = null;
       this.deleting = false;
-      await this.fetchData();
-    },
-
-    confirmDeleteFile(this: any, g: any, f: any) {
-      this.deleteFileTarget = { group: g, file: f };
-    },
-
-    async doDeleteFile(this: any) {
-      if (this.deleteFileTarget) {
-        const { group, file } = this.deleteFileTarget;
-        this.deleting = true;
-        await fetch(
-          `/admin/api/customers/${this.customerId}/files/entries/${file.id}`,
-          { method: "DELETE" }
-        );
-        group.files = group.files.filter((x: any) => x.id !== file.id);
-        this.deleteFileTarget = null;
-        this.deleting = false;
-      }
+      if (type === "group") await this.fetchData();
     },
   };
 }

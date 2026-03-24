@@ -9,22 +9,22 @@ import FormField from "@/components/FormField.astro";
 
 <!-- Delete group confirmation -->
 <ConfirmModal
-  show="deleteGroupTarget"
-  close="deleteGroupTarget = null"
+  show="deleteTarget?.type === 'group'"
+  close="deleteTarget = null"
   title="Eliminare questa cartella e tutti i suoi file?"
-  description="deleteGroupTarget?.label || 'Senza nome'"
-  confirm="doDeleteGroup()"
+  description="deleteTarget?.group?.label || 'Senza nome'"
+  confirm="doDelete()"
   confirmLabel="Elimina"
   disabled="deleting"
 />
 
 <!-- Delete file confirmation -->
 <ConfirmModal
-  show="deleteFileTarget"
-  close="deleteFileTarget = null"
+  show="deleteTarget?.type === 'file'"
+  close="deleteTarget = null"
   title="Eliminare questo file?"
-  description="deleteFileTarget?.file.fileName"
-  confirm="doDeleteFile()"
+  description="deleteTarget?.file?.fileName"
+  confirm="doDelete()"
   confirmLabel="Elimina"
   disabled="deleting"
 />
