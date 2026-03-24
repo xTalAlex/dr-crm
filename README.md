@@ -30,15 +30,15 @@ npm run dev
 
 ### Environment Variables
 
-| Variable               | Description                           |
-| ---------------------- | ------------------------------------- |
-| `BETTER_AUTH_URL`      | Site base URL                         |
-| `BETTER_AUTH_SECRET`   | Secret for better-auth                |
-| `DATABASE_URL`         | PostgreSQL connection string (pooled) |
-| `DIRECT_URL`           | PostgreSQL direct connection string   |
-| `ADMIN_EMAIL`          | Email for the first admin user        |
-| `SUPABASE_URL`         | Supabase project URL                  |
-| `SUPABASE_SERVICE_KEY` | Supabase service-role key             |
+| Variable             | Description                           |
+| -------------------- | ------------------------------------- |
+| `BETTER_AUTH_URL`    | Site base URL                         |
+| `BETTER_AUTH_SECRET` | Secret for better-auth                |
+| `DATABASE_URL`       | PostgreSQL connection string (pooled) |
+| `DIRECT_URL`         | PostgreSQL direct connection string   |
+| `ADMIN_EMAIL`        | Email for the first admin user        |
+| `SUPABASE_URL`       | Supabase project URL                  |
+| `SUPABASE_SECRET`    | Supabase service-role key             |
 
 ## Database
 
