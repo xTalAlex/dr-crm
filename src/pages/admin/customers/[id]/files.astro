@@ -12,7 +12,7 @@ export const prerender = false;
 const { id } = Astro.params;
 ---
 
-<AdminLayout title="Documenti Cliente">
+<AdminLayout title="Documenti Paziente">
   <div x-data={`customerFilesPage('${id}')`} x-init="init()">
     <PageHeader
       back="/admin/customers"
@@ -36,7 +36,7 @@ const { id } = Astro.params;
       <EmptyState
         icon="material-symbols-light:files-outline"
         title="Nessun documento caricato"
-        description="Carica il primo documento per questo cliente"
+        description="Carica il primo documento per questo paziente"
       />
     </template>
 

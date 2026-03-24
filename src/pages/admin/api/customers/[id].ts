@@ -11,7 +11,7 @@ export const PUT = apiHandler(async ({ params, request }, { prisma }) => {
     if (error) throw new ApiError(error.status, error.message);
 
     const existing = await prisma.customer.findUnique({ where: { id: params.id } });
-    if (!existing) throw new ApiError(404, "Cliente non trovato");
+    if (!existing) throw new ApiError(404, "Paziente non trovato");
 
     const customer = await prisma.customer.update({
         where: { id: params.id },
@@ -23,7 +23,7 @@ export const PUT = apiHandler(async ({ params, request }, { prisma }) => {
 
 export const DELETE = apiHandler(async ({ params }, { prisma, supabase }) => {
     const existing = await prisma.customer.findUnique({ where: { id: params.id } });
-    if (!existing) throw new ApiError(404, "Cliente non trovato");
+    if (!existing) throw new ApiError(404, "Paziente non trovato");
 
     const groups = await prisma.fileGroup.findMany({
         where: { customerId: params.id },

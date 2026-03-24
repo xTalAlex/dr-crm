@@ -46,7 +46,7 @@ export const GET = apiHandler(async (_ctx, { prisma }) => {
     return new Response(csv, {
         headers: {
             "Content-Type": "text/csv; charset=utf-8",
-            "Content-Disposition": `attachment; filename="clienti-${date}.csv"`,
+            "Content-Disposition": `attachment; filename="pazienti-${date}.csv"`,
         },
     });
 });

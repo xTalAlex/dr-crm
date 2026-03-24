@@ -9,7 +9,7 @@ import FormFieldCustomerSearch from "@/components/FormFieldCustomerSearch.astro"
   <h2 class="text-lg font-serif text-neutral-900 mb-4">Carica documenti</h2>
 
   <div class="space-y-4">
-    <FormFieldCustomerSearch label="Cliente" required />
+    <FormFieldCustomerSearch label="Paziente" required />
 
     <FormField
       label="Nome cartella"
@@ -17,7 +17,13 @@ import FormFieldCustomerSearch from "@/components/FormFieldCustomerSearch.astro"
       placeholder="es. Referti, Fatture, Radiografie..."
     />
 
-    <FormField label="File" type="file" x-ref="filesPageInput" multiple required />
+    <FormField
+      label="File"
+      type="file"
+      x-ref="filesPageInput"
+      multiple
+      required
+    />
 
     <template x-if="uploadError">
       <p class="text-red-500 text-sm" x-text="uploadError"></p>

@@ -9,9 +9,9 @@ import { Icon } from "astro-icon/components";
 export const prerender = false;
 ---
 
-<AdminLayout title="Clienti">
+<AdminLayout title="Pazienti">
   <div x-data="customersPage()">
-    <PageHeader title="Clienti">
+    <PageHeader title="Pazienti">
       <Button
         as="a"
         variant="secondary"
@@ -23,7 +23,7 @@ export const prerender = false;
       </Button>
       <Button variant="outline" x-on:click="openCreate()">
         <Icon is:inline name="material-symbols-light:add" class="size-4" />
-        Nuovo Cliente
+        Nuovo Paziente
       </Button>
     </PageHeader>
 

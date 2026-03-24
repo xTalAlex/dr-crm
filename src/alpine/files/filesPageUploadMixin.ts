@@ -21,7 +21,7 @@ export function filesPageUploadMixin() {
       const cust = this.selectedCustomer;
 
       if (!cust) {
-        this.uploadError = "Seleziona un cliente";
+        this.uploadError = "Seleziona un paziente";
       } else {
         const fileInput = this.$refs.filesPageInput as HTMLInputElement;
         const validationError = validateFiles(fileInput?.files);

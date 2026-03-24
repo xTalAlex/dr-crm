@@ -7,7 +7,7 @@ export const POST = apiHandler(async ({ params, request }, { prisma, supabase })
   const customerId = params.id!;
 
   const customer = await prisma.customer.findUnique({ where: { id: customerId } });
-  if (!customer) throw new ApiError(404, "Cliente non trovato");
+  if (!customer) throw new ApiError(404, "Paziente non trovato");
 
   const formData = await request.formData();
   const label = (formData.get("label") as string)?.trim() || "";

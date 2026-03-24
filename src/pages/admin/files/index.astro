@@ -19,7 +19,7 @@ export const prerender = false;
   <div x-data="filesPage()" x-init="init()">
     <PageHeader
       title="Documenti"
-      subtitle="Tutti i file caricati per i clienti"
+      subtitle="Tutti i file caricati per i pazienti"
     >
       <Button variant="outline" x-on:click="openUpload()">
         <Icon is:inline name="material-symbols-light:upload" class="size-4" />
@@ -28,7 +28,7 @@ export const prerender = false;
     </PageHeader>
 
     <SearchInput
-      placeholder="Cerca per etichetta, nome o cognome cliente..."
+      placeholder="Cerca per etichetta, nome o cognome paziente..."
       x-model="search"
       x-on:input.debounce.300ms="page = 1; fetchData()"
     >
@@ -47,7 +47,7 @@ export const prerender = false;
       <EmptyState
         icon="material-symbols-light:files-outline"
         title="Nessun documento trovato"
-        description="Carica documenti per i tuoi clienti"
+        description="Carica documenti per i tuoi pazienti"
       >
         <Button
           variant="outline"
@@ -73,7 +73,7 @@ export const prerender = false;
           <thead>
             <tr class="border-b border-neutral-200 text-left">
               <Th>Etichetta</Th>
-              <Th>Cliente</Th>
+              <Th>Paziente</Th>
               <Th align="center">File</Th>
               <Th align="center">Dimensione</Th>
               <Th>Data</Th>

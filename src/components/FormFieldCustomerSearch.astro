@@ -7,7 +7,7 @@ interface Props {
   required?: boolean;
 }
 
-const { label = "Cliente", required = false } = Astro.props;
+const { label = "Paziente", required = false } = Astro.props;
 ---
 
 <div>
@@ -83,7 +83,7 @@ const { label = "Cliente", required = false } = Astro.props;
         <p
           class="absolute z-10 inset-x-0 mt-1 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-xs text-neutral-500"
         >
-          Nessun cliente trovato
+          Nessun paziente trovato
         </p>
       </template>
     </div>

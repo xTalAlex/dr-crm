@@ -11,7 +11,7 @@ import { Icon } from "astro-icon/components";
   close="modal = false"
   size="lg"
   class="max-h-[90vh] overflow-y-auto"
-  titleExpr="editing ? 'Modifica Cliente' : 'Nuovo Cliente'"
+  titleExpr="editing ? 'Modifica Paziente' : 'Nuovo Paziente'"
   action="save()"
   actionLabelExpr="editing ? 'Salva' : 'Crea'"
   disabled="saving"
@@ -119,7 +119,7 @@ import { Icon } from "astro-icon/components";
 <ConfirmModal
   show="deleteTarget"
   close="deleteTarget = null"
-  title="Eliminare questo cliente?"
+  title="Eliminare questo paziente?"
   description="(deleteTarget?.surname ? deleteTarget.surname + ' ' : '') + (deleteTarget?.name || '')"
   confirm="doDelete()"
   confirmLabel="Elimina"

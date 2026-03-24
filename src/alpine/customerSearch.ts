@@ -33,7 +33,7 @@ export function customerSearchMixin() {
     },
 
     customerDisplayName(this: any, c: any) {
-      return ((c.surname || "") + " " + (c.name || "")).trim() || "Cliente";
+      return ((c.surname || "") + " " + (c.name || "")).trim() || "Paziente";
     },
 
     resetCustomerSearch(this: any) {

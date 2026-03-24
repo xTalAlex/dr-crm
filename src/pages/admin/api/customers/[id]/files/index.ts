@@ -6,7 +6,7 @@ export const GET = apiHandler(async ({ params }, { prisma }) => {
   const customerId = params.id!;
 
   const customer = await prisma.customer.findUnique({ where: { id: customerId } });
-  if (!customer) throw new ApiError(404, "Cliente non trovato");
+  if (!customer) throw new ApiError(404, "Paziente non trovato");
 
   const groups = await prisma.fileGroup.findMany({
     where: { customerId },

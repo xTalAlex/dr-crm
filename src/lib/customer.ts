@@ -29,7 +29,7 @@ export async function validateCustomer(
   if (excludeId) where.id = { not: excludeId };
   const duplicate = await prisma.customer.findFirst({ where });
   if (duplicate) {
-    return { status: 409, message: "Esiste già un cliente con questo numero di telefono" };
+    return { status: 409, message: "Esiste già un paziente con questo numero di telefono" };
   }
   return null;
 }
