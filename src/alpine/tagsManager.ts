@@ -8,6 +8,7 @@ const defaultColor = () =>
 export default (Alpine: Alpine) => {
   Alpine.data("tagsManager", () => ({
     tags: [] as any[],
+    loading: true,
     tagModal: false,
     editingTag: null as any,
     tagForm: { name: "", color: "" },
@@ -16,8 +17,10 @@ export default (Alpine: Alpine) => {
     deleteTagTarget: null as any,
 
     async fetchTags(this: any) {
+      this.loading = true;
       const res = await fetch("/admin/api/tags");
       this.tags = await res.json();
+      this.loading = false;
     },
 
     openTagForm(this: any, tag?: any) {
