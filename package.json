@@ -15,23 +15,23 @@
   },
   "dependencies": {
     "@astrojs/alpinejs": "^0.5.0",
-    "@astrojs/netlify": "^7.0.1",
-    "@getbrevo/brevo": "^4.0.1",
-    "@iconify-json/material-symbols-light": "^1.2.61",
-    "@prisma/adapter-pg": "^7.4.2",
-    "@prisma/client": "^7.4.2",
-    "@supabase/supabase-js": "^2.99.1",
-    "@tailwindcss/vite": "^4.2.1",
+    "@astrojs/netlify": "^7.0.4",
+    "@getbrevo/brevo": "^5.0.1",
+    "@iconify-json/material-symbols-light": "^1.2.63",
+    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/client": "^7.5.0",
+    "@supabase/supabase-js": "^2.100.0",
+    "@tailwindcss/vite": "^4.2.2",
     "@types/alpinejs": "^3.13.11",
     "alpinejs": "^3.15.8",
-    "astro": "^6.0.2",
+    "astro": "^6.0.8",
     "astro-icon": "^1.1.5",
-    "better-auth": "^1.5.4",
-    "tailwindcss": "^4.2.1"
+    "better-auth": "^1.5.6",
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
-    "@types/node": "^25.4.0",
+    "@types/node": "^25.5.0",
     "dotenv": "^17.3.1",
-    "prisma": "^7.4.2"
+    "prisma": "^7.5.0"
   }
 }
