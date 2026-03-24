@@ -16,7 +16,7 @@ if (user?.role === "admin") return Astro.redirect("/admin");
   bodyClass="min-h-screen flex items-center justify-center"
   noindex
 >
-  <div class="w-full max-w-sm px-6" x-data="loginForm">
+  <div class="w-full max-w-sm px-6" x-data="loginPage">
     <CenteredHeader subtitle="Accesso riservato" />
 
     <form x-on:submit.prevent="submitLogin" class="space-y-5">
@@ -50,7 +50,11 @@ if (user?.role === "admin") return Astro.redirect("/admin");
         href="/"
         class="text-xs inline-flex items-center gap-1"
       >
-        <Icon is:inline name="material-symbols-light:arrow-back" class="size-3.5" />
+        <Icon
+          is:inline
+          name="material-symbols-light:arrow-back"
+          class="size-3.5"
+        />
         Torna al sito
       </Link>
     </div>

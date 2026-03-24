@@ -2,7 +2,7 @@ import { authClient } from "@/lib/auth-client";
 import type { Alpine } from "alpinejs";
 
 export default (Alpine: Alpine) => {
-  Alpine.data("resetPage", () => ({
+  Alpine.data("resetPasswordPage", () => ({
     email: "",
     password: "",
     confirm: "",

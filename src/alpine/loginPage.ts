@@ -2,7 +2,7 @@ import { signIn } from "@/lib/auth-client";
 import type { Alpine } from "alpinejs";
 
 export default (Alpine: Alpine) => {
-  Alpine.data("loginForm", () => ({
+  Alpine.data("loginPage", () => ({
     email: "",
     password: "",
     error: "",
