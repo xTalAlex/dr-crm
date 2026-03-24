@@ -2,6 +2,7 @@
 import FormModal from "@/components/FormModal.astro";
 import ConfirmModal from "@/components/ConfirmModal.astro";
 import FormField from "@/components/FormField.astro";
+import { TAG_NAME_MAX_LENGTH } from "@/lib/tag";
 ---
 
 <!-- Create/Edit tag modal -->
@@ -21,6 +22,7 @@ import FormField from "@/components/FormField.astro";
       x-model="tagForm.name"
       x-ref="tagNameField"
       required
+      maxlength={TAG_NAME_MAX_LENGTH}
       placeholder=""
     />
 

@@ -1,4 +1,5 @@
 import { apiHandler, ApiError } from "@/lib/api";
+import { sanitizeTag, validateTag } from "@/lib/tag";
 
 export const prerender = false;
 
@@ -11,17 +12,10 @@ export const GET = apiHandler(async (_ctx, { prisma }) => {
 });
 
 export const POST = apiHandler(async ({ request }, { prisma }) => {
-  const body = await request.json();
-  const name = body.name?.trim();
-  if (!name) throw new ApiError(400, "Il nome del tag è obbligatorio");
+  const data = sanitizeTag(await request.json());
+  const error = await validateTag(prisma, data);
+  if (error) throw new ApiError(error.status, error.message);
 
-  const existing = await prisma.tag.findFirst({
-    where: { name: { equals: name, mode: "insensitive" } },
-  });
-  if (existing) throw new ApiError(409, "Esiste già un tag con questo nome");
-
-  const tag = await prisma.tag.create({
-    data: { name, color: body.color?.trim() || null },
-  });
+  const tag = await prisma.tag.create({ data });
   return Response.json(tag, { status: 201 });
 });
