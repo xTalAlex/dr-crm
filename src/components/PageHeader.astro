@@ -25,7 +25,7 @@ const hasActions = Astro.slots.has("default");
     {
       back && (
         <IconButton as="a" href={back}>
-          <Icon name="material-symbols-light:arrow-back" class="size-5" />
+          <Icon is:inline name="material-symbols-light:arrow-back" class="size-5" />
         </IconButton>
       )
     }

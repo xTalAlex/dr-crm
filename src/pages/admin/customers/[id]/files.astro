@@ -23,7 +23,7 @@ const { id } = Astro.params;
         variant="outline"
         x-on:click="uploadModal = true; uploadLabel = ''; uploadError = ''"
       >
-        <Icon name="material-symbols-light:upload" class="size-4" />
+        <Icon is:inline name="material-symbols-light:upload" class="size-4" />
         Carica file
       </Button>
     </PageHeader>
