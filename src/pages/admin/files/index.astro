@@ -8,6 +8,7 @@ import Td from "@/components/Td.astro";
 import IconButton from "@/components/IconButton.astro";
 import Button from "@/components/Button.astro";
 import FilesPageModals from "@/components/files/FilesPageModals.astro";
+import EmptyState from "@/components/EmptyState.astro";
 import Pagination from "@/components/Pagination.astro";
 import { Icon } from "astro-icon/components";
 
@@ -43,7 +44,27 @@ export const prerender = false;
     </template>
 
     <template x-if="!loading && groups.length === 0">
-      <p class="text-center text-neutral-500 py-8">Nessun documento trovato</p>
+      <EmptyState
+        icon="material-symbols-light:files-outline"
+        title="Nessun documento trovato"
+        description="Carica documenti per i tuoi clienti"
+      >
+        <Button
+          variant="outline"
+          size="xs"
+          class="mt-3"
+          x-show="search"
+          x-cloak
+          x-on:click="search = ''; page = 1; fetchData()"
+        >
+          <Icon
+            is:inline
+            name="material-symbols-light:filter-alt-off-outline"
+            class="size-3.5"
+          />
+          Rimuovi filtri
+        </Button>
+      </EmptyState>
     </template>
 
     <template x-if="!loading && groups.length > 0">
@@ -82,7 +103,8 @@ export const prerender = false;
                   <div class="inline-flex gap-1">
                     <IconButton variant="amber" title="Gestisci file">
                       <Icon
-                        name="material-symbols-light:folder-open-outline"
+                        is:inline
+                        name="material-symbols-light:files-outline"
                         class="size-5"
                       />
                     </IconButton>

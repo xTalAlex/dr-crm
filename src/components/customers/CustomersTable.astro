@@ -2,6 +2,7 @@
 import SearchInput from "@/components/SearchInput.astro";
 import DataTable from "@/components/DataTable.astro";
 import AlphabetFilter from "@/components/customers/AlphabetFilter.astro";
+import EmptyState from "@/components/EmptyState.astro";
 import Th from "@/components/Th.astro";
 import Td from "@/components/Td.astro";
 import IconButton from "@/components/IconButton.astro";
@@ -29,100 +30,107 @@ import { Icon } from "astro-icon/components";
 
   <!-- Table -->
   <div class="flex-1 min-w-0">
-    <DataTable>
-      <thead>
-        <tr class="border-b border-neutral-200 text-left">
-          <Th>Cognome</Th>
-          <Th>Nome</Th>
-          <Th>Telefono</Th>
-          <Th class="hidden md:table-cell">Email</Th>
-          <Th>Note</Th>
-          <Th align="right">Azioni</Th>
-        </tr>
-      </thead>
-      <tbody>
-        <template x-if="loading && customers.length === 0">
-          <tr>
-            <Td colspan="6" muted class="py-8 text-center">Caricamento...</Td>
+    <template x-if="loading && customers.length === 0">
+      <p class="text-center text-neutral-500 py-8">Caricamento...</p>
+    </template>
+
+    <template x-if="!loading && customers.length === 0">
+      <EmptyState
+        icon="material-symbols-light:group-outline"
+        title="Nessun cliente trovato"
+      >
+        <Button
+          variant="outline"
+          size="xs"
+          class="mt-3"
+          x-show="search || activeLetter"
+          x-cloak
+          x-on:click="search = ''; activeLetter = ''; fetchCustomers()"
+        >
+          <Icon
+            is:inline
+            name="material-symbols-light:filter-alt-off-outline"
+            class="size-3.5"
+          />
+          Rimuovi filtri
+        </Button>
+      </EmptyState>
+    </template>
+
+    <template x-if="customers.length > 0">
+      <DataTable>
+        <thead>
+          <tr class="border-b border-neutral-200 text-left">
+            <Th>Cognome</Th>
+            <Th>Nome</Th>
+            <Th>Telefono</Th>
+            <Th class="hidden md:table-cell">Email</Th>
+            <Th>Note</Th>
+            <Th align="right">Azioni</Th>
           </tr>
-        </template>
-        <template x-if="!loading && customers.length === 0">
-          <tr>
-            <Td colspan="6" muted class="py-8 text-center">
-              <p class="text-neutral-500">Nessun cliente trovato</p>
-              <Button
-                variant="outline"
-                size="xs"
-                class="mt-3"
-                x-show="search || activeLetter"
-                x-on:click="search = ''; activeLetter = ''; fetchCustomers()"
-              >
-                <Icon
-                  name="material-symbols-light:filter-alt-off-outline"
-                  class="size-3.5"
-                />
-                Rimuovi filtri
-              </Button>
-            </Td>
-          </tr>
-        </template>
-        <template x-for="c in customers" :key="c.id">
-          <tr
-            x-on:click="openEdit(c)"
-            class="border-b border-neutral-100 hover:bg-neutral-100 transition-colors cursor-pointer"
-          >
-            <Td class="font-medium" x-text="c.surname || '-'" />
-            <Td x-text="c.name" />
-            <Td muted x-text="c.phone" />
-            <Td muted class="hidden md:table-cell" x-text="c.email || '-'" />
-            <Td
-              muted
-              class="text-xs max-w-50 truncate"
-              x-text="c.notes || ''"
-            />
-            <Td align="right" x-on:click.stop>
-              <div class="inline-flex gap-1">
-                <IconButton
-                  as="a"
-                  variant="green"
-                  :href="waLink(c.phone)"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="WhatsApp"
-                  x-on:click.stop
-                >
-                  <Icon
-                    name="material-symbols-light:chat-outline"
-                    class="size-5"
-                  />
-                </IconButton>
-                <IconButton
-                  as="a"
-                  variant="amber"
-                  :href="'/admin/customers/' + c.id + '/files'"
-                  title="Documenti"
-                  x-on:click.stop
-                >
-                  <Icon
-                    name="material-symbols-light:folder-outline"
-                    class="size-5"
-                  />
-                </IconButton>
-                <IconButton
-                  variant="danger"
-                  x-on:click="confirmDelete(c)"
-                  title="Elimina"
-                >
-                  <Icon
-                    name="material-symbols-light:delete-outline"
-                    class="size-4"
-                  />
-                </IconButton>
-              </div>
-            </Td>
-          </tr>
-        </template>
-      </tbody>
-    </DataTable>
+        </thead>
+        <tbody>
+          <template x-for="c in customers" :key="c.id">
+            <tr
+              x-on:click="openEdit(c)"
+              class="border-b border-neutral-100 hover:bg-neutral-100 transition-colors cursor-pointer"
+            >
+              <Td class="font-medium" x-text="c.surname || '-'" />
+              <Td x-text="c.name" />
+              <Td muted x-text="c.phone" />
+              <Td muted class="hidden md:table-cell" x-text="c.email || '-'" />
+              <Td
+                muted
+                class="text-xs max-w-50 truncate"
+                x-text="c.notes || ''"
+              />
+              <Td align="right" x-on:click.stop>
+                <div class="inline-flex gap-1">
+                  <IconButton
+                    as="a"
+                    variant="green"
+                    :href="waLink(c.phone)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="WhatsApp"
+                    x-on:click.stop
+                  >
+                    <Icon
+                      is:inline
+                      name="material-symbols-light:chat-outline"
+                      class="size-5"
+                    />
+                  </IconButton>
+                  <IconButton
+                    as="a"
+                    variant="amber"
+                    :href="'/admin/customers/' + c.id + '/files'"
+                    title="Documenti"
+                    x-on:click.stop
+                  >
+                    <Icon
+                      is:inline
+                      name="material-symbols-light:files-outline"
+                      class="size-5"
+                    />
+                  </IconButton>
+                  <IconButton
+                    variant="danger"
+                    x-on:click="confirmDelete(c)"
+                    title="Elimina"
+                  >
+                    <Icon
+                      is:inline
+                      name="material-symbols-light:delete-outline"
+                      class="size-4"
+                    />
+                  </IconButton>
+                </div>
+              </Td>
+            </tr>
+          </template>
+        </tbody>
+      </DataTable>
+    </template>
   </div>
 </div>
