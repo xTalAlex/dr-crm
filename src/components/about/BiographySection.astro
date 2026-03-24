@@ -1,0 +1,119 @@
+---
+import { Image } from "astro:assets";
+import content from "@/data/content.json";
+import volunteerImg from "@/assets/images/volunteer-doctor-africa.jpg";
+
+const { doctor, contacts } = content;
+---
+
+<section class="py-20">
+  <div class="max-w-4xl mx-auto px-6">
+    <!-- Vertical line -->
+    <div class="relative">
+      <div
+        class="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-px bg-petrol-100"
+      >
+      </div>
+
+      <!-- 1983 — Laurea -->
+      <div
+        class="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 pb-16"
+      >
+        <div class="md:text-right md:pr-12 pl-12 md:pl-0">
+          <span class="font-serif text-petrol-500 text-sm">1983</span>
+          <h2 class="mt-1 font-serif text-2xl text-neutral-900">
+            Laurea e Abilitazione
+          </h2>
+          <p class="mt-3 text-neutral-500 leading-relaxed">
+            Laurea in Medicina e Chirurgia presso l'Università degli Studi di
+            Pavia. Abilitazione alla professione di Medico Chirurgo — Ordine dei
+            Medici e degli Odontoiatri della provincia di Varese.
+          </p>
+        </div>
+        <div class="hidden md:block"></div>
+        <!-- Dot -->
+        <div
+          class="absolute left-4 md:left-1/2 top-1 size-2.5 -translate-x-1/2 rounded-full bg-petrol-500 ring-4 ring-petrol-100"
+        >
+        </div>
+      </div>
+
+      <!-- 1983 — RSA -->
+      <div
+        class="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 pb-16"
+      >
+        <div class="hidden md:block"></div>
+        <div class="pl-12 md:pl-12">
+          <span class="font-serif text-petrol-500 text-sm">Primi anni '80</span>
+          <h2 class="mt-1 font-serif text-2xl text-neutral-900">
+            Direttore Sanitario
+          </h2>
+          <p class="mt-3 text-neutral-500 leading-relaxed">
+            Direttore sanitario in RSA nei primi anni della carriera.
+          </p>
+        </div>
+        <div
+          class="absolute left-4 md:left-1/2 top-1 size-2.5 -translate-x-1/2 rounded-full bg-petrol-500 ring-4 ring-petrol-100"
+        >
+        </div>
+      </div>
+
+      <!-- 1983/84 — Africa -->
+      <div
+        class="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 pb-16"
+      >
+        <div class="md:text-right md:pr-12 pl-12 md:pl-0">
+          <span class="font-serif text-petrol-500 text-sm">1983–84</span>
+          <h2 class="mt-1 font-serif text-2xl text-neutral-900">
+            Missione Umanitaria in Africa
+          </h2>
+          <p class="mt-3 text-neutral-500 leading-relaxed">
+            Nel 1983/84 ha partecipato a una missione umanitaria in Africa come
+            medico volontario, affrontando sfide sanitarie complesse e trattando
+            pazienti con risorse limitate.
+          </p>
+          <p class="mt-3 text-neutral-500 leading-relaxed">
+            Quell'esperienza ha rafforzato la sua attenzione alla prevenzione e
+            alla cura della persona — un approccio che lo accompagna tuttora
+            nella pratica quotidiana a Varese.
+          </p>
+        </div>
+        <div class="pl-12 md:pl-12">
+          <div class="relative">
+            <Image
+              src={volunteerImg}
+              alt={`${doctor.title} ${doctor.lastName} durante la missione umanitaria in Africa, 1983-84`}
+              class="rounded-2xl shadow-lg object-cover w-full aspect-4/3"
+              widths={[400, 800]}
+              sizes="(max-width: 768px) 100vw, 45vw"
+            />
+          </div>
+        </div>
+        <div
+          class="absolute left-4 md:left-1/2 top-1 size-2.5 -translate-x-1/2 rounded-full bg-petrol-500 ring-4 ring-petrol-100"
+        >
+        </div>
+      </div>
+
+      <!-- 1984 — Varese -->
+      <div class="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
+        <div class="hidden md:block"></div>
+        <div class="pl-12 md:pl-12">
+          <span class="font-serif text-petrol-500 text-sm">Dal 1984</span>
+          <h2 class="mt-1 font-serif text-2xl text-neutral-900">
+            Dentista a Varese
+          </h2>
+          <p class="mt-3 text-neutral-500 leading-relaxed">
+            Dal 1984 esercita come dentista a Varese. Attualmente riceve in
+            <strong class="text-neutral-900">{contacts.address.street}</strong> e
+            collabora con colleghi in provincia.
+          </p>
+        </div>
+        <div
+          class="absolute left-4 md:left-1/2 top-1 size-2.5 -translate-x-1/2 rounded-full bg-petrol-500 ring-4 ring-petrol-100"
+        >
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

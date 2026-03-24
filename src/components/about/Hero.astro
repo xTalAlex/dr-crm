@@ -1,0 +1,43 @@
+---
+import { Image } from "astro:assets";
+import content from "@/data/content.json";
+import deskImg from "@/assets/images/desk.jpg";
+
+const { doctor } = content;
+---
+
+<section
+  class="relative min-h-screen flex items-center justify-center overflow-hidden"
+>
+  <div class="absolute inset-0">
+    <Image
+      src={deskImg}
+      alt={`Dentista a Varese — ${doctor.title} ${doctor.lastName}, sulla scrivania la foto della missione in Africa`}
+      class="w-full h-full object-cover"
+      widths={[800, 1400]}
+      sizes="100vw"
+    />
+    <div
+      class="absolute inset-0 bg-linear-to-b from-neutral-900/70 via-neutral-900/50 to-neutral-900/80"
+    >
+    </div>
+  </div>
+
+  <div class="relative max-w-4xl mx-auto px-6 text-center py-16">
+    <span
+      class="text-petrol-400 text-xs tracking-[0.3em] uppercase font-medium"
+    >
+      About
+    </span>
+    <h1
+      class="mt-4 font-serif text-4xl md:text-6xl text-neutral-50 leading-tight"
+    >
+      {doctor.title}
+      {doctor.firstName}
+      <span class="text-petrol-300">{doctor.lastName}</span>
+    </h1>
+    <p class="mt-6 text-petrol-200 text-lg">
+      Medico Chirurgo, Odontoiatra — Dentista a Varese dal 1984
+    </p>
+  </div>
+</section>

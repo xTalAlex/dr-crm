@@ -1,0 +1,52 @@
+---
+import Button from "@/components/Button.astro";
+import content from "@/data/content.json";
+
+const { contacts } = content;
+---
+
+<section class="py-16 bg-petrol-50/40">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <span
+      class="text-petrol-400 text-xs tracking-[0.3em] uppercase font-medium"
+    >
+      Servizi
+    </span>
+    <h2 class="mt-4 font-serif text-3xl text-neutral-900">Servizi Offerti</h2>
+    <div
+      class="mt-4 h-px w-24 mx-auto bg-linear-to-r from-transparent via-petrol-500/30 to-transparent"
+    >
+    </div>
+
+    <div class="mt-10 flex flex-wrap justify-center gap-3 max-w-md mx-auto">
+      {
+        [
+          "Conservativa",
+          "Protesi",
+          "Chirurgia",
+          "Implantologia",
+          "Ortodonzia",
+          "Sbiancamento",
+          "Riparazione protesi urgenti",
+        ].map((service) => (
+          <span class="bg-neutral-50 border border-petrol-100 rounded-full px-5 py-2 text-sm text-neutral-900 shadow-sm">
+            {service}
+          </span>
+        ))
+      }
+    </div>
+
+    <div class="mt-12">
+      <Button
+        as="a"
+        href={`tel:${contacts.phone.href}`}
+        variant="primary"
+        pill
+        class="px-8 py-3.5 shadow-md hover:shadow-lg tracking-wide"
+      >
+        Prenota Appuntamento
+      </Button>
+      <p class="mt-4 text-neutral-500 text-sm">Prima visita gratuita</p>
+    </div>
+  </div>
+</section>
