@@ -3,6 +3,7 @@ import SearchInput from "@/components/SearchInput.astro";
 import DataTable from "@/components/DataTable.astro";
 import AlphabetFilter from "@/components/customers/AlphabetFilter.astro";
 import EmptyState from "@/components/EmptyState.astro";
+import LoadingState from "@/components/LoadingState.astro";
 import Th from "@/components/Th.astro";
 import Td from "@/components/Td.astro";
 import IconButton from "@/components/IconButton.astro";
@@ -31,7 +32,7 @@ import { Icon } from "astro-icon/components";
   <!-- Table -->
   <div class="flex-1 min-w-0">
     <template x-if="loading && customers.length === 0">
-      <p class="text-center text-neutral-500 py-8">Caricamento...</p>
+      <LoadingState />
     </template>
 
     <template x-if="!loading && customers.length === 0">
@@ -60,28 +61,27 @@ import { Icon } from "astro-icon/components";
     <template x-if="customers.length > 0">
       <DataTable>
         <thead>
-          <tr class="border-b border-neutral-200 text-left">
+          <tr>
             <Th>Cognome</Th>
             <Th>Nome</Th>
             <Th>Telefono</Th>
-            <Th class="hidden md:table-cell">Email</Th>
-            <Th>Note</Th>
+            <Th>Tag</Th>
+            <Th class="hidden md:table-cell">Note</Th>
             <Th align="right">Azioni</Th>
           </tr>
         </thead>
         <tbody>
           <template x-for="c in customers" :key="c.id">
-            <tr
-              x-on:click="openEdit(c)"
-              class="border-b border-neutral-100 hover:bg-neutral-100 transition-colors cursor-pointer"
-            >
+            <tr x-on:click="openEdit(c)" class="cursor-pointer">
               <Td class="font-medium" x-text="c.surname || '-'" />
               <Td x-text="c.name" />
               <Td muted x-text="c.phone" />
-              <Td muted class="hidden md:table-cell" x-text="c.email || '-'" />
+              <Td>
+                <div class="flex flex-col gap-1"></div>
+              </Td>
               <Td
                 muted
-                class="text-xs max-w-50 truncate"
+                class="hidden md:table-cell text-xs max-w-50 truncate"
                 x-text="c.notes || ''"
               />
               <Td align="right" x-on:click.stop>

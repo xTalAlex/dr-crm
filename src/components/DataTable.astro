@@ -15,7 +15,19 @@ const { class: className = "", ...rest } = Astro.props;
   {...rest}
 >
   <div class="overflow-x-auto">
-    <table class="w-full text-sm">
+    <table
+      class:list={[
+        "w-full text-sm",
+        /* thead */
+        "[&_thead_tr]:border-b [&_thead_tr]:border-neutral-200 [&_thead_tr]:text-left",
+        /* tbody: striped */
+        "[&_tbody_tr:nth-child(even)]:bg-neutral-100",
+        /* tbody: hover */
+        "[&_tbody_tr:hover]:bg-neutral-200/50!",
+        /* tbody: borders & transitions */
+        "[&_tbody_tr]:border-b [&_tbody_tr]:border-neutral-100 [&_tbody_tr]:transition-colors",
+      ]}
+    >
       <slot />
     </table>
   </div>
