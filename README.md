@@ -4,13 +4,16 @@ Landing page with a simple CRM.
 
 ## Tech Stack
 
-| Layer     | Technology                       |
-| --------- | -------------------------------- |
-| Framework | Astro 6 (SSR)                    |
-| UI        | Tailwind CSS 4 · Alpine.js       |
-| Database  | PostgreSQL (Supabase) · Prisma 7 |
-| Auth      | better-auth                      |
-| Deploy    | Netlify                          |
+| Layer     | Technology                              |
+| --------- | --------------------------------------- |
+| Framework | Astro 6 (SSR)                           |
+| UI        | Tailwind CSS 4 · Alpine.js · astro-icon |
+| Database  | PostgreSQL (Supabase) · Prisma 7        |
+| Storage   | Supabase Storage                        |
+| Auth      | better-auth                             |
+| Email     | Brevo                                   |
+| Deploy    | Netlify                                 |
+| Icons     | Material Symbols Light                  |
 
 ## Prerequisites
 
@@ -21,19 +24,21 @@ Landing page with a simple CRM.
 
 ```bash
 npm install
-cp .env.example .env   # fill in environment variables
+cp env.example .env   # fill in environment variables
 npm run dev
 ```
 
 ### Environment Variables
 
-| Variable             | Description                           |
-| -------------------- | ------------------------------------- |
-| `BETTER_AUTH_URL`    | Site base URL                         |
-| `BETTER_AUTH_SECRET` | Secret for better-auth                |
-| `DATABASE_URL`       | PostgreSQL connection string (pooled) |
-| `DIRECT_URL`         | PostgreSQL direct connection string   |
-| `ADMIN_EMAIL`        | Email for the first admin user        |
+| Variable               | Description                           |
+| ---------------------- | ------------------------------------- |
+| `BETTER_AUTH_URL`      | Site base URL                         |
+| `BETTER_AUTH_SECRET`   | Secret for better-auth                |
+| `DATABASE_URL`         | PostgreSQL connection string (pooled) |
+| `DIRECT_URL`           | PostgreSQL direct connection string   |
+| `ADMIN_EMAIL`          | Email for the first admin user        |
+| `SUPABASE_URL`         | Supabase project URL                  |
+| `SUPABASE_SERVICE_KEY` | Supabase service-role key             |
 
 ## Database
 
@@ -61,8 +66,9 @@ The seed script creates an admin user with a random temporary password.
 
 ## Scripts
 
-| Command           | Description                                        |
-| ----------------- | -------------------------------------------------- |
-| `npm run dev`     | Dev server with hot reload                         |
-| `npm run build`   | Production build (generates Prisma client + Astro) |
-| `npm run preview` | Preview the build                                  |
+| Command                 | Description                                        |
+| ----------------------- | -------------------------------------------------- |
+| `npm run dev`           | Dev server with hot reload                         |
+| `npm run build`         | Production build (generates Prisma client + Astro) |
+| `npm run preview`       | Preview the build                                  |
+| `npm run prisma studio` | Access database from browser                       |
