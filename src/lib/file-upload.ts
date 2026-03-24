@@ -6,6 +6,9 @@ import { randomBytes } from "node:crypto";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const MAX_TOTAL_SIZE = 20 * 1024 * 1024; // 20 MB
 
+/** Allowed MIME types. Empty set = allow all. */
+const ALLOWED_MIME_TYPES = new Set<string>([]);
+
 export async function uploadFiles(
   prisma: PrismaClient,
   supabase: SupabaseClient,
@@ -13,6 +16,14 @@ export async function uploadFiles(
   groupId: string,
   files: File[],
 ) {
+  if (ALLOWED_MIME_TYPES.size > 0) {
+    const rejected = files.filter((f) => !ALLOWED_MIME_TYPES.has(f.type));
+    if (rejected.length > 0) {
+      const names = rejected.map((f) => f.name).join(", ");
+      throw new FileTypeError(`Tipo di file non consentito: ${names}`);
+    }
+  }
+
   const oversized = files.filter((f) => f.size > MAX_FILE_SIZE);
   if (oversized.length > 0) {
     const names = oversized.map((f) => f.name).join(", ");
@@ -61,5 +72,12 @@ export class FileSizeError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "FileSizeError";
+  }
+}
+
+export class FileTypeError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "FileTypeError";
   }
 }

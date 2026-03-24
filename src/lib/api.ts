@@ -3,7 +3,7 @@ import type { PrismaClient } from "@/generated/prisma/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getDb } from "@/lib/db";
 import { getSupabase } from "@/lib/supabase";
-import { FileSizeError } from "@/lib/file-upload";
+import { FileSizeError, FileTypeError } from "@/lib/file-upload";
 import { logError } from "@/lib/log";
 
 export class ApiError extends Error {
@@ -35,6 +35,9 @@ export function apiHandler(fn: HandlerFn): APIRoute {
         message = err.message;
       } else if (err instanceof FileSizeError) {
         status = 413;
+        message = err.message;
+      } else if (err instanceof FileTypeError) {
+        status = 415;
         message = err.message;
       } else {
         logError(ctx.url.pathname, err);
