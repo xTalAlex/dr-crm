@@ -39,6 +39,8 @@ npm run dev
 | `ADMIN_EMAIL`        | Email for the first admin user        |
 | `SUPABASE_URL`       | Supabase project URL                  |
 | `SUPABASE_SECRET`    | Supabase service-role key             |
+| `BREVO_API_KEY`      | Brevo API key for transactional emails|
+| `DISCORD_WEBHOOK_URL`| Discord webhook for error alerts (optional) |
 
 ## Database
 
