@@ -1,0 +1,114 @@
+---
+interface Props {
+  label?: string;
+  placeholder?: string;
+  /** Whether inline creation is enabled (shows "Crea" option) */
+  allowCreate?: boolean;
+  required?: boolean;
+}
+
+const {
+  label,
+  placeholder = "Cerca...",
+  allowCreate = false,
+  required = false,
+} = Astro.props;
+
+import { Icon } from "astro-icon/components";
+---
+
+<div>
+  {
+    label && (
+      <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-1.5">
+        {label}
+        {required && <span class="text-red-500"> *</span>}
+      </label>
+    )
+  }
+
+  <div
+    class="relative"
+    x-on:click.outside="multiselectOpen = false"
+    x-on:keydown.escape.prevent="multiselectOpen = false"
+  >
+    {/* Selected items + input */}
+    <div
+      class="flex flex-wrap items-center gap-1.5 w-full bg-neutral-50 border border-neutral-200 focus-within:border-petrol-500 rounded-lg px-3 py-2.5 transition-colors cursor-text"
+      x-on:click="$refs.multiselectInput.focus()"
+    >
+      <template x-for="item in multiselectSelected()" :key="item.id">
+        <span
+          class="inline-flex items-center gap-1 text-sm text-neutral-900 bg-neutral-200 rounded-md px-2 py-0.5"
+        >
+          <span x-text="item.name" class="truncate max-w-32"></span>
+          <button
+            type="button"
+            x-on:click.stop="multiselectRemove(item.id)"
+            class="text-neutral-500 hover:text-red-500 transition-colors"
+          >
+            <Icon
+              is:inline
+              name="material-symbols-light:close"
+              class="size-3.5"
+            />
+          </button>
+        </span>
+      </template>
+
+      <input
+        x-ref="multiselectInput"
+        x-model="multiselectSearch"
+        x-on:focus="multiselectOpen = true"
+        x-on:input="multiselectOpen = true"
+        x-on:keydown.backspace="multiselectBackspace()"
+        x-on:keydown.enter.prevent="multiselectEnter()"
+        type="text"
+        placeholder={placeholder}
+        class="flex-1 min-w-30 bg-transparent text-sm text-neutral-900 outline-none placeholder:text-neutral-500"
+        autocomplete="off"
+      />
+    </div>
+
+    {/* Dropdown */}
+    <div
+      x-show={`multiselectOpen && (multiselectFiltered().length${allowCreate ? " || (multiselectSearch.trim() && !multiselectHasExactMatch())" : ""})`}
+      x-transition
+      x-cloak
+      class="absolute z-10 left-0 right-0 mt-1 bg-neutral-50 border border-neutral-200 rounded-lg shadow-lg max-h-48 overflow-y-auto"
+    >
+      <template x-for="item in multiselectFiltered()" :key="item.id">
+        <button
+          type="button"
+          x-on:click="multiselectSelect(item.id)"
+          class="w-full px-3 py-2 text-sm text-left text-neutral-900 hover:bg-neutral-200 transition-colors"
+        >
+          <span x-text="item.name"></span>
+        </button>
+      </template>
+
+      {
+        allowCreate && (
+          <template x-if="multiselectSearch.trim() && !multiselectHasExactMatch()">
+            <button
+              type="button"
+              x-on:click="multiselectCreate()"
+              x-bind:disabled="multiselectCreating"
+              class="flex items-center gap-2 w-full px-3 py-2 text-sm text-left hover:bg-petrol-50 text-petrol-500 transition-colors border-t border-neutral-100"
+            >
+              <Icon
+                is:inline
+                name="material-symbols-light:add"
+                class="size-4"
+              />
+              <span>
+                Crea "
+                <span x-text="multiselectSearch.trim()" class="font-medium" />"
+              </span>
+            </button>
+          </template>
+        )
+      }
+    </div>
+  </div>
+</div>
