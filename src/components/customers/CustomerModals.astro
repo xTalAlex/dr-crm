@@ -3,6 +3,7 @@ import FormModal from "@/components/FormModal.astro";
 import ConfirmModal from "@/components/ConfirmModal.astro";
 import Button from "@/components/Button.astro";
 import FormField from "@/components/FormField.astro";
+import FormFieldMultiselect from "@/components/FormFieldMultiselect.astro";
 import { Icon } from "astro-icon/components";
 ---
 
@@ -107,6 +108,12 @@ import { Icon } from "astro-icon/components";
         />
       </div>
     </div>
+
+    <FormFieldMultiselect
+      label="Tag"
+      placeholder="Cerca o crea tag..."
+      allowCreate
+    />
 
     <FormField label="Note" type="textarea" x-model="form.notes" rows="3" />
   </form>

@@ -1,3 +1,5 @@
+import { formFieldMultiselectMixin } from "../shared/formFieldMultiselectMixin";
+
 const emptyForm = () => ({
   name: "",
   surname: "",
@@ -22,11 +24,33 @@ export function formMixin() {
     deleteTarget: null as any,
     allTags: [] as any[],
 
+    ...formFieldMultiselectMixin({
+      itemsKey: "allTags",
+      selectedIdsKey: "form.tagIds",
+      async onCreate(name, comp) {
+        const color = getComputedStyle(document.documentElement)
+          .getPropertyValue("--color-petrol-500")
+          .trim();
+        const res = await fetch("/admin/api/tags", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, color }),
+        });
+        if (res.ok) {
+          const tag = await res.json();
+          comp.allTags.push(tag);
+          return tag;
+        }
+        return null;
+      },
+    }),
+
     async openCreate(this: any) {
       this.editing = null;
       this.form = emptyForm();
       this.formError = "";
       this.showExtra = false;
+      this.multiselectReset();
       await this.loadTags();
       this.modal = true;
       this.$nextTick(() => this.$refs.firstField?.focus());
@@ -52,6 +76,7 @@ export function formMixin() {
         this.form.birthDate ||
         this.form.address
       );
+      this.multiselectReset();
       await this.loadTags();
       this.modal = true;
       this.$nextTick(() => this.$refs.firstField?.focus());
@@ -98,12 +123,6 @@ export function formMixin() {
     async loadTags(this: any) {
       const res = await fetch("/admin/api/tags");
       if (res.ok) this.allTags = await res.json();
-    },
-
-    toggleTag(this: any, tagId: string) {
-      const idx = this.form.tagIds.indexOf(tagId);
-      if (idx === -1) this.form.tagIds.push(tagId);
-      else this.form.tagIds.splice(idx, 1);
     },
 
     confirmDelete(c: any) {
