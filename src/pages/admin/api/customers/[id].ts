@@ -1,6 +1,7 @@
 import { apiHandler, ApiError } from "@/lib/api";
 import { BUCKET } from "@/lib/supabase";
 import { sanitizeCustomer, validateCustomer } from "@/lib/customer";
+import { logError } from "@/lib/log";
 
 export const prerender = false;
 
@@ -41,11 +42,14 @@ export const DELETE = apiHandler(async ({ params }, { prisma, supabase }) => {
         include: { files: true },
     });
     const paths = groups.flatMap((g) => g.files.map((f) => f.storagePath));
-    if (paths.length > 0) {
-        await supabase.storage.from(BUCKET).remove(paths);
-    }
 
     await prisma.customer.delete({ where: { id: params.id } });
+
+    if (paths.length > 0) {
+        await supabase.storage.from(BUCKET).remove(paths).catch((err) => {
+            logError(`/admin/api/customers/${params.id}`, err);
+        });
+    }
 
     return Response.json({ ok: true });
 });

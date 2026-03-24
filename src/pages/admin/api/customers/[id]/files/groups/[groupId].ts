@@ -1,6 +1,7 @@
 import { apiHandler, ApiError } from "@/lib/api";
 import { BUCKET } from "@/lib/supabase";
 import { uploadFiles } from "@/lib/file-upload";
+import { logError } from "@/lib/log";
 
 export const prerender = false;
 
@@ -37,11 +38,14 @@ export const DELETE = apiHandler(async ({ params }, { prisma, supabase }) => {
   if (!group) throw new ApiError(404, "Gruppo non trovato");
 
   const paths = group.files.map((f) => f.storagePath);
-  if (paths.length > 0) {
-    await supabase.storage.from(BUCKET).remove(paths);
-  }
 
   await prisma.fileGroup.delete({ where: { id: groupId } });
+
+  if (paths.length > 0) {
+    await supabase.storage.from(BUCKET).remove(paths).catch((err) => {
+      logError(`/admin/api/customers/files/groups/${groupId}`, err);
+    });
+  }
 
   return Response.json({ ok: true });
 });
