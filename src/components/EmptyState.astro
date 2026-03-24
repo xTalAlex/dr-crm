@@ -1,0 +1,24 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  icon?: string;
+  title: string;
+  description?: string;
+  class?: string;
+}
+
+const { icon, title, description, class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    "py-8 text-center border border-dashed border-neutral-200 rounded-xl",
+    className,
+  ]}
+>
+  {icon && <Icon is:inline name={icon} class="size-8 mx-auto text-petrol-500 mb-2" />}
+  <p class="text-sm text-neutral-500">{title}</p>
+  {description && <p class="text-xs text-neutral-500 mt-1">{description}</p>}
+  <slot />
+</div>
