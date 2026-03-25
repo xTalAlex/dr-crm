@@ -22,6 +22,8 @@ const isMobile = mode === "mobile";
           </button>
         </template>
         <button
+          x-show="initialized"
+          x-cloak
           x-on:click="search = ''; activeLetter = ''; fetchCustomers()"
           x-bind:class="activeLetter === '' ? 'bg-petrol-50 text-petrol-500 border-petrol-200' : 'text-neutral-500 border-neutral-200'"
           class="px-2 py-1 text-xs rounded border transition-colors"
@@ -50,6 +52,8 @@ const isMobile = mode === "mobile";
         </button>
       </template>
       <button
+        x-show="initialized"
+        x-cloak
         x-on:click="search = ''; activeLetter = ''; fetchCustomers()"
         x-bind:class="activeLetter === '' ? 'bg-petrol-50 text-petrol-500 border-petrol-200' : 'text-neutral-500 hover:text-petrol-500 border-transparent hover:border-neutral-200'"
         class="col-span-2 w-auto px-2 h-7 text-xs font-medium rounded border transition-all duration-200 flex items-center justify-center gap-1 mt-3"

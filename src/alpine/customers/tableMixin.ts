@@ -9,6 +9,7 @@ export function tableMixin() {
     activeLetter: "",
     letterCounts: {} as Record<string, number>,
     loading: false,
+    initialized: false,
 
     waLink,
 
@@ -20,6 +21,7 @@ export function tableMixin() {
       this.activeLetter = Object.keys(this.letterCounts).sort()[0] ?? "";
       this.loading = false;
       await this.fetchCustomers();
+      this.initialized = true;
     },
 
     async fetchCustomers() {
