@@ -1,21 +1,14 @@
-export interface FormFieldMultiselectConfig {
-  /** Property name on the Alpine component containing all items (each with `id` and `name`) */
-  itemsKey: string;
-  /** Property path for the selected IDs array, supports dot notation (e.g. "form.tagIds") */
-  selectedIdsKey: string;
-  /** Optional: async function to create an item from the search text. Receives (name, component). Return the new item or null. */
-  onCreate?: (name: string, comp: any) => Promise<any>;
+import type { NamedItem, MultiselectState, FormFieldMultiselectConfig } from "@/alpine/types";
+
+function getByPath(obj: Record<string, unknown>, path: string): unknown {
+  return path.split(".").reduce<unknown>((o, k) => (o as Record<string, unknown>)?.[k], obj);
 }
 
-function getByPath(obj: any, path: string): any {
-  return path.split(".").reduce((o, k) => o?.[k], obj);
-}
-
-function setByPath(obj: any, path: string, value: any) {
+function setByPath(obj: Record<string, unknown>, path: string, value: unknown) {
   const keys = path.split(".");
   const last = keys.pop()!;
-  const parent = keys.reduce((o, k) => o?.[k], obj);
-  if (parent) parent[last] = value;
+  const parent = keys.reduce<unknown>((o, k) => (o as Record<string, unknown>)?.[k], obj);
+  if (parent) (parent as Record<string, unknown>)[last] = value;
 }
 
 export function formFieldMultiselectMixin(config: FormFieldMultiselectConfig) {
@@ -24,61 +17,60 @@ export function formFieldMultiselectMixin(config: FormFieldMultiselectConfig) {
     multiselectOpen: false,
     multiselectCreating: false,
 
-    multiselectItems(this: any): any[] {
-      return this[config.itemsKey] ?? [];
+    multiselectItems(this: MultiselectState): NamedItem[] {
+      return (this[config.itemsKey] as NamedItem[] | undefined) ?? [];
     },
 
-    multiselectSelectedIds(this: any): string[] {
-      return getByPath(this, config.selectedIdsKey) ?? [];
+    multiselectSelectedIds(this: MultiselectState): string[] {
+      return (getByPath(this as unknown as Record<string, unknown>, config.selectedIdsKey) as string[] | undefined) ?? [];
     },
 
-    multiselectQuery(this: any): string {
+    multiselectQuery(this: MultiselectState): string {
       return this.multiselectSearch.toLowerCase().trim();
     },
 
-    multiselectFiltered(this: any) {
+    multiselectFiltered(this: MultiselectState): NamedItem[] {
       const ids = this.multiselectSelectedIds();
       const q = this.multiselectQuery();
       return this.multiselectItems().filter(
-        (t: any) =>
-          !ids.includes(t.id) && (!q || t.name.toLowerCase().includes(q)),
+        (t) => !ids.includes(t.id) && (!q || t.name.toLowerCase().includes(q)),
       );
     },
 
-    multiselectHasExactMatch(this: any) {
+    multiselectHasExactMatch(this: MultiselectState): boolean {
       const q = this.multiselectQuery();
-      return !!q && this.multiselectItems().some((t: any) => t.name.toLowerCase() === q);
+      return !!q && this.multiselectItems().some((t) => t.name.toLowerCase() === q);
     },
 
-    multiselectSelected(this: any) {
+    multiselectSelected(this: MultiselectState): NamedItem[] {
       const items = this.multiselectItems();
       return this.multiselectSelectedIds()
-        .map((id: string) => items.find((t: any) => t.id === id))
-        .filter(Boolean);
+        .map((id) => items.find((t) => t.id === id))
+        .filter((t): t is NamedItem => !!t);
     },
 
-    multiselectSelect(this: any, id: string) {
+    multiselectSelect(this: MultiselectState, id: string) {
       const ids = this.multiselectSelectedIds();
       if (!ids.includes(id)) ids.push(id);
       this.multiselectReset();
     },
 
-    multiselectRemove(this: any, id: string) {
+    multiselectRemove(this: MultiselectState, id: string) {
       setByPath(
-        this,
+        this as unknown as Record<string, unknown>,
         config.selectedIdsKey,
-        this.multiselectSelectedIds().filter((i: string) => i !== id),
+        this.multiselectSelectedIds().filter((i) => i !== id),
       );
     },
 
-    multiselectBackspace(this: any) {
+    multiselectBackspace(this: MultiselectState) {
       const ids = this.multiselectSelectedIds();
       if (!this.multiselectSearch && ids.length) {
         this.multiselectRemove(ids[ids.length - 1]);
       }
     },
 
-    multiselectEnter(this: any) {
+    multiselectEnter(this: MultiselectState) {
       const filtered = this.multiselectFiltered();
       if (filtered.length) {
         this.multiselectSelect(filtered[0].id);
@@ -87,7 +79,7 @@ export function formFieldMultiselectMixin(config: FormFieldMultiselectConfig) {
       }
     },
 
-    async multiselectCreate(this: any) {
+    async multiselectCreate(this: MultiselectState) {
       const name = this.multiselectSearch.trim();
       if (!config.onCreate || !name || this.multiselectCreating) return;
       this.multiselectCreating = true;
@@ -99,7 +91,7 @@ export function formFieldMultiselectMixin(config: FormFieldMultiselectConfig) {
       this.multiselectCreating = false;
     },
 
-    multiselectReset(this: any) {
+    multiselectReset(this: MultiselectState) {
       this.multiselectSearch = "";
       this.multiselectOpen = false;
     },

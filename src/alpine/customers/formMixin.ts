@@ -1,6 +1,7 @@
 import { formFieldMultiselectMixin } from "../shared/formFieldMultiselectMixin";
+import type { Customer, Tag, NamedItem, CustomerFormData, CustomerFormMixinState } from "@/alpine/types";
 
-const emptyForm = () => ({
+const emptyForm = (): CustomerFormData => ({
   name: "",
   surname: "",
   phone: "",
@@ -16,13 +17,13 @@ const emptyForm = () => ({
 export function formMixin() {
   return {
     modal: false,
-    editing: null as any,
+    editing: null as Customer | null,
     form: emptyForm(),
     formError: "",
     saving: false,
     showExtra: false,
-    deleteTarget: null as any,
-    allTags: [] as any[],
+    deleteTarget: null as Customer | null,
+    allTags: [] as Tag[],
 
     ...formFieldMultiselectMixin({
       itemsKey: "allTags",
@@ -37,15 +38,15 @@ export function formMixin() {
           body: JSON.stringify({ name, color }),
         });
         if (res.ok) {
-          const tag = await res.json();
-          comp.allTags.push(tag);
+          const tag: NamedItem = await res.json();
+          (comp as unknown as CustomerFormMixinState).allTags.push(tag as Tag);
           return tag;
         }
         return null;
       },
     }),
 
-    async openFormModal(this: any) {
+    async openFormModal(this: CustomerFormMixinState) {
       this.formError = "";
       this.multiselectReset();
       await this.loadTags();
@@ -53,14 +54,14 @@ export function formMixin() {
       this.$nextTick(() => this.$refs.firstField?.focus());
     },
 
-    async openCreate(this: any) {
+    async openCreate(this: CustomerFormMixinState) {
       this.editing = null;
       this.form = emptyForm();
       this.showExtra = false;
       await this.openFormModal();
     },
 
-    async openEdit(this: any, c: any) {
+    async openEdit(this: CustomerFormMixinState, c: Customer) {
       this.editing = c;
       this.form = {
         name: c.name,
@@ -72,7 +73,7 @@ export function formMixin() {
         birthDate: c.birthDate ? c.birthDate.slice(0, 10) : "",
         address: c.address ?? "",
         notes: c.notes ?? "",
-        tagIds: (c.tags ?? []).map((ct: any) => ct.tag.id),
+        tagIds: (c.tags ?? []).map((ct) => ct.tag.id),
       };
       this.showExtra = !!(
         this.form.fiscalCode ||
@@ -82,7 +83,7 @@ export function formMixin() {
       await this.openFormModal();
     },
 
-    async save(this: any, keepOpen = false) {
+    async save(this: CustomerFormMixinState, keepOpen = false) {
       this.formError = "";
       this.saving = true;
 
@@ -120,18 +121,18 @@ export function formMixin() {
       }
     },
 
-    async loadTags(this: any) {
+    async loadTags(this: CustomerFormMixinState) {
       const res = await fetch("/admin/api/tags");
       if (res.ok) this.allTags = await res.json();
     },
 
-    confirmDelete(c: any) {
+    confirmDelete(this: CustomerFormMixinState, c: Customer) {
       this.deleteTarget = c;
     },
 
-    async doDelete(this: any) {
+    async doDelete(this: CustomerFormMixinState) {
       this.saving = true;
-      await fetch(`/admin/api/customers/${this.deleteTarget.id}`, {
+      await fetch(`/admin/api/customers/${this.deleteTarget!.id}`, {
         method: "DELETE",
       });
       this.deleteTarget = null;

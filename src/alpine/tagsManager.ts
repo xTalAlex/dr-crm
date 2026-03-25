@@ -1,4 +1,5 @@
 import type { Alpine } from "alpinejs";
+import type { TagWithCount, TagsManagerState } from "@/alpine/types";
 
 const defaultColor = () =>
   getComputedStyle(document.documentElement)
@@ -7,23 +8,23 @@ const defaultColor = () =>
 
 export default (Alpine: Alpine) => {
   Alpine.data("tagsManager", () => ({
-    tags: [] as any[],
+    tags: [] as TagWithCount[],
     loading: true,
     tagModal: false,
-    editingTag: null as any,
+    editingTag: null as TagWithCount | null,
     tagForm: { name: "", color: "" },
     tagError: "",
     tagSaving: false,
-    deleteTagTarget: null as any,
+    deleteTagTarget: null as TagWithCount | null,
 
-    async fetchTags(this: any) {
+    async fetchTags(this: TagsManagerState) {
       this.loading = true;
       const res = await fetch("/admin/api/tags");
       this.tags = await res.json();
       this.loading = false;
     },
 
-    openTagForm(this: any, tag?: any) {
+    openTagForm(this: TagsManagerState, tag?: TagWithCount) {
       this.editingTag = tag ?? null;
       this.tagForm = {
         name: tag?.name ?? "",
@@ -34,7 +35,7 @@ export default (Alpine: Alpine) => {
       this.$nextTick(() => this.$refs.tagNameField?.focus());
     },
 
-    async saveTag(this: any) {
+    async saveTag(this: TagsManagerState) {
       this.tagError = "";
       this.tagSaving = true;
 
@@ -59,13 +60,13 @@ export default (Alpine: Alpine) => {
       this.tagSaving = false;
     },
 
-    confirmDeleteTag(tag: any) {
+    confirmDeleteTag(this: TagsManagerState, tag: TagWithCount) {
       this.deleteTagTarget = tag;
     },
 
-    async doDeleteTag(this: any) {
+    async doDeleteTag(this: TagsManagerState) {
       this.tagSaving = true;
-      await fetch(`/admin/api/tags/${this.deleteTagTarget.id}`, {
+      await fetch(`/admin/api/tags/${this.deleteTagTarget!.id}`, {
         method: "DELETE",
       });
       this.deleteTagTarget = null;

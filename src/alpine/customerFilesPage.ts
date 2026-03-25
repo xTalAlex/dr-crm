@@ -2,6 +2,7 @@ import type { Alpine } from "alpinejs";
 import { uploadMixin } from "./files/uploadMixin";
 import { groupMixin } from "./files/groupMixin";
 import { sharingMixin } from "./files/sharingMixin";
+import type { FileGroup } from "@/alpine/types";
 import content from "@/data/content.json";
 
 export default (Alpine: Alpine) => {
@@ -9,7 +10,7 @@ export default (Alpine: Alpine) => {
     customerId,
     customerName: "",
     customerPhone: "",
-    groups: [] as any[],
+    groups: [] as FileGroup[],
     loading: true,
 
     ...uploadMixin(),

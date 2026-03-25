@@ -1,12 +1,13 @@
 import { authClient } from "@/lib/auth-client";
 import type { Alpine } from "alpinejs";
+import type { AppUser, UsersManagerState } from "@/alpine/types";
 
 export default (Alpine: Alpine) => {
   Alpine.data("usersManager", (currentUserId: string) => ({
-    users: [] as any[],
+    users: [] as AppUser[],
     loading: false,
     currentUserId,
-    removeTarget: null as any,
+    removeTarget: null as AppUser | null,
     modal: false,
     form: { name: "", email: "", password: "" },
     formError: "",
@@ -15,17 +16,18 @@ export default (Alpine: Alpine) => {
     async fetchUsers() {
       this.loading = true;
       const { data } = await authClient.admin.listUsers({ query: {} });
-      this.users = data?.users ?? [];
+      // better-auth returns Date objects, but after JSON serialization they become strings
+      this.users = (data?.users ?? []) as unknown as AppUser[];
       this.loading = false;
     },
 
-    openCreate(this: any) {
+    openCreate(this: UsersManagerState) {
       this.form = { name: "", email: "", password: "" };
       this.formError = "";
       this.modal = true;
     },
 
-    async createUser(this: any) {
+    async createUser(this: UsersManagerState) {
       this.formError = "";
       this.saving = true;
 
@@ -46,14 +48,14 @@ export default (Alpine: Alpine) => {
       }
     },
 
-    confirmRemove(this: any, u: any) {
+    confirmRemove(this: UsersManagerState, u: AppUser) {
       this.removeTarget = u;
     },
 
-    async doRemove(this: any) {
+    async doRemove(this: UsersManagerState) {
       if (this.removeTarget?.id === this.currentUserId) return;
       this.saving = true;
-      await authClient.admin.removeUser({ userId: this.removeTarget.id });
+      await authClient.admin.removeUser({ userId: this.removeTarget!.id });
       this.removeTarget = null;
       this.saving = false;
       this.fetchUsers();

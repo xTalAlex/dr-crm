@@ -1,11 +1,13 @@
+import type { Customer, CustomerSearchState } from "@/alpine/types";
+
 export function customerSearchMixin() {
   return {
     customerSearch: "",
-    customerResults: [] as any[],
-    selectedCustomer: null as Record<string, any> | null,
+    customerResults: [] as Customer[],
+    selectedCustomer: null as Customer | null,
     searchingCustomers: false,
 
-    async searchCustomers(this: any) {
+    async searchCustomers(this: CustomerSearchState) {
       const q = this.customerSearch.trim();
       if (q.length < 2) {
         this.customerResults = [];
@@ -22,21 +24,21 @@ export function customerSearchMixin() {
       }
     },
 
-    selectCustomer(this: any, c: any) {
+    selectCustomer(this: CustomerSearchState, c: Customer) {
       this.selectedCustomer = c;
       this.customerSearch = "";
       this.customerResults = [];
     },
 
-    clearCustomer(this: any) {
+    clearCustomer(this: CustomerSearchState) {
       this.selectedCustomer = null;
     },
 
-    customerDisplayName(this: any, c: any) {
+    customerDisplayName(_this: CustomerSearchState, c: Customer) {
       return ((c.surname || "") + " " + (c.name || "")).trim() || "Paziente";
     },
 
-    resetCustomerSearch(this: any) {
+    resetCustomerSearch(this: CustomerSearchState) {
       this.customerSearch = "";
       this.customerResults = [];
       this.selectedCustomer = null;

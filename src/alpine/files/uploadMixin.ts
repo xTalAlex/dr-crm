@@ -1,4 +1,5 @@
 import { validateFiles, uploadFiles } from "@/lib/file-upload-client";
+import type { FileUploadMixinHost } from "@/alpine/types";
 
 export function uploadMixin() {
   return {
@@ -7,10 +8,10 @@ export function uploadMixin() {
     uploading: false,
     uploadError: "",
 
-    async upload(this: any) {
+    async upload(this: FileUploadMixinHost) {
       this.uploadError = "";
-      const fileInput = this.$refs.fileInput as HTMLInputElement;
-      const validationError = validateFiles(fileInput?.files);
+      const fileInput = this.$refs.fileInput as HTMLInputElement | undefined;
+      const validationError = validateFiles(fileInput?.files ?? null);
 
       if (validationError) {
         this.uploadError = validationError;
@@ -18,7 +19,7 @@ export function uploadMixin() {
         this.uploading = true;
         const { error } = await uploadFiles(
           `/admin/api/customers/${this.customerId}/files/upload`,
-          fileInput.files!,
+          fileInput!.files!,
           this.uploadLabel,
         );
         this.uploading = false;
@@ -28,7 +29,7 @@ export function uploadMixin() {
         } else {
           this.uploadLabel = "";
           this.uploadModal = false;
-          fileInput.value = "";
+          fileInput!.value = "";
           await this.fetchData();
         }
       }

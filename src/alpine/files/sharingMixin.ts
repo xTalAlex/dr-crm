@@ -1,4 +1,5 @@
 import { waLink } from "@/lib/wa-link";
+import type { FileGroup, FileSharingMixinHost } from "@/alpine/types";
 
 export function sharingMixin() {
   return {
@@ -10,7 +11,7 @@ export function sharingMixin() {
     generatingLink: false,
     hasExistingLink: false,
 
-    generateMagicLink(this: any, g: any) {
+    generateMagicLink(this: FileSharingMixinHost, g: FileGroup) {
       this.magicLinkGroupId = g.id;
       this.magicLinkHours = 72;
       this.magicLinkResult = null;
@@ -19,7 +20,7 @@ export function sharingMixin() {
       this.magicLinkModal = true;
     },
 
-    async doGenerateMagicLink(this: any) {
+    async doGenerateMagicLink(this: FileSharingMixinHost) {
       this.generatingLink = true;
       const res = await fetch(
         `/admin/api/customers/${this.customerId}/files/groups/${this.magicLinkGroupId}/magic-link`,
@@ -40,21 +41,21 @@ export function sharingMixin() {
       return `${window.location.origin}/files/${token}`;
     },
 
-    async copyLink(this: any, token: string) {
+    async copyLink(this: FileSharingMixinHost, token: string) {
       await navigator.clipboard.writeText(this.magicLinkUrl(token));
     },
 
-    waLinkMessage(this: any, token: string, pin: string) {
+    waLinkMessage(this: FileSharingMixinHost, token: string, pin: string) {
       const text = `Ecco i tuoi documenti: ${this.magicLinkUrl(token)}\nCodice PIN: ${pin}`;
       return waLink(this.customerPhone, text);
     },
 
-    async sendViaWhatsApp(this: any, g: any) {
+    async sendViaWhatsApp(this: FileSharingMixinHost, g: FileGroup) {
       const hasValidLink =
         g.magicLink && new Date(g.magicLink.expiresAt) >= new Date();
       if (hasValidLink) {
         window.open(
-          this.waLinkMessage(g.magicLink.token, g.magicLink.pin),
+          this.waLinkMessage(g.magicLink!.token, g.magicLink!.pin),
           "_blank",
           "noopener,noreferrer"
         );
@@ -69,8 +70,8 @@ export function sharingMixin() {
         );
         if (res.ok) {
           await this.fetchData();
-          const freshGroup = this.groups.find((gr: any) => gr.id === g.id);
-          if (freshGroup) {
+          const freshGroup = this.groups.find((gr) => gr.id === g.id);
+          if (freshGroup?.magicLink) {
             window.open(
             this.waLinkMessage(freshGroup.magicLink.token, freshGroup.magicLink.pin),
               "_blank",

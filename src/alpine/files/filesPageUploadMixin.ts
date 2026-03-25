@@ -1,5 +1,6 @@
 import { validateFiles, uploadFiles } from "@/lib/file-upload-client";
 import { customerSearchMixin } from "@/alpine/customerSearch";
+import type { FilesPageUploadState } from "@/alpine/types";
 
 export function filesPageUploadMixin() {
   return {
@@ -9,22 +10,22 @@ export function filesPageUploadMixin() {
     uploading: false,
     uploadError: "",
 
-    openUpload(this: any) {
+    openUpload(this: FilesPageUploadState) {
       this.uploadLabel = "";
       this.uploadError = "";
       this.resetCustomerSearch();
       this.uploadModal = true;
     },
 
-    async upload(this: any) {
+    async upload(this: FilesPageUploadState) {
       this.uploadError = "";
       const cust = this.selectedCustomer;
 
       if (!cust) {
         this.uploadError = "Seleziona un paziente";
       } else {
-        const fileInput = this.$refs.filesPageInput as HTMLInputElement;
-        const validationError = validateFiles(fileInput?.files);
+        const fileInput = this.$refs.filesPageInput;
+        const validationError = validateFiles(fileInput?.files ?? null);
 
         if (validationError) {
           this.uploadError = validationError;
@@ -32,7 +33,7 @@ export function filesPageUploadMixin() {
           this.uploading = true;
           const { error } = await uploadFiles(
             `/admin/api/customers/${cust.id}/files/upload`,
-            fileInput.files!,
+            fileInput!.files!,
             this.uploadLabel,
           );
           this.uploading = false;

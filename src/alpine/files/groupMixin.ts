@@ -1,4 +1,5 @@
 import { validateFiles, uploadFiles } from "@/lib/file-upload-client";
+import type { FileGroup, FileEntry, FileDeleteTarget, FileGroupMixinHost } from "@/alpine/types";
 
 export function groupMixin() {
   return {
@@ -12,20 +13,20 @@ export function groupMixin() {
     addFilesError: "",
 
     // Delete group / file
-    deleteTarget: null as { type: "group" | "file"; group: any; file?: any } | null,
+    deleteTarget: null as FileDeleteTarget | null,
     deleting: false,
 
-    startRename(this: any, g: any) {
+    startRename(this: FileGroupMixinHost, g: FileGroup) {
       this.renameGroupId = g.id;
       this.renameLabel = g.label || "";
       this.$nextTick(() => {
-        const input = (this.$refs as any).renameInput as HTMLInputElement;
+        const input = this.$refs.renameInput;
         input?.focus();
         input?.select();
       });
     },
 
-    async confirmRename(this: any, g: any) {
+    async confirmRename(this: FileGroupMixinHost, g: FileGroup) {
       const newLabel = this.renameLabel.trim();
       if (newLabel && newLabel !== g.label) {
         await fetch(
@@ -41,19 +42,19 @@ export function groupMixin() {
       this.renameGroupId = null;
     },
 
-    cancelRename(this: any) {
+    cancelRename(this: FileGroupMixinHost) {
       this.renameGroupId = null;
     },
 
-    openAddFiles(this: any, g: any) {
+    openAddFiles(this: FileGroupMixinHost, g: FileGroup) {
       this.addFilesGroupId = g.id;
       this.addFilesError = "";
     },
 
-    async doAddFiles(this: any, groupId: string) {
+    async doAddFiles(this: FileGroupMixinHost, groupId: string) {
       this.addFilesError = "";
-      const fileInput = (this.$refs as any).addFileInput as HTMLInputElement;
-      const validationError = validateFiles(fileInput?.files);
+      const fileInput = this.$refs.addFileInput;
+      const validationError = validateFiles(fileInput?.files ?? null);
 
       if (validationError) {
         this.addFilesError = validationError;
@@ -61,7 +62,7 @@ export function groupMixin() {
         this.addFilesUploading = true;
         const { error } = await uploadFiles(
           `/admin/api/customers/${this.customerId}/files/groups/${groupId}`,
-          fileInput.files!,
+          fileInput!.files!,
         );
         this.addFilesUploading = false;
 
@@ -74,11 +75,11 @@ export function groupMixin() {
       }
     },
 
-    confirmDelete(this: any, type: "group" | "file", group: any, file?: any) {
+    confirmDelete(this: FileGroupMixinHost, type: "group" | "file", group: FileGroup, file?: FileEntry) {
       this.deleteTarget = { type, group, file };
     },
 
-    async doDelete(this: any) {
+    async doDelete(this: FileGroupMixinHost) {
       if (!this.deleteTarget) return;
       const { type, group, file } = this.deleteTarget;
       this.deleting = true;
@@ -87,7 +88,7 @@ export function groupMixin() {
           ? `/admin/api/customers/${this.customerId}/files/groups/${group.id}`
           : `/admin/api/customers/${this.customerId}/files/entries/${file!.id}`;
       await fetch(url, { method: "DELETE" });
-      if (type === "file") group.files = group.files.filter((x: any) => x.id !== file!.id);
+      if (type === "file") group.files = group.files.filter((x) => x.id !== file!.id);
       this.deleteTarget = null;
       this.deleting = false;
       if (type === "group") await this.fetchData();

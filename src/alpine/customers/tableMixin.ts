@@ -1,8 +1,9 @@
 import { waLink } from "@/lib/wa-link";
+import type { Customer } from "@/alpine/types";
 
 export function tableMixin() {
   return {
-    customers: [] as any[],
+    customers: [] as Customer[],
     total: 0,
     search: "",
     activeLetter: "",

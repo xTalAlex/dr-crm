@@ -1,9 +1,10 @@
 import type { Alpine } from "alpinejs";
 import { filesPageUploadMixin } from "./files/filesPageUploadMixin";
+import type { FileGroupWithCustomer } from "@/alpine/types";
 
 export default (Alpine: Alpine) => {
   Alpine.data("filesPage", () => ({
-    groups: [] as any[],
+    groups: [] as FileGroupWithCustomer[],
     total: 0,
     page: 1,
     perPage: 20,
@@ -13,7 +14,7 @@ export default (Alpine: Alpine) => {
     ...filesPageUploadMixin(),
 
     get totalPages(): number {
-      return Math.max(1, Math.ceil((this as any).total / (this as any).perPage));
+      return Math.max(1, Math.ceil(this.total / this.perPage));
     },
 
     async init() {
@@ -36,12 +37,12 @@ export default (Alpine: Alpine) => {
       this.loading = false;
     },
 
-    customerLabel(g: any) {
+    customerLabel(g: FileGroupWithCustomer) {
       return ((g.customer?.surname || "") + " " + (g.customer?.name || "")).trim() || "—";
     },
 
-    totalSize(g: any) {
-      const bytes = g.files.reduce((sum: number, f: any) => sum + (f.size || 0), 0);
+    totalSize(g: FileGroupWithCustomer) {
+      const bytes = g.files.reduce((sum, f) => sum + (f.size || 0), 0);
       if (bytes < 1024) return bytes + " B";
       if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + " KB";
       return (bytes / (1024 * 1024)).toFixed(1) + " MB";
