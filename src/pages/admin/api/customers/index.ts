@@ -1,5 +1,6 @@
 import { apiHandler, ApiError } from "@/lib/api";
 import { sanitizeCustomer, validateCustomer } from "@/lib/customer";
+import { scopes } from "@/lib/search";
 
 export const prerender = false;
 
@@ -11,60 +12,7 @@ export const GET = apiHandler(async ({ url }, { prisma }) => {
     const skip = limit ? (page - 1) * limit : 0;
     const letter = url.searchParams.get("letter") ?? "";
 
-    const conditions: any[] = [];
-
-    if (search) {
-        const terms = search.trim().split(/\s+/);
-        if (terms.length > 1) {
-            conditions.push({
-                AND: terms.map((term) => ({
-                    OR: [
-                        { name: { contains: term, mode: "insensitive" as const } },
-                        { surname: { contains: term, mode: "insensitive" as const } },
-                        { notes: { contains: term, mode: "insensitive" as const } },
-                        {
-                            tags: {
-                                some: {
-                                    tag: {
-                                        name: { contains: term, mode: "insensitive" as const },
-                                    },
-                                },
-                            },
-                        },
-                    ],
-                })),
-            });
-        } else {
-            conditions.push({
-                OR: [
-                    { name: { contains: search, mode: "insensitive" as const } },
-                    { surname: { contains: search, mode: "insensitive" as const } },
-                    { phone: { contains: search } },
-                    { phone2: { contains: search } },
-                    { email: { contains: search, mode: "insensitive" as const } },
-                    { fiscalCode: { contains: search, mode: "insensitive" as const } },
-                    { notes: { contains: search, mode: "insensitive" as const } },
-                    {
-                        tags: {
-                            some: {
-                                tag: {
-                                    name: { contains: search, mode: "insensitive" as const },
-                                },
-                            },
-                        },
-                    },
-                ],
-            });
-        }
-    }
-
-    if (letter) {
-        conditions.push({
-            surname: { startsWith: letter, mode: "insensitive" as const },
-        });
-    }
-
-    const where = conditions.length > 0 ? { AND: conditions } : {};
+    const where = scopes.customer(search, letter || undefined);
 
     const [customers, total, letterRows] = await Promise.all([
         prisma.customer.findMany({

@@ -29,7 +29,7 @@ export const prerender = false;
     </PageHeader>
 
     <SearchInput
-      placeholder="Cerca per etichetta, nome o cognome paziente..."
+      placeholder="Cerca per nome cartella, cognome o nome paziente..."
       x-model="search"
       x-on:input.debounce.300ms="page = 1; fetchData()"
     >

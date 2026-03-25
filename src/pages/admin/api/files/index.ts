@@ -1,4 +1,5 @@
 import { apiHandler } from "@/lib/api";
+import { scopes } from "@/lib/search";
 
 export const prerender = false;
 
@@ -7,15 +8,7 @@ export const GET = apiHandler(async ({ url }, { prisma }) => {
   const page = Math.max(1, parseInt(url.searchParams.get("page") ?? "1"));
   const perPage = 20;
 
-  const where: any = {};
-
-  if (search) {
-    where.OR = [
-      { label: { contains: search, mode: "insensitive" } },
-      { customer: { name: { contains: search, mode: "insensitive" } } },
-      { customer: { surname: { contains: search, mode: "insensitive" } } },
-    ];
-  }
+  const where = scopes.fileGroup(search);
 
   const [groups, total] = await Promise.all([
     prisma.fileGroup.findMany({

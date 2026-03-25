@@ -13,7 +13,7 @@ import { Icon } from "astro-icon/components";
 ---
 
 <SearchInput
-  placeholder="Cerca per nome, cognome, telefono, email..."
+  placeholder="Cerca per cognome, nome, telefono, tag, note..."
   x-model="search"
   x-on:input.debounce.300ms="activeLetter = ''; fetchCustomers()"
   x-on:search="activeLetter = ''; fetchCustomers()"
