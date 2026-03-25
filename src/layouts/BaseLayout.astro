@@ -1,5 +1,6 @@
 ---
 import "@/styles/global.css";
+import OpenGraph from "@/components/OpenGraph.astro";
 
 export interface Props {
   title: string;
@@ -9,6 +10,7 @@ export interface Props {
 }
 
 const { title, description, bodyClass = "", noindex = false } = Astro.props;
+const canonical = Astro.url.href;
 ---
 
 <html lang="it" class="scroll-smooth">
@@ -25,6 +27,8 @@ const { title, description, bodyClass = "", noindex = false } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     {description && <meta name="description" content={description} />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    {description && <OpenGraph title={title} description={description} />}
     <title>{title}</title>
 
     <slot name="head" />

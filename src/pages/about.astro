@@ -9,12 +9,12 @@ import content from "@/data/content.json";
 
 export const prerender = false;
 
-const { doctor } = content;
+const { seo } = content;
 ---
 
 <BaseLayout
-  title={`${doctor.title} ${doctor.firstName} ${doctor.lastName} — Dentista a Varese`}
-  description={`${doctor.title} ${doctor.firstName} ${doctor.lastName}, dentista a Varese dal 1984. Medico Chirurgo e Odontoiatra. Laureato all'Università di Pavia, missione umanitaria in Africa.`}
+  title={seo.about.title}
+  description={seo.about.description}
   noindex={false}
 >
   <Navbar />
