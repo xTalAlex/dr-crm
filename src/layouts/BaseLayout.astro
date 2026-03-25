@@ -1,19 +1,14 @@
 ---
 import "@/styles/global.css";
 
-interface Props {
+export interface Props {
   title: string;
   description?: string;
   bodyClass?: string;
   noindex?: boolean;
 }
 
-const {
-  title,
-  description,
-  bodyClass = "",
-  noindex = false,
-} = Astro.props;
+const { title, description, bodyClass = "", noindex = false } = Astro.props;
 ---
 
 <html lang="it" class="scroll-smooth">
@@ -34,7 +29,12 @@ const {
 
     <slot name="head" />
   </head>
-  <body class:list={["bg-neutral-50 text-neutral-900 font-sans antialiased", bodyClass]}>
+  <body
+    class:list={[
+      "bg-neutral-50 text-neutral-900 font-sans antialiased",
+      bodyClass,
+    ]}
+  >
     <slot />
   </body>
 </html>
