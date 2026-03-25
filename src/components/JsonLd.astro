@@ -1,0 +1,28 @@
+---
+import content from "@/data/content.json";
+
+const { seo, doctor, contacts, services } = content;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Dentist",
+  name: `${doctor.title} ${doctor.firstName} ${doctor.lastName}`,
+  description: seo.description,
+  url: Astro.url.origin,
+  telephone: contacts.phone.href,
+  email: contacts.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: contacts.address.street,
+    addressLocality: contacts.address.city,
+    addressCountry: "IT",
+  },
+  medicalSpecialty: "Dentistry",
+  availableService: services.map((s) => ({
+    "@type": "MedicalProcedure",
+    name: s,
+  })),
+};
+---
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

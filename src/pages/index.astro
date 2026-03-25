@@ -5,6 +5,7 @@ import Footer from "@/components/Footer.astro";
 import Hero from "@/components/home/Hero.astro";
 import Services from "@/components/home/Services.astro";
 import Contact from "@/components/home/Contact.astro";
+import JsonLd from "@/components/JsonLd.astro";
 import content from "@/data/content.json";
 
 export const prerender = false;
@@ -13,9 +14,12 @@ const { seo } = content;
 ---
 
 <BaseLayout title={seo.title} description={seo.description}>
+  <JsonLd slot="head" />
   <Navbar />
-  <Hero />
-  <Services />
-  <Contact />
+  <main>
+    <Hero />
+    <Services />
+    <Contact />
+  </main>
   <Footer />
 </BaseLayout>
