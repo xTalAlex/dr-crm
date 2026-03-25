@@ -62,15 +62,6 @@ import { Icon } from "astro-icon/components";
       />
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <FormField
-        label="Email"
-        type="email"
-        x-model="form.email"
-        autocomplete="one-time-code"
-      />
-    </div>
-
     <div>
       <button
         type="button"
@@ -88,6 +79,15 @@ import { Icon } from "astro-icon/components";
 
       <div x-show="showExtra" x-transition x-cloak class="mt-3 space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2">
+            <FormField
+              label="Email"
+              type="email"
+              x-model="form.email"
+              autocomplete="one-time-code"
+            />
+          </div>
+
           <FormField
             label="Codice Fiscale"
             x-model="form.fiscalCode"
@@ -115,7 +115,7 @@ import { Icon } from "astro-icon/components";
       allowCreate
     />
 
-    <FormField label="Note" type="textarea" x-model="form.notes" rows="3" />
+    <FormField label="Note" type="textarea" x-model="form.notes" rows="2" />
   </form>
 
   <template x-if="formError">
