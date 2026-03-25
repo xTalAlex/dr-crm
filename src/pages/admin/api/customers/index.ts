@@ -22,6 +22,15 @@ export const GET = apiHandler(async ({ url }, { prisma }) => {
                         { name: { contains: term, mode: "insensitive" as const } },
                         { surname: { contains: term, mode: "insensitive" as const } },
                         { notes: { contains: term, mode: "insensitive" as const } },
+                        {
+                            tags: {
+                                some: {
+                                    tag: {
+                                        name: { contains: term, mode: "insensitive" as const },
+                                    },
+                                },
+                            },
+                        },
                     ],
                 })),
             });
@@ -35,6 +44,15 @@ export const GET = apiHandler(async ({ url }, { prisma }) => {
                     { email: { contains: search, mode: "insensitive" as const } },
                     { fiscalCode: { contains: search, mode: "insensitive" as const } },
                     { notes: { contains: search, mode: "insensitive" as const } },
+                    {
+                        tags: {
+                            some: {
+                                tag: {
+                                    name: { contains: search, mode: "insensitive" as const },
+                                },
+                            },
+                        },
+                    },
                 ],
             });
         }
