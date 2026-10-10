@@ -1,16 +1,19 @@
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const MAX_TOTAL_SIZE = 20 * 1024 * 1024;
+import {
+  MAX_FILE_SIZE,
+  MAX_TOTAL_SIZE,
+  filesTooLargeMessage,
+  uploadTooLargeMessage,
+} from "@/lib/file-limits";
 
 export function validateFiles(files: FileList | null): string | null {
   if (!files || files.length === 0) return "Seleziona almeno un file";
 
   const oversized = Array.from(files).filter((f) => f.size > MAX_FILE_SIZE);
   if (oversized.length > 0)
-    return `File troppo grandi (max 5 MB): ${oversized.map((f) => f.name).join(", ")}`;
+    return filesTooLargeMessage(oversized.map((f) => f.name).join(", "));
 
   const totalSize = Array.from(files).reduce((sum, f) => sum + f.size, 0);
-  if (totalSize > MAX_TOTAL_SIZE)
-    return `Upload troppo grande: ${(totalSize / 1024 / 1024).toFixed(1)} MB (max 20 MB)`;
+  if (totalSize > MAX_TOTAL_SIZE) return uploadTooLargeMessage(totalSize);
 
   return null;
 }
