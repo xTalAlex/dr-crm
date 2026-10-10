@@ -34,7 +34,7 @@ export function customerSearchMixin() {
       this.selectedCustomer = null;
     },
 
-    customerDisplayName(_this: CustomerSearchState, c: Customer) {
+    customerDisplayName(this: CustomerSearchState, c: Customer) {
       return ((c.surname || "") + " " + (c.name || "")).trim() || "Paziente";
     },
 

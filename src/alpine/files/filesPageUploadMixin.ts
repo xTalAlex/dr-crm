@@ -1,5 +1,5 @@
 import { validateFiles, uploadFiles } from "@/lib/file-upload-client";
-import { customerSearchMixin } from "@/alpine/customerSearch";
+import { customerSearchMixin } from "@/alpine/shared/customerSearchMixin";
 import type { FilesPageUploadState } from "@/alpine/types";
 
 export function filesPageUploadMixin() {
